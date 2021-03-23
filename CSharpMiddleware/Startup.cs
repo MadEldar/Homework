@@ -1,14 +1,9 @@
-using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using App_2021_03_23_2.Middleware;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
-using Microsoft.Extensions.Primitives;
 
 namespace App_2021_03_23_2
 {
@@ -58,12 +53,12 @@ namespace App_2021_03_23_2
             });
         }
 
-        private async Task CompareTime(HttpContext context) {
+        /* private async Task CompareTime(HttpContext context) {
             StringValues values;
 
             if (context.Response.Headers.TryGetValue("accept", out values)) {
                 Console.WriteLine(values);
             }
-        }
+        } */
     }
 }
