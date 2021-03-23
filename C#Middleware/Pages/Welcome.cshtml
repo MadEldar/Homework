@@ -1,0 +1,13 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Welcome";
+    String name = HttpContext.Request.Query["name"];
+    String time = HttpContext.Request.Headers.AsQueryable().Where(h => h.Key == "time").FirstOrDefault().Value;
+}
+
+<div class="text-center">
+    <p>Welcome @name</p>
+    <p>Current time: @time</p>
+    <p>Current time: </p>
+</div>
