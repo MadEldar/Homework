@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -16,10 +17,20 @@ namespace App_2021_03_23_2.Middleware
 
         public async Task Invoke(HttpContext context)
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+            var request = context.Request;
+            String url = $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}";
+            
             String name = context.Request.Query["name"];
             if (!String.IsNullOrWhiteSpace(name)) {
                 context.Request.Headers.Add("time", DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss"));
             }
+
+            Console.WriteLine($"Current url: {url}");
+            Console.WriteLine($"Elasped time: {sw.ElapsedTicks.ToString()} ticks");
+
             await _next(context);
         }
     }

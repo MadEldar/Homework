@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Welcome";
     String name = HttpContext.Request.Query["name"];
-    String time = HttpContext.Request.Headers.AsQueryable().Where(h => h.Key == "time").FirstOrDefault().Value;
+    var time = HttpContext.Request.Headers.AsQueryable().FirstOrDefault(h => h.Key == "time").Value;
 }
 
 <div class="text-center">
