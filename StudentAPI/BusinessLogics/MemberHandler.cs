@@ -42,7 +42,7 @@ namespace App_2021_03_26.BusinessLogics
 
         public Member FirstMemberInLocation(string location)
         {
-            return memberList.Find(m => m.BirthPlace == location);
+            return memberList.Find(m => m.BirthPlace.Equals(location, StringComparison.CurrentCultureIgnoreCase));
         }
 
         public List<Member> GetMemberByGender(string gender)
