@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Homework_2021_03_25.Filters;
-using Microsoft.AspNetCore.Authorization;
+using Homework_2021_03_25.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Homework_2021_03_25
 {
@@ -21,9 +21,14 @@ namespace Homework_2021_03_25
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddSession();
             services.AddTransient<LocationService>();
+            services.AddDbContext<MemberMVCContext>(opts =>
+                opts.UseLazyLoadingProxies()
+                    .UseSqlServer(Configuration.GetConnectionString("sqlConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

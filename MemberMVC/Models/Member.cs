@@ -5,30 +5,41 @@ namespace Homework_2021_03_25.Models
 {
     public class Member
     {
-        [Display(Name = "Id")]
+        [Required]
         public int Id { get; set; }
+        [Required(ErrorMessage = "First name is required")]
         [Display(Name = "First name")]
-        public String FirstName { get; set; }
+        public string FirstName { get; set; }
+        [Required(ErrorMessage = "Last name is required")]
         [Display(Name = "Last name")]
-        public String LastName { get; set; }
-        public String Gender { get; set; }
+        public string LastName { get; set; }
+        [Required(ErrorMessage = "Gender is required")]
+        public string Gender { get; set; }
         [Display(Name = "Date of Birth")]
+        [Required(ErrorMessage = "Date of birth is required")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
+        [DataType(DataType.Date)]
         public DateTime DoB { get; set; }
         [Display(Name = "Phone number")]
-        public String PhoneNumber { get; set; }
+        [Required(ErrorMessage = "Phone number is required")]
+        public string PhoneNumber { get; set; }
         [Display(Name = "Birth place")]
-        public String BirthPlace { get; set; }
+        [Required(ErrorMessage = "Birth place is required")]
+        public string BirthPlace { get; set; }
         [Display(Name = "Is graduated")]
         public bool IsGraduated { get; set; }
         [Display(Name = "Start date")]
+        [Required(ErrorMessage = "Start date is required")]
+        [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime StartDate { get; set; }
         [Display(Name = "End date")]
+        [Required(ErrorMessage = "End date is required")]
+        [DataType(DataType.Date)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime EndDate { get; set; }
         public Member() {}
-        public Member(int Id, string FirstName, string LastName, String Gender, DateTime DoB, string PhoneNumber,
+        public Member(int Id, string FirstName, string LastName, string Gender, DateTime DoB, string PhoneNumber,
                 string BirthPlace, bool IsGraduated, DateTime StartDate, DateTime EndDate){
             this.Id = Id;
             this.FirstName = FirstName;
@@ -41,17 +52,17 @@ namespace Homework_2021_03_25.Models
             this.StartDate = StartDate;
             this.EndDate = EndDate;
         }
-        public String GetFullName() {
-            return $"{this.FirstName} {this.LastName}";
+        public string GetFullName() {
+            return $"{FirstName} {LastName}";
         }
-        public String GetDateOfBirth() {
-            return this.DoB.ToString("yyyy/MM/dd");
+        public string GetDateOfBirth() {
+            return DoB.ToString("yyyy/MM/dd");
         }
-        public String GetStartDate() {
-            return this.DoB.ToString("yyyy/MM/dd");
+        public string GetStartDate() {
+            return StartDate.ToString("yyyy/MM/dd");
         }
-        public String GetEndDate() {
-            return this.DoB.ToString("yyyy/MM/dd");
+        public string GetEndDate() {
+            return EndDate.ToString("yyyy/MM/dd");
         }
 
         public void Edit(Member edited) {
@@ -64,20 +75,6 @@ namespace Homework_2021_03_25.Models
             IsGraduated = edited.IsGraduated;
             StartDate = edited.StartDate;
             EndDate = edited.EndDate;
-        }
-        public bool CheckEmptyFields() {
-            return String.IsNullOrWhiteSpace(FirstName) ||
-                String.IsNullOrWhiteSpace(LastName) ||
-                String.IsNullOrWhiteSpace(Gender) ||
-                String.IsNullOrWhiteSpace(PhoneNumber) ||
-                String.IsNullOrWhiteSpace(BirthPlace) ||
-                CheckDefaultDate(DoB) ||
-                CheckDefaultDate(StartDate) ||
-                CheckDefaultDate(EndDate);
-        }
-
-        private static bool CheckDefaultDate(DateTime date) {
-            return date == new DateTime();
         }
     }
 }
