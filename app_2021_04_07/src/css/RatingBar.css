@@ -1,0 +1,9 @@
+.rating-box {
+    height: 3vw;
+    background-color: #aaaaaa;
+    font-size: 22px
+}
+
+.rating-box.highlighted {
+    background-color: rgb(187, 39, 224);
+}
