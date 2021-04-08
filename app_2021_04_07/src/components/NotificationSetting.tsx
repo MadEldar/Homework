@@ -32,37 +32,36 @@ const Setting = ({ name, description, state }: ISetting, index: number) => {
 };
 
 export const NotificationSettings = () => {
-
     const settings: ISetting[] = [
         {
             name: "Email Notification",
             description: "Commits data and history",
-            state: useState(false)
+            state: useState(false),
         },
         {
             name: "Push Notification",
             description: "Commits data and history",
-            state: useState(true)
+            state: useState(true),
         },
         {
             name: "Monthly Reports",
             description: "Commits data and history",
-            state: useState(false)
+            state: useState(false),
         },
         {
             name: "Quarter Reports",
             description: "Commits data and history",
-            state: useState(false)
+            state: useState(false),
         },
     ];
 
-    const actualSettings = settings.map(s => {
-        const [setting] = s.state
+    const actualSettings = settings.map((s) => {
+        const [setting] = s.state;
         return {
             name: s.name,
             description: s.description,
-            toggleOn: setting
-        }
+            toggleOn: setting,
+        };
     });
 
     return (
@@ -70,7 +69,9 @@ export const NotificationSettings = () => {
             <div className="row col-4 offset-4">
                 <h3>Notifications</h3>
                 <div className="container px-4">
-                    <h5>Controll your notification and auto-follow settings.</h5>
+                    <h5>
+                        Controll your notification and auto-follow settings.
+                    </h5>
                     {settings.map(({ name, description, state }, index) => (
                         <Setting
                             name={name}
@@ -81,8 +82,12 @@ export const NotificationSettings = () => {
                     ))}
                 </div>
                 <div className="col-12">
-                    {actualSettings.map(s => {
-                        return <p> {s.name} is toggled {s.toggleOn ? 'on' : 'off'} </p>
+                    {actualSettings.map((s, index) => {
+                        return (
+                            <p key={index}>
+                                {s.name} is toggled {s.toggleOn ? "on" : "off"}
+                            </p>
+                        );
                     })}
                 </div>
             </div>

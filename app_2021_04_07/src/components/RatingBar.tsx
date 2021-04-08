@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import '../css/RatingBar.css';
+import "../css/RatingBar.css";
 
-const RatingBox = ({index, state}: {index: number, state: any}) => {
+const RatingBox = ({ index, state }: { index: number; state: any }) => {
     const [selectedRate, setSelectedRate] = state;
 
     function SelectRating() {
@@ -9,7 +9,13 @@ const RatingBox = ({index, state}: {index: number, state: any}) => {
     }
 
     return (
-        <button className={`button rating-box col mx-1 text-center text-white${selectedRate >= index ? ' highlighted' : ''}`} onClick={SelectRating}>
+        <button
+            className={`button rating-box col mx-1 text-center text-white${
+                selectedRate >= index ? " highlighted" : ""
+            }`}
+            onClick={SelectRating}
+            key={index}
+        >
             <p className="my-2">{index}</p>
         </button>
     );
@@ -29,12 +35,15 @@ export const RatingBar = () => {
                 <div className="col-12">
                     <h3 className="text-center">{selectedRate}</h3>
                 </div>
-                {ratingArray.map(index => 
-                    <RatingBox index={index} state={[selectedRate, setSelectedRate]} />
-                )}
+                {ratingArray.map((index) => (
+                    <RatingBox
+                        index={index}
+                        state={[selectedRate, setSelectedRate]}
+                    />
+                ))}
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default RatingBar;
