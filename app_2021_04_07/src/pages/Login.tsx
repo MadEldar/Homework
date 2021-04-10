@@ -1,6 +1,7 @@
 import "../App.css";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export function Login() {
     const [userInfo, setUserInfo] = useState({
@@ -9,6 +10,7 @@ export function Login() {
     });
 
     const [errors, setErrors] = useState({
+        login: "",
         username: "",
         password: "",
     });
@@ -59,7 +61,7 @@ export function Login() {
 
     useEffect(() => {
         setValidated(validityOfField.username && validityOfField.password);
-    }, [validityOfField])
+    }, [validityOfField]);
 
     function ChangeErrorMessage(target: string, message: string) {
         setErrors((pre) => {
@@ -69,6 +71,29 @@ export function Login() {
 
     function handleSubmit(event: any) {
         event.preventDefault();
+        axios
+            .get(`http://localhost:3001/users?username=${userInfo.username}&password=${userInfo.password}`)
+            .then((res) => res.data)
+            .then((user) => {
+                if (user.length > 0) {
+                    const { username, email, gender } = user[0];
+
+                    (async () => {
+                        await axios.put(
+                            "http://localhost:3001/currentUser",
+                            { username: username, email: email, gender: gender }
+                        );
+                    })();
+                } else {
+                    ChangeErrorMessage(
+                        "login",
+                        "Credentials don't match with any user"
+                    );
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
     return (
@@ -83,7 +108,9 @@ export function Login() {
                         <input
                             id="username"
                             name="username"
-                            className={`form-control${validityOfField.username ? "" : " invalid"}`}
+                            className={`form-control${
+                                validityOfField.username ? "" : " invalid"
+                            }`}
                             type="text"
                             value={userInfo.username}
                             onChange={(e) => {
@@ -92,7 +119,11 @@ export function Login() {
                             }}
                         />
                         {errors.username && (
-                            <div className={validityOfField.username ? "" : "invalid"}>
+                            <div
+                                className={
+                                    validityOfField.username ? "" : "invalid"
+                                }
+                            >
                                 {errors.username}
                             </div>
                         )}
@@ -103,12 +134,18 @@ export function Login() {
                             id="password"
                             name="password"
                             type="password"
-                            className={`form-control${validityOfField.password ? "" : " invalid"}`}
+                            className={`form-control${
+                                validityOfField.password ? "" : " invalid"
+                            }`}
                             value={userInfo.password}
                             onChange={ValidateField}
                         />
                         {errors.password && (
-                            <div className={validityOfField.password ? "" : "invalid"}>
+                            <div
+                                className={
+                                    validityOfField.password ? "" : "invalid"
+                                }
+                            >
                                 {errors.password}
                             </div>
                         )}
@@ -123,10 +160,14 @@ export function Login() {
                                 Submit
                             </button>
                             <Link
-                                className="btn btn-outline-primary ml-2" to="/home"
+                                className="btn btn-outline-primary ml-2"
+                                to="/home"
                             >
                                 Return to home
                             </Link>
+                            <div className="col-12 invalid mt-4 text-center">
+                                {errors.login}
+                            </div>
                         </div>
                     </div>
                 </form>

@@ -1,17 +1,19 @@
 import "../App.css";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { EmailRegex } from "../RegexStrings";
+import axios from "axios";
 
 export function Register() {
     const [userInfo, setUserInfo] = useState({
         username: "",
         password: "",
         email: "",
-        gender: "",
+        gender: "male",
     });
 
     const [errors, setErrors] = useState({
+        register: "",
         username: "",
         password: "",
         email: "",
@@ -36,20 +38,38 @@ export function Register() {
 
     function handleSubmit(e: any) {
         e.preventDefault();
+        (async () => {
+            const existingUser = await axios
+                .get(`http://localhost:3001/users?username=${userInfo.username}`)
+                .then();
+            if (existingUser.data.length !== 0) {
+                ChangeErrorMessage(
+                    "register",
+                    "Username is already in use and must be unique"
+                );
+            } else {
+                axios
+                    .post("http://localhost:3001/users", { ...userInfo })
+                    .then((res) => {
+                        if (res.data) {
+                        }
+                    })
+                    .catch((err) => console.log(err));
+            }
+        })();
     }
 
     function ValidateField(e: any) {
         const target = e.target.name;
         const value = e.target.value;
         let message = "";
-        
+
         switch (target) {
             case "username":
                 if (value.length <= 2)
                     message = "Username needs to be longer than 2 characters";
                 if (value.length > 22)
                     message = "Username cannot be longer than 22 characters";
-                ChangeErrorMessage(target, message);
                 break;
             case "password":
                 if (value.length < 8)
@@ -58,6 +78,8 @@ export function Register() {
             case "email":
                 if (!value.match(RegExp(EmailRegex)))
                     message = "Email is invalid";
+                break;
+            case "gender":
                 break;
             default:
                 return;
@@ -73,8 +95,12 @@ export function Register() {
     }
 
     useEffect(() => {
-        setValidated(validityOfField.username && validityOfField.password && validityOfField.email);
-    }, [validityOfField])
+        setValidated(
+            validityOfField.username &&
+                validityOfField.password &&
+                validityOfField.email
+        );
+    }, [validityOfField]);
 
     function ChangeErrorMessage(target: string, message: string) {
         setErrors((pre) => {
@@ -114,12 +140,18 @@ export function Register() {
                             id="password"
                             name="password"
                             type="password"
-                            className={`form-control${validityOfField.password ? "" : " invalid"}`}
+                            className={`form-control${
+                                validityOfField.password ? "" : " invalid"
+                            }`}
                             value={userInfo.password}
                             onChange={ValidateField}
                         />
                         {errors.password && (
-                            <div className={validityOfField.password ? "" : "invalid"}>
+                            <div
+                                className={
+                                    validityOfField.password ? "" : "invalid"
+                                }
+                            >
                                 {errors.password}
                             </div>
                         )}
@@ -130,12 +162,18 @@ export function Register() {
                             id="email"
                             name="email"
                             type="text"
-                            className={`form-control${validityOfField.email ? "" : " invalid"}`}
+                            className={`form-control${
+                                validityOfField.email ? "" : " invalid"
+                            }`}
                             value={userInfo.email}
                             onChange={ValidateField}
                         />
                         {errors.email && (
-                            <div className={validityOfField.email ? "" : "invalid"}>
+                            <div
+                                className={
+                                    validityOfField.email ? "" : "invalid"
+                                }
+                            >
                                 {errors.email}
                             </div>
                         )}
@@ -145,7 +183,9 @@ export function Register() {
                         <select
                             id="gender"
                             className="form-control"
+                            name="gender"
                             value={userInfo.gender}
+                            onChange={ValidateField}
                         >
                             <option value="male">Male</option>
                             <option value="female">Female</option>
@@ -166,6 +206,9 @@ export function Register() {
                             >
                                 Return to home
                             </Link>
+                            <div className="col-12 invalid mt-4 text-center">
+                                {errors.register}
+                            </div>
                         </div>
                     </div>
                 </form>

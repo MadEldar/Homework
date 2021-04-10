@@ -41,3 +41,14 @@
   color: #cf0000;
   /* border-color: #cf0000; */
 }
+
+div img {
+  height: 240px;
+  object-fit: contain;
+}
+
+td > img {
+  height: 80px;
+  object-fit: contain;
+}
+

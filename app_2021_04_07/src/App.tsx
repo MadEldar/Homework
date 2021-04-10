@@ -7,19 +7,16 @@ import { useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import { ProductCreate } from "./pages/Product";
-
-interface NavigationLink {
-    name: string,
-    link: string
-}
+import { ProductCreate } from "./pages/ProductCreate";
+import { Products } from "./pages/Products";
+import { ProductDetails } from "./pages/ProductDetails";
 
 function App() {
     const [show, setShow] = useState(true);
 
     const navigationLinks = [{
         name: "Home",
-        link: "/link"
+        link: "/"
     }, {
         name: "Login",
         link: "/login"
@@ -29,6 +26,9 @@ function App() {
     }, {
         name: "Create product",
         link: "/create-product"
+    }, {
+        name: "Products",
+        link: "/products"
     }, {
         name: "Settings",
         link: "/notification-settings"
@@ -54,7 +54,7 @@ function App() {
                         </ul>
                     </div>
                     <Switch>
-                        <Route path="/home" exact={true}>
+                        <Route path="/" exact={true}>
                             <Home />
                         </Route>
                         <Route path="/login" exact={true}>
@@ -65,6 +65,12 @@ function App() {
                         </Route>
                         <Route path="/create-product" exact={true}>
                             <ProductCreate />
+                        </Route>
+                        <Route path="/products" exact={true}>
+                            <Products />
+                        </Route>
+                        <Route path="/product-details/:id">
+                            <ProductDetails />
                         </Route>
                         <Route path="/notification-settings">
                             <NotificationSettings />
