@@ -45,13 +45,6 @@
       "password": "12345678",
       "email": "mark@gmail.com",
       "gender": "male"
-    },
-    {
-      "username": "1234",
-      "password": "12312312",
-      "email": "1@1.c",
-      "gender": "male",
-      "id": 2
     }
   ]
 }

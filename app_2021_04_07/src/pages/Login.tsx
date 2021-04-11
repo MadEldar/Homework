@@ -1,94 +1,34 @@
 import "../App.css";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
+import { useForm } from "react-hook-form";
+import User from "../models/User";
 
 export function Login() {
-    const [userInfo, setUserInfo] = useState({
-        username: "",
-        password: "",
-    });
+    const history = useHistory();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm();
 
-    const [errors, setErrors] = useState({
-        login: "",
-        username: "",
-        password: "",
-    });
-
-    const [validityOfField, setValidityOfField] = useState({
-        username: true,
-        password: true,
-    });
-
-    const [validated, setValidated] = useState(false);
-
-    function usernameToLowerCase(e: any) {
-        setUserInfo({
-            username: e.target.value.toLowerCase(),
-            password: userInfo.password,
-        });
-    }
-
-    function ValidateField(e: any) {
-        const target = e.target.name;
-        const value = e.target.value;
-        let message = "";
-
-        switch (target) {
-            case "username":
-                if (value.length <= 2)
-                    message = "Username needs to be longer than 2 characters";
-                if (value.length > 22)
-                    message = "Username cannot be longer than 22 characters";
-                ChangeErrorMessage(target, message);
-                break;
-            case "password":
-                if (value.length < 8)
-                    message = "Password length cannot be shorter than 8";
-                break;
-            default:
-                return;
-        }
-
-        setValidityOfField((pre) => {
-            return { ...pre, [target]: message === "" };
-        });
-        setUserInfo((pre) => {
-            return { ...pre, [target]: value };
-        });
-        ChangeErrorMessage(target, message);
-    }
-
-    useEffect(() => {
-        setValidated(validityOfField.username && validityOfField.password);
-    }, [validityOfField]);
-
-    function ChangeErrorMessage(target: string, message: string) {
-        setErrors((pre) => {
-            return { ...pre, [target]: message };
-        });
-    }
-
-    function handleSubmit(event: any) {
-        event.preventDefault();
+    function loginUser(data: User) {
         axios
-            .get(`http://localhost:3001/users?username=${userInfo.username}&password=${userInfo.password}`)
+            .get(`http://localhost:3001/users?username=${data.username}&password=${data.password}`)
             .then((res) => res.data)
             .then((user) => {
-                if (user.length > 0) {
-                    const { username, email, gender } = user[0];
+                const { username, email, gender } = user[0];
 
-                    (async () => {
-                        await axios.put(
-                            "http://localhost:3001/currentUser",
-                            { username: username, email: email, gender: gender }
-                        );
-                    })();
-                } else {
-                    ChangeErrorMessage(
-                        "login",
-                        "Credentials don't match with any user"
-                    );
+                return axios.put("http://localhost:3001/currentUser", {
+                    username,
+                    email,
+                    gender,
+                });
+            })
+            .then((res) => {
+                if (res.status === 200) {
+                    history.push("/home");
                 }
             })
             .catch((err) => {
@@ -102,29 +42,30 @@ export function Login() {
                 <div className="col-12">
                     <h3 className="text-center">Login</h3>
                 </div>
-                <form onSubmit={handleSubmit} className="col-6">
+                <form onSubmit={handleSubmit(loginUser)} className="col-6">
                     <div className="col-12 mt-2">
                         <label htmlFor="username">Username</label>
                         <input
                             id="username"
-                            name="username"
-                            className={`form-control${
-                                validityOfField.username ? "" : " invalid"
-                            }`}
+                            className="form-control"
                             type="text"
-                            value={userInfo.username}
-                            onChange={(e) => {
-                                usernameToLowerCase(e);
-                                ValidateField(e);
-                            }}
+                            {...register("username", {
+                                required: "Username is required",
+                                minLength: {
+                                    value: 3,
+                                    message: "Username length must be longer than 2 characters",
+                                },
+                                maxLength: {
+                                    value: 22,
+                                    message: "Product name length must not be longer than 22 characters",
+                                },
+                            })}
+                            onChange={(e) =>(e.target.value = e.target.value.toLowerCase())}
                         />
+                        {errors.username}
                         {errors.username && (
-                            <div
-                                className={
-                                    validityOfField.username ? "" : "invalid"
-                                }
-                            >
-                                {errors.username}
+                            <div className={errors.username === "" ? "" : "invalid"}>
+                                {errors.username.message}
                             </div>
                         )}
                     </div>
@@ -132,21 +73,19 @@ export function Login() {
                         <label htmlFor="password">Password</label>
                         <input
                             id="password"
-                            name="password"
                             type="password"
-                            className={`form-control${
-                                validityOfField.password ? "" : " invalid"
-                            }`}
-                            value={userInfo.password}
-                            onChange={ValidateField}
+                            className="form-control"
+                            {...register("password", {
+                                required: true,
+                                minLength: {
+                                    value: 8,
+                                    message: "Password must have at least 8 characters",
+                                },
+                            })}
                         />
                         {errors.password && (
-                            <div
-                                className={
-                                    validityOfField.password ? "" : "invalid"
-                                }
-                            >
-                                {errors.password}
+                            <div className={ errors.password === "" ? "" : "invalid"}>
+                                {errors.password.message}
                             </div>
                         )}
                     </div>
@@ -155,7 +94,6 @@ export function Login() {
                             <button
                                 className="btn btn-primary"
                                 type="submit"
-                                disabled={!validated}
                             >
                                 Submit
                             </button>

@@ -52,3 +52,9 @@ td > img {
   object-fit: contain;
 }
 
+.alert {
+  position: fixed;
+  top: 25px;
+  right: 25px;
+  max-width: 500px;
+}
