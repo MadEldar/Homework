@@ -4,8 +4,6 @@ namespace LibraryAPI.Repositories
 {
     public class BookRepository : BaseRepository<Book>
     {
-        public BookRepository(LibraryContext context) : base(context)
-        {
-        }
+        public BookRepository(LibraryContext context) : base(context) { }
     }
 }

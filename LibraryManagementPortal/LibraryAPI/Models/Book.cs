@@ -26,8 +26,7 @@ namespace LibraryAPI.Models
         public bool CheckEmptyFields()
         {
             return
-                Id == default
-                || string.IsNullOrWhiteSpace(Title)
+                string.IsNullOrWhiteSpace(Title)
                 || string.IsNullOrWhiteSpace(Author)
                 || CategoryId == default;
         }

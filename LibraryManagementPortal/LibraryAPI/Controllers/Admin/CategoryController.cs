@@ -14,37 +14,37 @@ namespace LibraryAPI.Controllers
 {
     [Route("api/admin/[controller]")]
     [ApiController]
-    public class UserController : Controller
+    public class CategoryController : Controller
     {
-        private readonly UserService _service;
+        private readonly CategoryService _service;
 
-        public UserController(UserService service)
+        public CategoryController(CategoryService service)
         {
             _service = service;
         }
 
         [HttpGet("{id}")]
-        public User GetUserById(Guid id)
+        public Category GetCategoryById(Guid id)
         {
             return _service.GetById(id);
         }
 
         [HttpGet("list")]
-        public IEnumerable<User> GetUserPaginationList()
+        public IEnumerable<Category> GetCategoryPaginationList()
         {
             return _service.GetPaginatedList();
         }
 
         [HttpPost("")]
-        public async Task<HttpResponseMessage> CreateUser(User user)
+        public async Task<HttpResponseMessage> CreateCategory(Category category)
         {
-            if (await _service.CreateAsync(user).ConfigureAwait(false))
+            if (await _service.CreateAsync(category).ConfigureAwait(false))
             {
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.Created,
-                    ReasonPhrase = $"Added new user with id: {user.Id}",
-                    Content = new StringContent(JsonSerializer.Serialize(user))
+                    ReasonPhrase = $"Added new category with id: {category.Id}",
+                    Content = new StringContent(JsonSerializer.Serialize(category))
                 };
             }
             else
@@ -52,20 +52,20 @@ namespace LibraryAPI.Controllers
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "New user cannot be created"
+                    ReasonPhrase = "New category cannot be created"
                 };
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<HttpResponseMessage> EditUser(Guid id, User user)
+        public async Task<HttpResponseMessage> EditCategory(Guid id, Category category)
         {
-            if (await _service.EditAsync(id, user).ConfigureAwait(false))
+            if (await _service.EditAsync(id, category).ConfigureAwait(false))
             {
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.Accepted,
-                    ReasonPhrase = $"Edited user with id: {id}"
+                    ReasonPhrase = $"Edited category with id: {id}"
                 };
             }
             else
@@ -73,20 +73,20 @@ namespace LibraryAPI.Controllers
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "New user cannot be created"
+                    ReasonPhrase = "New category cannot be created"
                 };
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<HttpResponseMessage> DeleteUser(Guid id)
+        public async Task<HttpResponseMessage> DeleteCategory(Guid id)
         {
             if (await _service.DeleteAsync(id).ConfigureAwait(false))
             {
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.Accepted,
-                    ReasonPhrase = $"Deleted user with id: {id}"
+                    ReasonPhrase = $"Deleted category with id: {id}"
                 };
             }
             else
@@ -94,7 +94,7 @@ namespace LibraryAPI.Controllers
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "User was not deleted"
+                    ReasonPhrase = "Category was not deleted"
                 };
             }
         }

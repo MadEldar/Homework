@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using LibraryAPI.Models;
-using LibraryAPI.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryAPI.Repositories
@@ -16,22 +16,6 @@ namespace LibraryAPI.Repositories
         {
             _context = context;
             _dbSet = context.Set<T>();
-        }
-
-        public async Task<T> GetByIdAsync(Guid id)
-        {
-            T entity = await _dbSet.FindAsync(id).ConfigureAwait(false);
-
-            if (entity == null) {
-                throw new KeyNotFoundException();
-            }
-
-            return entity;
-        }
-
-        public async Task<List<T>> GetListAsync()
-        {
-            return await _dbSet.ToListAsync().ConfigureAwait(false);
         }
 
         public async Task<bool> CreateAsync(T entity)
@@ -68,6 +52,8 @@ namespace LibraryAPI.Repositories
             int currentCount = await _dbSet.CountAsync().ConfigureAwait(false);
 
             _dbSet.Remove(entity);
+
+            _context.SaveChanges();
 
             return CountChanged(currentCount);
         }

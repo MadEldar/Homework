@@ -22,5 +22,13 @@ namespace LibraryAPI.Models
             Role = role;
             Password = password;
         }
+
+        public bool CheckEmptyFields()
+        {
+            return
+                string.IsNullOrWhiteSpace(Username)
+                || string.IsNullOrWhiteSpace(Role)
+                || string.IsNullOrWhiteSpace(Password);
+        }
     }
 }
