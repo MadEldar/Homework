@@ -27,10 +27,10 @@ namespace LibraryAPI.Controllers
             return await _service.GetByIdAsync(id).ConfigureAwait(false);
         }
 
-        [HttpGet("list")]
-        public async Task<List<Book>> GetBookPaginationList()
+        [HttpGet("")]
+        public async Task<List<Book>> GetBookPaginationList(int page = 1, int limit = 10)
         {
-            return await _service.GetPaginatedListAsync().ConfigureAwait(false);
+            return await _service.GetPaginatedListAsync(page, limit).ConfigureAwait(false);
         }
 
         [HttpPost("")]
