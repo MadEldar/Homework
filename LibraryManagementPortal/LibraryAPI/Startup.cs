@@ -8,6 +8,9 @@ using LibraryAPI.Models;
 using LibraryAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 using LibraryAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace LibraryAPI
 {
@@ -26,15 +29,36 @@ namespace LibraryAPI
             services.AddControllers()
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "LibraryAPI", Version = "v1" }));
 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        ValidAudience = Configuration["Jwt:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    };
+                });
+
             services.AddDbContext<LibraryContext>(opts =>
-                opts.UseLazyLoadingProxies()
-                    .UseSqlServer(Configuration.GetConnectionString("sqlConnection")));
+                opts
+                    .UseSqlServer(Configuration.GetConnectionString("sqlConnection"),
+                        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+
             services.AddTransient<UserRepository>();
             services.AddTransient<BookRepository>();
+            services.AddTransient<CategoryRepository>();
 
             services.AddScoped<BookService>();
+            services.AddScoped<UserService>();
+            services.AddScoped<CategoryService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

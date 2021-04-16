@@ -1,11 +1,13 @@
+using System.Net.Http;
 using System.Linq;
 using System.Collections.Generic;
 using LibraryAPI.Models;
-using LibraryAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using LibraryAPI.Services;
+using System.Net;
+using System.Text.Json;
 
 namespace LibraryAPI.Controllers
 {
@@ -20,33 +22,79 @@ namespace LibraryAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<Book> GetBookById(Guid id)
+        public async Task<Book> GetBookByIdAsync(Guid id)
         {
-            return await _service.GetBookById(id).ConfigureAwait(false);
+            return await _service.GetByIdAsync(id).ConfigureAwait(false);
         }
 
         [HttpGet("list")]
-        public async Task<IEnumerable<Book>> GetBookPaginationList()
+        public async Task<List<Book>> GetBookPaginationList()
         {
-            return await _service.GetBookPaginatedList().ConfigureAwait(false);
+            return await _service.GetPaginatedListAsync().ConfigureAwait(false);
         }
 
-        [HttpPost("create")]
-        public async Task<bool> CreateBook(Book book)
+        [HttpPost("")]
+        public async Task<HttpResponseMessage> CreateBook(Book book)
         {
-            return await _service.CreateBook(book).ConfigureAwait(false);
+            if (await _service.CreateAsync(book).ConfigureAwait(false))
+            {
+                return new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.Created,
+                    ReasonPhrase = $"Added new book with id: {book.Id}",
+                    Content = new StringContent(JsonSerializer.Serialize(book))
+                };
+            }
+            else
+            {
+                return new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ReasonPhrase = "New book cannot be created"
+                };
+            }
         }
 
         [HttpPut("{id}")]
-        public async Task<bool> EditBook(Guid id, Book book)
+        public async Task<HttpResponseMessage> EditBook(Guid id, Book book)
         {
-            return await _service.EditBook(id, book).ConfigureAwait(false);
+            if (await _service.EditAsync(id, book).ConfigureAwait(false))
+            {
+                return new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.Accepted,
+                    ReasonPhrase = $"Edited book with id: {id}"
+                };
+            }
+            else
+            {
+                return new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ReasonPhrase = "New book cannot be created"
+                };
+            }
         }
 
         [HttpDelete("{id}")]
-        public async Task<bool> DeleteBook(Guid id)
+        public async Task<HttpResponseMessage> DeleteBook(Guid id)
         {
-            return await _service.DeleteBook(id).ConfigureAwait(false);
+            if (await _service.DeleteAsync(id).ConfigureAwait(false))
+            {
+                return new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.Accepted,
+                    ReasonPhrase = $"Deleted book with id: {id}"
+                };
+            }
+            else
+            {
+                return new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ReasonPhrase = "Book was not deleted"
+                };
+            }
         }
     }
 }

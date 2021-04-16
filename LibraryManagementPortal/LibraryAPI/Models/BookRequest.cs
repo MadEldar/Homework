@@ -7,7 +7,7 @@ namespace LibraryAPI.Models
     {
         public Guid BookId { get; set; }
         public Guid RequestId { get; set; }
-        public virtual Book Book { get; set; }
-        public virtual RequestModel Request { get; set; }
+        public Book Book { get; set; }
+        public RequestModel Request { get; set; }
     }
 }

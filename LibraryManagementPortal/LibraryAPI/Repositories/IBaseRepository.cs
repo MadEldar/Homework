@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace LibraryAPI.Repositories.Interfaces
+namespace LibraryAPI.Repositories
 {
-    public interface IBaseRepository<T> where T : class
+    public interface IBaseRepository<T>
+        where T : class
     {
-        Task<T> GetByIdAsync(Guid id);
-        Task<List<T>> GetListAsync();
         Task<bool> CreateAsync(T entity);
         Task<bool> EditAsync(T editedEntity);
         Task<bool> DeleteAsync(T entity);
