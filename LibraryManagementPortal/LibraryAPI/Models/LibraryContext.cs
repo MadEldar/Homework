@@ -22,14 +22,11 @@ namespace LibraryAPI.Models
         {
             base.OnModelCreating(builder);
 
-            // builder.Entity<RequestModel>().Property<DateTime>("CreatedDate");
-            // builder.Entity<RequestModel>().Property<DateTime>("UpdatedDate");
-
             builder.Entity<BookRequest>().HasKey(x => new {x.BookId, x.RequestId});
 
             var user1 = new User { Id = Guid.NewGuid(), Username = "admin", Password = "admin123", Role = "admin" };
-            var user2 = new User { Id = Guid.NewGuid(), Username = "love2read", Password = "user123", Role = "admin" };
-            var user3 = new User { Id = Guid.NewGuid(), Username = "novelreader", Password = "user456", Role = "admin" };
+            var user2 = new User { Id = Guid.NewGuid(), Username = "love2read", Password = "user123", Role = "user" };
+            var user3 = new User { Id = Guid.NewGuid(), Username = "novelreader", Password = "user456", Role = "user" };
 
             builder.Entity<User>().HasData(
                 user1,
@@ -42,13 +39,15 @@ namespace LibraryAPI.Models
             var cate3 = new Category { Id = Guid.NewGuid(), Name = "Sci-fi" };
             var cate4 = new Category { Id = Guid.NewGuid(), Name = "Romance" };
             var cate5 = new Category { Id = Guid.NewGuid(), Name = "Comedy" };
+            var cate6 = new Category { Id = Guid.NewGuid(), Name = "Thriller" };
 
             builder.Entity<Category>().HasData(
                 cate1,
                 cate2,
                 cate3,
                 cate4,
-                cate5
+                cate5,
+                cate6
             );
 
             var book1 = new Book { Id = Guid.NewGuid(), Title = "Frost", Author = "Erin LaTimer", CategoryId = cate1.Id };
@@ -58,6 +57,10 @@ namespace LibraryAPI.Models
             var book5 = new Book { Id = Guid.NewGuid(), Title = "Ready Player Two", Author = "Ernest Cline", CategoryId = cate2.Id };
             var book6 = new Book { Id = Guid.NewGuid(), Title = "Ender's Game", Author = "Orson Scott Card", CategoryId = cate3.Id };
             var book7 = new Book { Id = Guid.NewGuid(), Title = "Pride and Prejudice", Author = "Jane Austen", CategoryId = cate4.Id };
+            var book8 = new Book { Id = Guid.NewGuid(), Title = "To Kill A Mockingbird", Author = "Harper Lee", CategoryId = cate6.Id };
+            var book9 = new Book { Id = Guid.NewGuid(), Title = "Lord of the Flies", Author = "William Golding", CategoryId = cate6.Id };
+            var book10 = new Book { Id = Guid.NewGuid(), Title = "Stardust ", Author = "Neil Gaiman", CategoryId = cate1.Id };
+            var book11 = new Book { Id = Guid.NewGuid(), Title = "Tom Clancy's Oath of Office ", Author = "Marc Cameron", CategoryId = cate6.Id };
 
             builder.Entity<Book>().HasData(
                 book1,
@@ -66,17 +69,23 @@ namespace LibraryAPI.Models
                 book4,
                 book5,
                 book6,
-                book7
+                book7,
+                book8,
+                book9,
+                book10,
+                book11
             );
 
             var request1 = new RequestModel { Id = Guid.NewGuid(), Status = "Approved", UserId = user2.Id };
             var request2 = new RequestModel { Id = Guid.NewGuid(), Status = "Pending", UserId = user2.Id };
             var request3 = new RequestModel { Id = Guid.NewGuid(), Status = "Rejected", UserId = user3.Id };
+            var request4 = new RequestModel { Id = Guid.NewGuid(), Status = "Pending", UserId = user3.Id };
 
             builder.Entity<RequestModel>().HasData(
                 request1,
                 request2,
-                request3
+                request3,
+                request4
             );
 
             builder.Entity<BookRequest>().HasData(
@@ -87,7 +96,10 @@ namespace LibraryAPI.Models
                 new BookRequest { RequestId = request2.Id, BookId = book5.Id },
                 new BookRequest { RequestId = request3.Id, BookId = book6.Id },
                 new BookRequest { RequestId = request3.Id, BookId = book7.Id },
-                new BookRequest { RequestId = request3.Id, BookId = book3.Id }
+                new BookRequest { RequestId = request3.Id, BookId = book3.Id },
+                new BookRequest { RequestId = request4.Id, BookId = book8.Id },
+                new BookRequest { RequestId = request4.Id, BookId = book9.Id },
+                new BookRequest { RequestId = request4.Id, BookId = book11.Id }
             );
         }
     }

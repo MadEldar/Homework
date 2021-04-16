@@ -18,6 +18,11 @@ namespace LibraryAPI.Repositories
             _dbSet = context.Set<T>();
         }
 
+        public IQueryable<T> GetAll()
+        {
+            return _dbSet;
+        }
+
         public async Task<bool> CreateAsync(T entity)
         {
             if (entity == null) {

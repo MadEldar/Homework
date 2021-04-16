@@ -4,30 +4,38 @@ using System.Linq;
 using System.Threading.Tasks;
 using LibraryAPI.Models;
 using LibraryAPI.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryAPI.Services
 {
     public class CategoryService
     {
         private readonly CategoryRepository _repo;
-        private readonly LibraryContext _context;
-        public CategoryService(CategoryRepository repo, LibraryContext context)
+        public CategoryService(CategoryRepository repo)
         {
             _repo = repo;
-            _context = context;
         }
 
-        public List<Category> GetPaginatedList()
+        public async Task<List<Category>> GetPaginatedList(int page, int limit)
         {
-            return new IncludeService<Category, ICollection<Book>>(_context.Categories, c => c.Books).includedEntity;
+            return await _repo
+                .GetAll()
+                .OrderBy(c => c.Name)
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToListAsync()
+                .ConfigureAwait(false);
         }
 
-        public Category GetById(Guid id)
+        public async Task<Category> GetByIdAsync(Guid id)
         {
             if (id == default) throw new KeyNotFoundException();
 
-            return new IncludeService<Category, ICollection<Book>>(_context.Categories, c => c.Books).includedEntity
-                .SingleOrDefault(c => c.Id == id);
+            return await _repo
+                .GetAll()
+                .Include(c => c.Books)
+                .SingleOrDefaultAsync(c => c.Id == id)
+                .ConfigureAwait(false);
         }
 
         public async Task<bool> CreateAsync(Category category)
@@ -49,7 +57,7 @@ namespace LibraryAPI.Services
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var book = GetById(id);
+            var book = await GetByIdAsync(id).ConfigureAwait(false);
 
             if (book == null) throw new ArgumentNullException(nameof(id));
 

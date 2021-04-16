@@ -4,31 +4,38 @@ using System.Linq;
 using System.Threading.Tasks;
 using LibraryAPI.Models;
 using LibraryAPI.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryAPI.Services
 {
     public class UserService
     {
         private readonly UserRepository _repo;
-        private readonly LibraryContext _context;
 
-        public UserService(UserRepository repo, LibraryContext context)
+        public UserService(UserRepository repo)
         {
             _repo = repo;
-            _context = context;
         }
 
-        public List<User> GetPaginatedList()
+        public async Task<List<User>> GetPaginatedListAsync(int page, int limit)
         {
-            return new IncludeService<User, ICollection<RequestModel>>(_context.Users, u => u.Requests).includedEntity;
+            return await _repo
+                .GetAll(u => u.Role != "admin")
+                .OrderBy(u => u.Username)
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToListAsync()
+                .ConfigureAwait(false);
         }
 
-        public User GetById(Guid id)
+        public async Task<User> GetByIdAsync(Guid id)
         {
             if (id == default) throw new KeyNotFoundException();
 
-            return new IncludeService<User, ICollection<RequestModel>>(_context.Users, u => u.Requests).includedEntity
-                .SingleOrDefault(u => u.Id == id);
+            return await _repo
+                .GetAll()
+                .SingleOrDefaultAsync(u => u.Id == id)
+                .ConfigureAwait(false);
         }
 
         public async Task<bool> CreateAsync(User user)
@@ -50,7 +57,7 @@ namespace LibraryAPI.Services
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var book = GetById(id);
+            var book = await GetByIdAsync(id).ConfigureAwait(false);
 
             if (book == null) throw new ArgumentNullException(nameof(id));
 

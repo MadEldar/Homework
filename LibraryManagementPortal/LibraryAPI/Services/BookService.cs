@@ -12,19 +12,19 @@ namespace LibraryAPI.Services
     public class BookService
     {
         private readonly BookRepository _repo;
-        private readonly LibraryContext _context;
-        public BookService(BookRepository repo, LibraryContext context)
+        public BookService(BookRepository repo)
         {
             _repo = repo;
-            _context = context;
         }
 
-        public async Task<List<Book>> GetPaginatedListAsync()
+        public async Task<List<Book>> GetPaginatedListAsync(int page, int limit)
         {
-            // return new IncludeService<Book, Category>(_context.Books, b => b.Category).includedEntity;
-            return await _context.Books
+            return await _repo.GetAll()
                 .Include(b => b.Category)
-                .Include(b => b.BookRequests).ThenInclude(r => r.Request)
+                .OrderBy(b => b.Author)
+                .ThenBy(b => b.Title)
+                .Skip((page - 1) * limit)
+                .Take(limit)
                 .ToListAsync()
                 .ConfigureAwait(false);
         }
@@ -33,12 +33,10 @@ namespace LibraryAPI.Services
         {
             if (id == default) throw new KeyNotFoundException();
 
-            // return new IncludeService<Book, Category>(_context.Books, b => b.Category).includedEntity
-            //     .SingleOrDefault(b => b.Id == id);
-
-            return await _context.Books
-                .Include(b => b.Category).ThenInclude(c => c.Books)
-                .Include(b => b.BookRequests).ThenInclude(r => r.Request)
+            return await _repo
+                .GetAll()
+                .Include(b => b.Category)
+                .Include(b => b.BookRequests).ThenInclude(br => br.Request)
                 .SingleOrDefaultAsync(b => b.Id == id)
                 .ConfigureAwait(false);
         }
