@@ -3,10 +3,11 @@ import { Container, ThemeProvider } from "@material-ui/core";
 import { BrowserRouter as Router, Switch, Link, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import theme from "./settings/theme";
+import { AppContext, defaultContext } from "./AppContext";
 
 function App() {
     return (
-        <ThemeProvider theme={theme}>
+        <AppContext.Provider value={defaultContext}>
             <Container>
                 <Router>
                     <ul>
@@ -21,7 +22,7 @@ function App() {
                     </Switch>
                 </Router>
             </Container>
-        </ThemeProvider>
+        </AppContext.Provider>
     );
 }
 
