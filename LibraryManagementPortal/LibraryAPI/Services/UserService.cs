@@ -24,6 +24,7 @@ namespace LibraryAPI.Services
                 .OrderBy(u => u.Username)
                 .Skip((page - 1) * limit)
                 .Take(limit)
+                .AsNoTracking()
                 .ToListAsync()
                 .ConfigureAwait(false);
         }
@@ -34,6 +35,7 @@ namespace LibraryAPI.Services
 
             return await _repo
                 .GetAll()
+                .AsNoTracking()
                 .SingleOrDefaultAsync(u => u.Id == id)
                 .ConfigureAwait(false);
         }

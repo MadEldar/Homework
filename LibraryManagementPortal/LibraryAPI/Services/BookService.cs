@@ -25,6 +25,7 @@ namespace LibraryAPI.Services
                 .ThenBy(b => b.Title)
                 .Skip((page - 1) * limit)
                 .Take(limit)
+                .AsNoTracking()
                 .ToListAsync()
                 .ConfigureAwait(false);
         }
@@ -37,6 +38,7 @@ namespace LibraryAPI.Services
                 .GetAll()
                 .Include(b => b.Category)
                 .Include(b => b.BookRequests).ThenInclude(br => br.Request)
+                .AsNoTracking()
                 .SingleOrDefaultAsync(b => b.Id == id)
                 .ConfigureAwait(false);
         }

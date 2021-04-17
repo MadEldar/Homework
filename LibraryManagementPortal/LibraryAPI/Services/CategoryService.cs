@@ -23,6 +23,7 @@ namespace LibraryAPI.Services
                 .OrderBy(c => c.Name)
                 .Skip((page - 1) * limit)
                 .Take(limit)
+                .AsNoTracking()
                 .ToListAsync()
                 .ConfigureAwait(false);
         }
@@ -34,6 +35,7 @@ namespace LibraryAPI.Services
             return await _repo
                 .GetAll()
                 .Include(c => c.Books)
+                .AsNoTracking()
                 .SingleOrDefaultAsync(c => c.Id == id)
                 .ConfigureAwait(false);
         }

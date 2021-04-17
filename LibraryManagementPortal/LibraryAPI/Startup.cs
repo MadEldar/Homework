@@ -16,6 +16,7 @@ namespace LibraryAPI
 {
     public class Startup
     {
+        private readonly string AllowedOrigins = "_allowedOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -26,6 +27,18 @@ namespace LibraryAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(
+                    name: AllowedOrigins,
+                    builder => builder
+                        .WithOrigins("http://localhost:3000")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials()
+                );
+            });
+
             services.AddControllers()
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -59,6 +72,7 @@ namespace LibraryAPI
             services.AddScoped<BookService>();
             services.AddScoped<UserService>();
             services.AddScoped<CategoryService>();
+            services.AddScoped<HomeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,6 +86,8 @@ namespace LibraryAPI
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCors(AllowedOrigins);
 
             app.UseRouting();
 
