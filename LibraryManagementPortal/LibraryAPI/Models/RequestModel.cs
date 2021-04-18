@@ -2,13 +2,14 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using LibraryAPI.Interfaces;
+using LibraryAPI.Enums;
 
 namespace LibraryAPI.Models
 {
     public class RequestModel : IRequest
     {
         public Guid Id { get; set; }
-        public string Status { get; set; }
+        public RequestStatus Status { get; set; }
         public DateTime RequestedDate { get; set; } = DateTime.Now;
         public DateTime? UpdatedDate { get; set; }
         public Guid UserId { get; set; }
@@ -19,10 +20,9 @@ namespace LibraryAPI.Models
         {
         }
 
-        public RequestModel(Guid userId, string status, DateTime requestedDate, DateTime updatedDate)
+        public RequestModel(Guid userId, DateTime requestedDate, DateTime updatedDate)
         {
             UserId = userId;
-            Status = status;
             RequestedDate = requestedDate;
             UpdatedDate = updatedDate;
         }

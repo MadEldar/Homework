@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LibraryAPI.Enums;
 using LibraryAPI.Models;
 using LibraryAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,7 @@ namespace LibraryAPI.Services
         public async Task<List<User>> GetPaginatedListAsync(int page, int limit)
         {
             return await _repo
-                .GetAll(u => u.Role != "admin")
+                .GetAll(u => u.Role != UserRole.Admin)
                 .OrderBy(u => u.Username)
                 .Skip((page - 1) * limit)
                 .Take(limit)

@@ -1,4 +1,5 @@
 using System;
+using LibraryAPI.Enums;
 
 namespace LibraryAPI.Interfaces
 {
@@ -6,7 +7,7 @@ namespace LibraryAPI.Interfaces
     {
         Guid Id { get; set; }
         string Username { get; set; }
-        string Role { get; set; }
+        UserRole Role { get; set; }
         string Password { get; set; }
     }
 }

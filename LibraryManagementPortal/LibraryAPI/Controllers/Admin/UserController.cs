@@ -1,7 +1,5 @@
-using System.Linq;
 using System.Collections.Generic;
 using LibraryAPI.Models;
-using LibraryAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;

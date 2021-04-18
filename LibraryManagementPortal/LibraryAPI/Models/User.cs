@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using LibraryAPI.Enums;
 using LibraryAPI.Interfaces;
 
 namespace LibraryAPI.Models
@@ -8,14 +9,14 @@ namespace LibraryAPI.Models
     {
         public Guid Id { get; set; }
         public string Username { get; set; }
-        public string Role { get; set; }
+        public UserRole Role { get; set; }
         public string Password { get; set; }
         public virtual ICollection<RequestModel> Requests { get; set; }
         public User()
         {
         }
 
-        public User(Guid id, string username, string role, string password)
+        public User(Guid id, string username, UserRole role, string password)
         {
             Id = id;
             Username = username;
@@ -27,7 +28,6 @@ namespace LibraryAPI.Models
         {
             return
                 string.IsNullOrWhiteSpace(Username)
-                || string.IsNullOrWhiteSpace(Role)
                 || string.IsNullOrWhiteSpace(Password);
         }
     }
