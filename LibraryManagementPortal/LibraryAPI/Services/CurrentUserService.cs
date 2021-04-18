@@ -6,8 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using LibraryAPI.Models;
 using LibraryAPI.Repositories;
-using System.Text.Json;
-using LibraryAPI.Models.Results;
 
 namespace LibraryAPI.Services
 {

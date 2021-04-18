@@ -1,14 +1,18 @@
 import "./App.css";
-import { Container, ThemeProvider } from "@material-ui/core";
+import { Container } from "@material-ui/core";
 import { BrowserRouter as Router, Switch, Link, Route } from "react-router-dom";
 import Login from "./pages/Login";
-import theme from "./settings/theme";
 import { AppContext, defaultContext } from "./AppContext";
+import { useState, useContext } from "react";
 
 function App() {
+    const { username, role } = useContext(AppContext);    
     return (
         <AppContext.Provider value={defaultContext}>
             <Container>
+                <button onClick={() => console.log(username)}>
+                    Click me
+                </button>
                 <Router>
                     <ul>
                         <li>

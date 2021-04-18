@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using LibraryAPI.Enums;
 using LibraryAPI.Models;
-using LibraryAPI.Models.Results;
-using LibraryAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryAPI.Repositories
