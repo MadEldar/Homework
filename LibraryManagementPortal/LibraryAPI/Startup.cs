@@ -68,11 +68,13 @@ namespace LibraryAPI
             services.AddTransient<UserRepository>();
             services.AddTransient<BookRepository>();
             services.AddTransient<CategoryRepository>();
+            services.AddTransient<CurrentUserRepository>();
 
             services.AddScoped<BookService>();
             services.AddScoped<UserService>();
             services.AddScoped<CategoryService>();
             services.AddScoped<HomeService>();
+            services.AddScoped<CurrentUserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
