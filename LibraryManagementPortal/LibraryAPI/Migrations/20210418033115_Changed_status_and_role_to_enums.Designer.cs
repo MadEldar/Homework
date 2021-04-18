@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryAPI.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20210418033115_Changed status and role to enums")]
+    [Migration("20210418033115_Changed_status_and_role_to_enums")]
     partial class Changedstatusandroletoenums
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

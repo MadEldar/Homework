@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using LibraryAPI.Enums;
 
 namespace LibraryAPI.Models.Results
@@ -8,6 +9,6 @@ namespace LibraryAPI.Models.Results
         public Guid Id { get; set; }
         public string Username { get; set; }
         public UserRole Role { get; set; }
-        public RequestResult Requests { get; set; }
+        public List<RequestResult> Requests { get; set; }
     }
 }

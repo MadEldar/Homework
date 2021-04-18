@@ -7,6 +7,7 @@ using LibraryAPI.Services;
 using System.Net.Http;
 using System.Net;
 using System.Text.Json;
+using System.Linq;
 
 namespace LibraryAPI.Controllers
 {
@@ -15,22 +16,38 @@ namespace LibraryAPI.Controllers
     public class CategoryController : Controller
     {
         private readonly CategoryService _service;
+        private readonly ResultService _resultService;
 
-        public CategoryController(CategoryService service)
+        public CategoryController(CategoryService service, ResultService resultService)
         {
             _service = service;
+            _resultService = resultService;
         }
 
         [HttpGet("{id}")]
-        public async Task<Category> GetCategoryById(Guid id)
+        public async Task<HttpResponseMessage> GetCategoryById(Guid id)
         {
-            return await _service.GetByIdAsync(id).ConfigureAwait(false);
+            var category = _resultService.GetCategoryResult(await _service.GetByIdAsync(id).ConfigureAwait(false), true);
+
+            return new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                ReasonPhrase = JsonSerializer.Serialize(category)
+            };
         }
 
         [HttpGet("")]
-        public async Task<IEnumerable<Category>> GetCategoryPaginationListAsync(int page = 1, int limit = 10)
+        public HttpResponseMessage GetCategoryPaginationList(int page = 1, int limit = 10)
         {
-            return await _service.GetPaginatedList(page, limit).ConfigureAwait(false);
+            var categories = _service
+                .GetPaginatedList(page, limit)
+                .Select(c => _resultService.GetCategoryResult(c, true));
+
+            return new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                ReasonPhrase = JsonSerializer.Serialize(categories)
+            };
         }
 
         [HttpPost("")]

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using LibraryAPI.Models;
 using LibraryAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+using LibraryAPI.Models.Results;
 
 namespace LibraryAPI.Services
 {
@@ -17,17 +17,13 @@ namespace LibraryAPI.Services
             _repo = repo;
         }
 
-        public async Task<List<Book>> GetPaginatedListAsync(int page, int limit)
+        public IQueryable<Book> GetPaginatedList(int page, int limit)
         {
-            return await _repo.GetAll()
-                .Include(b => b.Category)
+            return _repo.GetAll()
                 .OrderBy(b => b.Author)
                 .ThenBy(b => b.Title)
                 .Skip((page - 1) * limit)
-                .Take(limit)
-                .AsNoTracking()
-                .ToListAsync()
-                .ConfigureAwait(false);
+                .Take(limit);
         }
 
         public async Task<Book> GetByIdAsync(Guid id)
@@ -36,9 +32,6 @@ namespace LibraryAPI.Services
 
             return await _repo
                 .GetAll()
-                .Include(b => b.Category)
-                .Include(b => b.BookRequests).ThenInclude(br => br.Request)
-                .AsNoTracking()
                 .SingleOrDefaultAsync(b => b.Id == id)
                 .ConfigureAwait(false);
         }

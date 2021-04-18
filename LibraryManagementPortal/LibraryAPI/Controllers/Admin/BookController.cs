@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using LibraryAPI.Services;
 using System.Net;
 using System.Text.Json;
+using System.Linq;
+using LibraryAPI.Models.Results;
 
 namespace LibraryAPI.Controllers
 {
@@ -15,21 +17,37 @@ namespace LibraryAPI.Controllers
     public class BookController : Controller
     {
         private readonly BookService _service;
-        public BookController(BookService service)
+        private readonly ResultService _resultService;
+        public BookController(BookService service, ResultService resultService)
         {
             _service = service;
+            _resultService = resultService;
         }
 
         [HttpGet("{id}")]
-        public async Task<Book> GetBookByIdAsync(Guid id)
+        public async Task<HttpResponseMessage> GetBookByIdAsync(Guid id)
         {
-            return await _service.GetByIdAsync(id).ConfigureAwait(false);
+            var book = _resultService.GetBookResult(await _service.GetByIdAsync(id).ConfigureAwait(false), true);
+
+            return new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                ReasonPhrase = JsonSerializer.Serialize(book)
+            };
         }
 
         [HttpGet("")]
-        public async Task<List<Book>> GetBookPaginationList(int page = 1, int limit = 10)
+        public HttpResponseMessage GetBookPaginationList(int page = 1, int limit = 10)
         {
-            return await _service.GetPaginatedListAsync(page, limit).ConfigureAwait(false);
+            var books = _service
+                .GetPaginatedList(page, limit)
+                .Select(b => _resultService.GetBookResult(b, false));
+
+            return new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                ReasonPhrase = JsonSerializer.Serialize(books)
+            };
         }
 
         [HttpPost("")]

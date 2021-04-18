@@ -8,7 +8,7 @@ namespace LibraryAPI.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public ICollection<Book> Books { get; set; }
+        public virtual ICollection<Book> Books { get; set; }
         public Category()
         {
         }

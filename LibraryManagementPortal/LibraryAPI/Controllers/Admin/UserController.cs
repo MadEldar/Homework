@@ -7,6 +7,7 @@ using LibraryAPI.Services;
 using System.Net.Http;
 using System.Net;
 using System.Text.Json;
+using System.Linq;
 
 namespace LibraryAPI.Controllers
 {
@@ -15,22 +16,38 @@ namespace LibraryAPI.Controllers
     public class UserController : Controller
     {
         private readonly UserService _service;
+        private readonly ResultService _resultService;
 
-        public UserController(UserService service)
+        public UserController(UserService service, ResultService resultService)
         {
             _service = service;
+            _resultService = resultService;
         }
 
         [HttpGet("{id}")]
-        public async Task<User> GetUserById(Guid id)
+        public async Task<HttpResponseMessage> GetUserById(Guid id)
         {
-            return await _service.GetByIdAsync(id).ConfigureAwait(false);
+            var user = _resultService.GetUserResult(await _service.GetByIdAsync(id).ConfigureAwait(false), true);
+
+            return new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                ReasonPhrase = JsonSerializer.Serialize(user)
+            };
         }
 
         [HttpGet("")]
-        public async Task<IEnumerable<User>> GetUserPaginationListAsync(int page = 1, int limit = 10)
+        public HttpResponseMessage GetUserPaginationList(int page = 1, int limit = 10)
         {
-            return await _service.GetPaginatedListAsync(page, limit).ConfigureAwait(false);
+            var users = _service
+                .GetPaginatedList(page, limit)
+                .Select(u => _resultService.GetUserResult(u, false));
+
+            return new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                ReasonPhrase = JsonSerializer.Serialize(users)
+            };
         }
 
         [HttpPost("")]

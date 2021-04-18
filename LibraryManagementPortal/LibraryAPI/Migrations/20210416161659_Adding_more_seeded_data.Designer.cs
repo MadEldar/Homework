@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LibraryAPI.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20210416161659_Adding more seeded data")]
+    [Migration("20210416161659_Adding_more_seeded_data")]
     partial class Addingmoreseededdata
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
