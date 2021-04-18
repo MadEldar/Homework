@@ -5,22 +5,24 @@ using System.Threading.Tasks;
 using LibraryAPI.Enums;
 using LibraryAPI.Models;
 using LibraryAPI.Models.Results;
+using LibraryAPI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryAPI.Repositories
 {
     public class CurrentUserRepository
     {
-        public LibraryContext _context;
-        public CurrentUserRepository(LibraryContext context)
+        private readonly LibraryContext _context;
+        private readonly ResultService _resultService;
+        public CurrentUserRepository(LibraryContext context, ResultService resultService)
         {
             _context = context;
+            _resultService = resultService;
         }
 
         public async Task<User> GetCurrentUserAsync(string username)
         {
             return await _context.Users
-                .Include(u => u.Requests).ThenInclude(r => r.BookRequests).ThenInclude(br => br.Book).ThenInclude(b => b.Category)
                 .SingleOrDefaultAsync(u => u.Username == username)
                 .ConfigureAwait(false);
         }
@@ -31,24 +33,7 @@ namespace LibraryAPI.Repositories
 
             foreach (var request in requests)
             {
-                result.Add(
-                    new RequestResult
-                    {
-                        Id = request.Id,
-                        Status = request.Status,
-                        RequestedDate = request.RequestedDate,
-                        UpdatedDate = request.UpdatedDate ?? default,
-                        Books = request.BookRequests
-                            .Select(br => new BookResult
-                            {
-                                Id = br.Book.Id,
-                                Title = br.Book.Title,
-                                Author = br.Book.Author,
-                                Category = new CategoryResult { Id = br.Book.Category.Id, Name = br.Book.Category.Name }
-                            })
-                            .ToList()
-                    }
-                );
+                result.Add(_resultService.GetRequestResult(request));
             }
 
             return result;

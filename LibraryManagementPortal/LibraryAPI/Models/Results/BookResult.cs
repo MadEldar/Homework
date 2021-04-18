@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace LibraryAPI.Models.Results
 {
@@ -8,6 +9,6 @@ namespace LibraryAPI.Models.Results
         public string Title { get; set; }
         public string Author { get; set; }
         public CategoryResult Category { get; set; }
-        public RequestResult Requests { get; set; }
+        public List<RequestResult> Requests { get; set; }
     }
 }

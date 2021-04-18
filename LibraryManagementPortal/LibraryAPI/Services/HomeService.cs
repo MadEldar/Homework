@@ -1,8 +1,5 @@
 using System.Net.Http;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using LibraryAPI.Models;
 using System.Net;
 using System.Text.Json;

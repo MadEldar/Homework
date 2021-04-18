@@ -13,8 +13,8 @@ namespace LibraryAPI.Models
         public DateTime RequestedDate { get; set; } = DateTime.Now;
         public DateTime? UpdatedDate { get; set; }
         public Guid UserId { get; set; }
-        public User User { get; set; }
-        public ICollection<BookRequest> BookRequests { get; set; }
+        public virtual User User { get; set; }
+        public virtual ICollection<BookRequest> BookRequests { get; set; }
 
         public RequestModel()
         {

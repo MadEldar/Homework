@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using LibraryAPI.Models;
 using LibraryAPI.Models.Requests;
-using LibraryAPI.Models.Results;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 

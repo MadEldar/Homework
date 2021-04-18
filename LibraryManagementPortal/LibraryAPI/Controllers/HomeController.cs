@@ -1,4 +1,5 @@
 using System.Net.Http;
+using LibraryAPI.Models.Requests;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,15 +15,9 @@ namespace LibraryAPI.Controllers
             _service = service;
         }
         [HttpPost("login")]
-        public HttpResponseMessage Login([FromBody] LoginInfo info)
+        public HttpResponseMessage Login([FromBody] LoginRequest info)
         {
             return _service.Login(info.Username, info.Password);
         }
-    }
-
-    public class LoginInfo
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
     }
 }

@@ -39,9 +39,9 @@ namespace LibraryAPI
                 );
             });
 
-            services.AddControllers()
-                .AddNewtonsoftJson(options =>
-                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            services.AddControllers();
+                // .AddNewtonsoftJson(options =>
+                    // options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "LibraryAPI", Version = "v1" }));
 
@@ -62,6 +62,7 @@ namespace LibraryAPI
 
             services.AddDbContext<LibraryContext>(opts =>
                 opts
+                    .UseLazyLoadingProxies()
                     .UseSqlServer(Configuration.GetConnectionString("sqlConnection"),
                         o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
@@ -75,6 +76,7 @@ namespace LibraryAPI
             services.AddScoped<CategoryService>();
             services.AddScoped<HomeService>();
             services.AddScoped<CurrentUserService>();
+            services.AddScoped<ResultService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

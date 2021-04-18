@@ -18,16 +18,13 @@ namespace LibraryAPI.Services
             _repo = repo;
         }
 
-        public async Task<List<User>> GetPaginatedListAsync(int page, int limit)
+        public IQueryable<User> GetPaginatedList(int page, int limit)
         {
-            return await _repo
+            return _repo
                 .GetAll(u => u.Role != UserRole.Admin)
                 .OrderBy(u => u.Username)
                 .Skip((page - 1) * limit)
-                .Take(limit)
-                .AsNoTracking()
-                .ToListAsync()
-                .ConfigureAwait(false);
+                .Take(limit);
         }
 
         public async Task<User> GetByIdAsync(Guid id)
@@ -36,7 +33,6 @@ namespace LibraryAPI.Services
 
             return await _repo
                 .GetAll()
-                .AsNoTracking()
                 .SingleOrDefaultAsync(u => u.Id == id)
                 .ConfigureAwait(false);
         }
