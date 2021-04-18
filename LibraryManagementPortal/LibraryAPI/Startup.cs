@@ -69,11 +69,13 @@ namespace LibraryAPI
             services.AddTransient<UserRepository>();
             services.AddTransient<BookRepository>();
             services.AddTransient<CategoryRepository>();
+            services.AddTransient<RequestRepository>();
             services.AddTransient<CurrentUserRepository>();
 
             services.AddScoped<BookService>();
             services.AddScoped<UserService>();
             services.AddScoped<CategoryService>();
+            services.AddScoped<RequestService>();
             services.AddScoped<HomeService>();
             services.AddScoped<CurrentUserService>();
             services.AddScoped<ResultService>();

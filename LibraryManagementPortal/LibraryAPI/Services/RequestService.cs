@@ -1,9 +1,10 @@
-using System;
 using System.Collections.Generic;
+using System;
 using System.Linq;
-using LibraryAPI.Models.Results;
+using LibraryAPI.Enums;
+using LibraryAPI.Models;
 using LibraryAPI.Repositories;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace LibraryAPI.Services
 {
@@ -15,9 +16,26 @@ namespace LibraryAPI.Services
             _repo = repo;
         }
 
-        // public List<RequestResult> GetPaginatedListAsync(int page, int limit)
-        // {
-        //     // return _repo.GetAll();
-        // }
+        public IQueryable<RequestModel> GetPaginatedList(int page, int limit)
+        {
+            return _repo.GetAll()
+                .OrderBy(r => r.Status)
+                .ThenBy(r => r.RequestedDate)
+                .Skip((page - 1) * limit)
+                .Take(limit);
+        }
+
+        public Task<int> ChangeRequestStatus(Guid id, RequestStatus status)
+        {
+            if (id == default) throw new KeyNotFoundException(nameof(id));
+
+            var request = _repo
+                .GetAll()
+                .SingleOrDefault(r => r.Id == id);
+
+            if (request == null) throw new KeyNotFoundException(nameof(id));
+
+            return _repo.ChangeRequestStatusAsync(request, status);
+        }
     }
 }

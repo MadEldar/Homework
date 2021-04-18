@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using LibraryAPI.Enums;
 using LibraryAPI.Models;
+using LibraryAPI.Models.Requests;
 using LibraryAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +16,7 @@ namespace LibraryAPI.Controllers.Test
     public class CurrentUserControllerTest
     {
         private CurrentUserService testService;
+        private ResultService resultService;
         private CurrentUserController controller;
         private static Guid bookId1 = Guid.NewGuid();
         private static Guid bookId2 = Guid.NewGuid();
@@ -44,6 +47,7 @@ namespace LibraryAPI.Controllers.Test
             ServiceProvider serviceProvider = services.BuildServiceProvider();
 
             testService = serviceProvider.GetService<CurrentUserService>();
+            resultService = serviceProvider.GetService<ResultService>();
             var context = serviceProvider.GetService<LibraryContext>();
 
             // Create in-memory data
@@ -74,16 +78,16 @@ namespace LibraryAPI.Controllers.Test
             context.Books.Add(book5);
             context.Books.Add(book6);
 
-            controller = new(testService);
+            controller = new CurrentUserController(testService, resultService);
         }
 
         [Order(1)]
         [TestCaseSource(nameof(GetCorrectCreateBookRequests))]
-        public void CreateNewRequest_UniqueBookIdAndWithinLimit_ShouldPass(CreateBookRequest req, HttpStatusCode statusCode)
+        public async Task CreateNewRequest_UniqueBookIdAndWithinLimit_ShouldPassAsync(CreateBookRequest req, HttpStatusCode statusCode)
         {
             // Console.WriteLine(req.Username);
 
-            HttpResponseMessage result = controller.CreateNewRequestAsync(req);
+            HttpResponseMessage result = await controller.CreateNewRequestAsync(req).ConfigureAwait(false);
 
             Assert.AreEqual(statusCode, result.StatusCode, "Book request was not created");
         }

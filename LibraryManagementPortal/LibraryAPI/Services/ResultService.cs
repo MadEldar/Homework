@@ -54,6 +54,7 @@ namespace LibraryAPI.Services
                 Status = request.Status,
                 RequestedDate = request.RequestedDate,
                 UpdatedDate = request.UpdatedDate ?? default,
+                User = GetUserResult(request.User),
                 Books = includeBook ? request.BookRequests
                     .Select(br => GetBookResult(br.Book))
                     .ToList() : null

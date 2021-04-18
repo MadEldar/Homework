@@ -11,24 +11,23 @@ export function Login() {
         handleSubmit,
         formState: { errors },
     } = useForm();
+    
     const [user, setUser] = useState(AppContext);
 
     const onSubmit = async (data: { username: string; password: string }) => {
         const result = await axios({
             method: "post",
-            url: ApiUrlBuiler.Login, // + `?username=${data.username}&password=${data.password}`
+            url: ApiUrlBuiler.Login,
             data: data,
         }).then();
 
         const { reasonPhrase, statusCode } = result.data;
 
+        console.log(result.data);
+
         if (statusCode === 200) {
             setUser(JSON.parse(reasonPhrase));
         }
-
-        // if (result.data.statusCode)
-
-        // if (result)
     };
 
     return (
