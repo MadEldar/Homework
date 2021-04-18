@@ -13,11 +13,9 @@ namespace LibraryAPI.Repositories
     public class CurrentUserRepository
     {
         private readonly LibraryContext _context;
-        private readonly ResultService _resultService;
-        public CurrentUserRepository(LibraryContext context, ResultService resultService)
+        public CurrentUserRepository(LibraryContext context)
         {
             _context = context;
-            _resultService = resultService;
         }
 
         public async Task<User> GetCurrentUserAsync(string username)
@@ -25,18 +23,6 @@ namespace LibraryAPI.Repositories
             return await _context.Users
                 .SingleOrDefaultAsync(u => u.Username == username)
                 .ConfigureAwait(false);
-        }
-
-        public List<RequestResult> GetBooksFromRequests(ICollection<RequestModel> requests)
-        {
-            var result = new List<RequestResult>();
-
-            foreach (var request in requests)
-            {
-                result.Add(_resultService.GetRequestResult(request));
-            }
-
-            return result;
         }
 
         public async Task CreateBookRequestAsync(Guid userId, List<Guid> bookIds)

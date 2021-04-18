@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using LibraryAPI.Models;
 using LibraryAPI.Repositories;
 using System.Text.Json;
+using LibraryAPI.Models.Results;
 
 namespace LibraryAPI.Services
 {
@@ -78,27 +79,13 @@ namespace LibraryAPI.Services
             };
         }
 
-        public async Task<HttpResponseMessage> GetAllRequestsAsync(string username)
+        public async Task<ICollection<RequestModel>> GetAllRequestsAsync(string username)
         {
             User user = await _repo.GetCurrentUserAsync(username).ConfigureAwait(false);
 
-            if (user == null)
-            {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "Cannot find user. Please login again"
-                };
-            }
+            if (user == null) throw new ArgumentNullException(nameof(username));
 
-            var request = _repo
-                .GetBooksFromRequests(user.Requests);
-
-            return new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                ReasonPhrase = JsonSerializer.Serialize(request)
-            };
+            return user.Requests;
         }
 
         private static List<BookRequest> UnwrapBookRequests(IEnumerable<ICollection<BookRequest>> wrappedRequests)

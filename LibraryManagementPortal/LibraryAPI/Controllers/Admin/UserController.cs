@@ -25,29 +25,21 @@ namespace LibraryAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<HttpResponseMessage> GetUserById(Guid id)
+        public async Task<IActionResult> GetUserById(Guid id)
         {
             var user = _resultService.GetUserResult(await _service.GetByIdAsync(id).ConfigureAwait(false), true);
 
-            return new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                ReasonPhrase = JsonSerializer.Serialize(user)
-            };
+            return Ok(user);
         }
 
         [HttpGet("")]
-        public HttpResponseMessage GetUserPaginationList(int page = 1, int limit = 10)
+        public IActionResult GetUserPaginationList(int page = 1, int limit = 10)
         {
             var users = _service
                 .GetPaginatedList(page, limit)
                 .Select(u => _resultService.GetUserResult(u, false));
 
-            return new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                ReasonPhrase = JsonSerializer.Serialize(users)
-            };
+            return Ok(users);
         }
 
         [HttpPost("")]

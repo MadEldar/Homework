@@ -25,29 +25,21 @@ namespace LibraryAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<HttpResponseMessage> GetCategoryById(Guid id)
+        public async Task<IActionResult> GetCategoryById(Guid id)
         {
             var category = _resultService.GetCategoryResult(await _service.GetByIdAsync(id).ConfigureAwait(false), true);
 
-            return new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                ReasonPhrase = JsonSerializer.Serialize(category)
-            };
+            return Ok(category);
         }
 
         [HttpGet("")]
-        public HttpResponseMessage GetCategoryPaginationList(int page = 1, int limit = 10)
+        public IActionResult GetCategoryPaginationList(int page = 1, int limit = 10)
         {
             var categories = _service
                 .GetPaginatedList(page, limit)
                 .Select(c => _resultService.GetCategoryResult(c, true));
 
-            return new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                ReasonPhrase = JsonSerializer.Serialize(categories)
-            };
+            return Ok(categories);
         }
 
         [HttpPost("")]
@@ -58,8 +50,7 @@ namespace LibraryAPI.Controllers
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.Created,
-                    ReasonPhrase = $"Added new category with id: {category.Id}",
-                    Content = new StringContent(JsonSerializer.Serialize(category))
+                    ReasonPhrase = $"Added new category with id: {category.Id}"
                 };
             }
             else

@@ -1,6 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using LibraryAPI.Models;
 using LibraryAPI.Models.Requests;
+using LibraryAPI.Models.Results;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,9 +15,11 @@ namespace LibraryAPI.Controllers
     public class CurrentUserController
     {
         private readonly CurrentUserService _service;
-        public CurrentUserController(CurrentUserService service)
+        private readonly ResultService _resultService;
+        public CurrentUserController(CurrentUserService service, ResultService resultService)
         {
             _service = service;
+            _resultService = resultService;
         }
 
         [HttpPost("request-books")]
@@ -23,9 +29,12 @@ namespace LibraryAPI.Controllers
         }
 
         [HttpGet("requests")]
-        public async Task<HttpResponseMessage> GetAllRequestsAsync(string username)
+        public async Task<IEnumerable<RequestResult>> GetAllRequestsAsync(string username)
         {
-            return await _service.GetAllRequestsAsync(username).ConfigureAwait(false);
+            return (await _service
+                .GetAllRequestsAsync(username)
+                .ConfigureAwait(false))
+                .Select(r => _resultService.GetRequestResult(r, true));
         }
     }
 }

@@ -25,29 +25,21 @@ namespace LibraryAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<HttpResponseMessage> GetBookByIdAsync(Guid id)
+        public async Task<IActionResult> GetBookByIdAsync(Guid id)
         {
             var book = _resultService.GetBookResult(await _service.GetByIdAsync(id).ConfigureAwait(false), true);
 
-            return new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                ReasonPhrase = JsonSerializer.Serialize(book)
-            };
+            return Ok(book);
         }
 
         [HttpGet("")]
-        public HttpResponseMessage GetBookPaginationList(int page = 1, int limit = 10)
+        public IActionResult GetBookPaginationList(int page = 1, int limit = 10)
         {
             var books = _service
                 .GetPaginatedList(page, limit)
                 .Select(b => _resultService.GetBookResult(b, false));
 
-            return new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                ReasonPhrase = JsonSerializer.Serialize(books)
-            };
+            return Ok(books);
         }
 
         [HttpPost("")]
