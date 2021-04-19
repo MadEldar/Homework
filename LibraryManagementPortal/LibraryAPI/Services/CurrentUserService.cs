@@ -17,6 +17,13 @@ namespace LibraryAPI.Services
             _repo = repo;
         }
 
+        public User GetCurrentUser(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token)) return null;
+
+            return _repo.GetCurrentUser(token);
+        }
+
         public async Task<HttpResponseMessage> CreateNewRequestAsync(string username, List<Guid> bookIds)
         {
             if (bookIds.Count != bookIds.Distinct().Count())
@@ -28,7 +35,7 @@ namespace LibraryAPI.Services
                 };
             }
 
-            User user = await _repo.GetCurrentUserAsync(username).ConfigureAwait(false);
+            User user = _repo.GetCurrentUser(username);
 
             if (user == null)
             {
@@ -77,11 +84,11 @@ namespace LibraryAPI.Services
             };
         }
 
-        public async Task<ICollection<RequestModel>> GetAllRequestsAsync(string username)
+        public ICollection<RequestModel> GetAllRequests(string token)
         {
-            User user = await _repo.GetCurrentUserAsync(username).ConfigureAwait(false);
+            User user = _repo.GetCurrentUser(token);
 
-            if (user == null) throw new ArgumentNullException(nameof(username));
+            if (user == null) return null;
 
             return user.Requests;
         }

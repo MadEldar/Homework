@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using LibraryAPI.Enums;
 using LibraryAPI.Models;
@@ -15,11 +16,17 @@ namespace LibraryAPI.Repositories
             _context = context;
         }
 
-        public async Task<User> GetCurrentUserAsync(string username)
+        public User GetCurrentUser(string token)
         {
-            return await _context.Users
-                .SingleOrDefaultAsync(u => u.Username == username)
-                .ConfigureAwait(false);
+            var user = _context.Users
+                .Where(u => u.Token != null && u.Token.Token == token)
+                .FirstOrDefault();
+
+            if (user != null) user.Token.RefreshToken();
+
+            _context.SaveChanges();
+
+            return user;
         }
 
         public async Task CreateBookRequestAsync(Guid userId, List<Guid> bookIds)
@@ -27,6 +34,7 @@ namespace LibraryAPI.Repositories
             var request = new RequestModel { Status = RequestStatus.Pending, UserId = userId };
 
             _context.Requests.Add(request);
+
             bookIds.ForEach(async id =>
                 await _context
                     .BookRequests

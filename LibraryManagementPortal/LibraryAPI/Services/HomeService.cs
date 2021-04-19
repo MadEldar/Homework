@@ -3,6 +3,7 @@ using System.Linq;
 using LibraryAPI.Models;
 using System.Net;
 using System.Text.Json;
+using System;
 
 namespace LibraryAPI.Services
 {
@@ -14,36 +15,31 @@ namespace LibraryAPI.Services
             _context = context;
         }
 
-        public HttpResponseMessage Login(string username, string password)
+        public User Login(string username, string password)
         {
-            if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(password)) return null;
+
+            var user = GetUserByUsernameAndPassword(username, password);
+
+            if (user != null)
             {
-                return new HttpResponseMessage
+                if (user.Token == null)
                 {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = $"{nameof(username)} or {nameof(password)} cannot be empty"
-                };
+                    _context.Tokens.Add(new UserToken(user.Id));
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    user.Token.RefreshToken();
+                }
             }
 
-            var user = _context.Users.SingleOrDefault(u => u.Username == username && u.Password == password);
+            return user;
+        }
 
-            if (user == null)
-            {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = $"Incorrect {nameof(username)} or {nameof(password)}"
-                };
-            }
-
-            return new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                ReasonPhrase = JsonSerializer.Serialize(new {
-                    username = user.Username,
-                    role = user.Role
-                })
-            };
+        public User GetUserByUsernameAndPassword(string username, string password)
+        {
+            return _context.Users.FirstOrDefault(u => u.Username == username && u.Password == password);
         }
     }
 }

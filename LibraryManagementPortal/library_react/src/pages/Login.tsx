@@ -2,7 +2,7 @@ import { Button, TextField } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import ApiUrlBuiler from "../helpers/APIUrlBuiler";
-import { useContext, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import AppContext from "../AppContext";
 
 export function Login() {
@@ -11,23 +11,28 @@ export function Login() {
         handleSubmit,
         formState: { errors },
     } = useForm();
-    
-    const [user, setUser] = useState(AppContext);
+
+    const { token, setToken } = useContext(AppContext) as {
+        token: string,
+        setToken: Dispatch<SetStateAction<string>>
+    }
 
     const onSubmit = async (data: { username: string; password: string }) => {
-        const result = await axios({
-            method: "post",
-            url: ApiUrlBuiler.Login,
-            data: data,
-        }).then();
+        console.log(token);
+        setToken("");
+        // const result = await axios({
+        //     method: "post",
+        //     url: ApiUrlBuiler.Login,
+        //     data: data,
+        // }).then();
 
-        const { reasonPhrase, statusCode } = result.data;
+        // const { reasonPhrase, statusCode } = result.data;
 
-        console.log(result.data);
+        // console.log(result.data);
 
-        if (statusCode === 200) {
-            setUser(JSON.parse(reasonPhrase));
-        }
+        // if (statusCode === 200) {
+        //     console.log(result.data);
+        // }
     };
 
     return (

@@ -85,8 +85,6 @@ namespace LibraryAPI.Controllers.Test
         [TestCaseSource(nameof(GetCorrectCreateBookRequests))]
         public async Task CreateNewRequest_UniqueBookIdAndWithinLimit_ShouldPassAsync(CreateBookRequest req, HttpStatusCode statusCode)
         {
-            // Console.WriteLine(req.Username);
-
             HttpResponseMessage result = await controller.CreateNewRequestAsync(req).ConfigureAwait(false);
 
             Assert.AreEqual(statusCode, result.StatusCode, "Book request was not created");

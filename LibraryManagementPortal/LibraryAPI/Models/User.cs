@@ -11,6 +11,7 @@ namespace LibraryAPI.Models
         public string Username { get; set; }
         public UserRole Role { get; set; }
         public string Password { get; set; }
+        public virtual UserToken Token { get; set; }
         public virtual ICollection<RequestModel> Requests { get; set; }
         public User()
         {

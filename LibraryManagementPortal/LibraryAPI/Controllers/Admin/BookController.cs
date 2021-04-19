@@ -1,5 +1,4 @@
 using System.Net.Http;
-using System.Collections.Generic;
 using LibraryAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -8,12 +7,14 @@ using LibraryAPI.Services;
 using System.Net;
 using System.Text.Json;
 using System.Linq;
-using LibraryAPI.Models.Results;
+using LibraryAPI.Enums;
+using LibraryAPI.Filters;
 
 namespace LibraryAPI.Controllers
 {
     [Route("api/admin/book")]
     [ApiController]
+    [AuthorizeAtrribute(UserRole.Admin)]
     public class BookController : Controller
     {
         private readonly BookService _service;

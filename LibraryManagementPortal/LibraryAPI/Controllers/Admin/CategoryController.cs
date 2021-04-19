@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using LibraryAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -6,13 +5,15 @@ using System.Threading.Tasks;
 using LibraryAPI.Services;
 using System.Net.Http;
 using System.Net;
-using System.Text.Json;
 using System.Linq;
+using LibraryAPI.Filters;
+using LibraryAPI.Enums;
 
 namespace LibraryAPI.Controllers
 {
     [Route("api/admin/[controller]")]
     [ApiController]
+    [AuthorizeAtrribute(UserRole.Admin)]
     public class CategoryController : Controller
     {
         private readonly CategoryService _service;

@@ -1,10 +1,10 @@
-import { createContext } from "react";
+import { createContext, useContext, Dispatch, SetStateAction } from "react";
 
-export const defaultContext = {
-    username: "",
-    role: ""
-}
+export const AppContext = createContext({});
 
-export const AppContext = createContext<{username: string, role: string}>(defaultContext);
+// const { token, setToken } = useContext(AppContext) as {
+//     token: string,
+//     setToken: Dispatch<SetStateAction<string>>
+// }
 
-export default AppContext
+export default AppContext;

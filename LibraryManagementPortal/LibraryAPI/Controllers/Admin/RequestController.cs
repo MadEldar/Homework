@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using LibraryAPI.Enums;
 using System.Threading.Tasks;
+using LibraryAPI.Filters;
 
 namespace LibraryAPI.Controllers
 {
     [Route("api/admin/[controller]")]
     [ApiController]
+    [AuthorizeAtrribute(UserRole.Admin)]
     public class RequestController : Controller
     {
         private readonly RequestService _service;
@@ -42,7 +44,7 @@ namespace LibraryAPI.Controllers
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    ReasonPhrase = $"Changed request status to {status}"
+                    ReasonPhrase = $"Changed request status to {Enum.GetName(typeof(RequestStatus), status)}"
                 };
             }
             else
@@ -50,7 +52,7 @@ namespace LibraryAPI.Controllers
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.InternalServerError,
-                    ReasonPhrase = $"1 field  was expected to changed, but instead {result}"
+                    ReasonPhrase = $"1 row was expected to changed, but instead {result}"
                 };
             }
         }

@@ -13,6 +13,8 @@ namespace LibraryAPI.Models
 
         public DbSet<Book> Books { get; set; }
 
+        public DbSet<UserToken> Tokens { get; set; }
+
         public DbSet<RequestModel> Requests { get; set; }
 
         public DbSet<BookRequest> BookRequests { get; set; }
@@ -24,6 +26,7 @@ namespace LibraryAPI.Models
             base.OnModelCreating(builder);
 
             builder.Entity<BookRequest>().HasKey(x => new {x.BookId, x.RequestId});
+            builder.Entity<UserToken>().HasKey(x => x.UserId);
 
             var user1 = new User { Id = Guid.NewGuid(), Username = "admin", Password = "admin123", Role = UserRole.Admin };
             var user2 = new User { Id = Guid.NewGuid(), Username = "love2read", Password = "user123", Role = UserRole.User };
