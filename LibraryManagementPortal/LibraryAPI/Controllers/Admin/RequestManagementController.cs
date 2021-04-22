@@ -14,11 +14,11 @@ namespace LibraryAPI.Controllers
     [Route("api/admin/[controller]")]
     [ApiController]
     [AuthorizeAtrribute(UserRole.Admin)]
-    public class RequestController : Controller
+    public class RequestManagementController : Controller
     {
         private readonly RequestService _service;
         private readonly ResultService _resultService;
-        public RequestController(RequestService service, ResultService resultService)
+        public RequestManagementController(RequestService service, ResultService resultService)
         {
             _service = service;
             _resultService = resultService;

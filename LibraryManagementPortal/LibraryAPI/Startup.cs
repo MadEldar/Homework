@@ -11,12 +11,12 @@ using LibraryAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using LibraryAPI.Middlewares;
 
 namespace LibraryAPI
 {
     public class Startup
     {
-        private readonly string AllowedOrigins = "_allowedOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -30,7 +30,7 @@ namespace LibraryAPI
             services.AddCors(options =>
             {
                 options.AddPolicy(
-                    name: AllowedOrigins,
+                    name: StringResource.CorsAllowedOrigin,
                     builder => builder
                         .WithOrigins("http://localhost:3000")
                         .AllowAnyMethod()
@@ -40,8 +40,6 @@ namespace LibraryAPI
             });
 
             services.AddControllers();
-                // .AddNewtonsoftJson(options =>
-                    // options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "LibraryAPI", Version = "v1" }));
 
@@ -93,11 +91,13 @@ namespace LibraryAPI
 
             app.UseHttpsRedirection();
 
-            app.UseCors(AllowedOrigins);
+            app.UseCors(StringResource.CorsAllowedOrigin);
 
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseAllowOriginMiddleware();
 
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }

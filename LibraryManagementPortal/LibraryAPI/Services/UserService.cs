@@ -21,7 +21,7 @@ namespace LibraryAPI.Services
         public IQueryable<User> GetPaginatedList(int page, int limit)
         {
             return _repo
-                .GetAll(u => u.Role != UserRole.Admin)
+                .GetAll(/* u => u.Role != UserRole.Admin */)
                 .OrderBy(u => u.Username)
                 .Skip((page - 1) * limit)
                 .Take(limit);
@@ -56,11 +56,11 @@ namespace LibraryAPI.Services
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var book = await GetByIdAsync(id).ConfigureAwait(false);
+            var user = await GetByIdAsync(id).ConfigureAwait(false);
 
-            if (book == null) throw new ArgumentNullException(nameof(id));
+            if (user == null) throw new ArgumentNullException(nameof(id));
 
-            return await _repo.DeleteAsync(book).ConfigureAwait(false);
+            return await _repo.DeleteUserAsync(user).ConfigureAwait(false);
         }
     }
 }

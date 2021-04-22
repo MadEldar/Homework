@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using LibraryAPI.Models;
 using LibraryAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
-using LibraryAPI.Models.Results;
 
 namespace LibraryAPI.Services
 {
@@ -59,7 +58,7 @@ namespace LibraryAPI.Services
 
             if (book == null) throw new ArgumentNullException(nameof(id));
 
-            return await _repo.DeleteAsync(book).ConfigureAwait(false);
+            return await _repo.DeleteBookAsync(book).ConfigureAwait(false);
         }
     }
 }

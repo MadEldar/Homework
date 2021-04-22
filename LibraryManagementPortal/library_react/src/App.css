@@ -36,3 +36,27 @@
     transform: rotate(360deg);
   }
 }
+
+.navbar-brand {
+  font-size: 22px;
+}
+
+.navbar-brand span {
+  font-size: 16px;
+  letter-spacing: -1px;
+}
+
+.invalid {
+  color: #cf0000;
+}
+
+.alert {
+  position: fixed;
+  top: 25px;
+  right: 25px;
+  max-width: 500px;
+}
+
+h1, h2, h3, h4, h5, p {
+  margin: 0px;
+}

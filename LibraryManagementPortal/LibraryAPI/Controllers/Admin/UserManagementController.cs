@@ -5,53 +5,55 @@ using System.Threading.Tasks;
 using LibraryAPI.Services;
 using System.Net.Http;
 using System.Net;
+using System.Text.Json;
 using System.Linq;
-using LibraryAPI.Filters;
 using LibraryAPI.Enums;
+using LibraryAPI.Filters;
 
 namespace LibraryAPI.Controllers
 {
     [Route("api/admin/[controller]")]
     [ApiController]
     [AuthorizeAtrribute(UserRole.Admin)]
-    public class CategoryController : Controller
+    public class UserManagementController : Controller
     {
-        private readonly CategoryService _service;
+        private readonly UserService _service;
         private readonly ResultService _resultService;
 
-        public CategoryController(CategoryService service, ResultService resultService)
+        public UserManagementController(UserService service, ResultService resultService)
         {
             _service = service;
             _resultService = resultService;
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCategoryById(Guid id)
+        public async Task<IActionResult> GetUserById(Guid id)
         {
-            var category = _resultService.GetCategoryResult(await _service.GetByIdAsync(id).ConfigureAwait(false), true);
+            var user = _resultService.GetUserResult(await _service.GetByIdAsync(id).ConfigureAwait(false), true);
 
-            return Ok(category);
+            return Ok(user);
         }
 
         [HttpGet("")]
-        public IActionResult GetCategoryPaginationList(int page = 1, int limit = 10)
+        public IActionResult GetUserPaginationList(int page = 1, int limit = 10)
         {
-            var categories = _service
+            var users = _service
                 .GetPaginatedList(page, limit)
-                .Select(c => _resultService.GetCategoryResult(c, true));
+                .Select(u => _resultService.GetUserResult(u, false, false));
 
-            return Ok(categories);
+            return Ok(users);
         }
 
         [HttpPost("")]
-        public async Task<HttpResponseMessage> CreateCategory(Category category)
+        public async Task<HttpResponseMessage> CreateUser(User user)
         {
-            if (await _service.CreateAsync(category).ConfigureAwait(false))
+            if (await _service.CreateAsync(user).ConfigureAwait(false))
             {
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.Created,
-                    ReasonPhrase = $"Added new category with id: {category.Id}"
+                    ReasonPhrase = $"Added new user with id: {user.Id}",
+                    Content = new StringContent(JsonSerializer.Serialize(user))
                 };
             }
             else
@@ -59,20 +61,20 @@ namespace LibraryAPI.Controllers
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "New category cannot be created"
+                    ReasonPhrase = "New user cannot be created"
                 };
             }
         }
 
         [HttpPut("{id}")]
-        public async Task<HttpResponseMessage> EditCategory(Guid id, Category category)
+        public async Task<HttpResponseMessage> EditUser(Guid id, User user)
         {
-            if (await _service.EditAsync(id, category).ConfigureAwait(false))
+            if (await _service.EditAsync(id, user).ConfigureAwait(false))
             {
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.Accepted,
-                    ReasonPhrase = $"Edited category with id: {id}"
+                    ReasonPhrase = $"Edited user with id: {id}"
                 };
             }
             else
@@ -80,20 +82,20 @@ namespace LibraryAPI.Controllers
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "New category cannot be created"
+                    ReasonPhrase = "New user cannot be created"
                 };
             }
         }
 
         [HttpDelete("{id}")]
-        public async Task<HttpResponseMessage> DeleteCategory(Guid id)
+        public async Task<HttpResponseMessage> DeleteUser(Guid id)
         {
             if (await _service.DeleteAsync(id).ConfigureAwait(false))
             {
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.Accepted,
-                    ReasonPhrase = $"Deleted category with id: {id}"
+                    ReasonPhrase = $"Deleted user with id: {id}"
                 };
             }
             else
@@ -101,7 +103,7 @@ namespace LibraryAPI.Controllers
                 return new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "Category was not deleted"
+                    ReasonPhrase = "User was not deleted"
                 };
             }
         }

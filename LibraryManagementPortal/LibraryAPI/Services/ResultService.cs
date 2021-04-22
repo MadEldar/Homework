@@ -7,7 +7,7 @@ namespace LibraryAPI.Services
     // Change Models into corresponding Results
     public class ResultService
     {
-        public UserResult GetUserResult(User user, bool includeRequest = false)
+        public UserResult GetUserResult(User user, bool includeRequest = false, bool includeBook = false)
         {
             return new UserResult
             {
@@ -15,19 +15,19 @@ namespace LibraryAPI.Services
                 Username = user.Username,
                 Role = user.Role,
                 Requests = includeRequest ? user.Requests
-                    .Select(r => GetRequestResult(r))
+                    .Select(r => GetRequestResult(r, includeBook))
                     .ToList() : null
             };
         }
 
-        public CategoryResult GetCategoryResult(Category category, bool includeBook = false)
+        public CategoryResult GetCategoryResult(Category category, bool includeBook = false, bool includeRequest = false)
         {
             return new CategoryResult
             {
                 Id = category.Id,
                 Name = category.Name,
                 Books = includeBook ? category.Books
-                    .Select(b => new BookResult { Id = b.Id, Title = b.Title, Author = b.Author })
+                    .Select(b => GetBookResult(b, includeRequest))
                     .ToList() : null
             };
         }
@@ -39,6 +39,7 @@ namespace LibraryAPI.Services
                 Id = book.Id,
                 Title = book.Title,
                 Author = book.Author,
+                CategoryId = book.CategoryId,
                 Category = new CategoryResult { Id = book.Category.Id, Name = book.Category.Name },
                 Requests = includeRequest ? book.BookRequests
                     .Select(br => GetRequestResult(br.Request))
@@ -54,6 +55,7 @@ namespace LibraryAPI.Services
                 Status = request.Status,
                 RequestedDate = request.RequestedDate,
                 UpdatedDate = request.UpdatedDate ?? default,
+                UserId = request.UserId,
                 User = GetUserResult(request.User),
                 Books = includeBook ? request.BookRequests
                     .Select(br => GetBookResult(br.Book))

@@ -11,6 +11,8 @@ namespace LibraryAPI.Services
 {
     public class CurrentUserService
     {
+        private const int monthlyTotalRequests = 3;
+        private const int monthlyTotalBooks = 5;
         private readonly CurrentUserRepository _repo;
         public CurrentUserService(CurrentUserRepository repo)
         {
@@ -50,27 +52,27 @@ namespace LibraryAPI.Services
 
             var allRequests = UnwrapBookRequests(currentMonthRequests.Select(r => r.BookRequests));
 
-            if (currentMonthRequests.Count() == 3)
+            if (currentMonthRequests.Count() == monthlyTotalRequests)
             {
                 return new HttpResponseMessage
                 {
-                    StatusCode = (HttpStatusCode) 418,
+                    StatusCode = HttpStatusCode.ExpectationFailed,
                     ReasonPhrase = "You have already reached this month's request limit"
                 };
             }
-            else if (allRequests.Count > 5)
+            else if (allRequests.Count > monthlyTotalBooks)
             {
                 return new HttpResponseMessage
                 {
-                    StatusCode = (HttpStatusCode) 418,
+                    StatusCode = HttpStatusCode.ExpectationFailed,
                     ReasonPhrase = "You have already reached this month's book limit"
                 };
             }
-            else if (allRequests.Count + bookIds.Count > 5)
+            else if (allRequests.Count + bookIds.Count > monthlyTotalBooks)
             {
                 return new HttpResponseMessage
                 {
-                    StatusCode = (HttpStatusCode) 418,
+                    StatusCode = HttpStatusCode.ExpectationFailed,
                     ReasonPhrase = "Total books requested exceeds your remaining book limit"
                 };
             }
@@ -92,7 +94,7 @@ namespace LibraryAPI.Services
 
             return user.Requests;
         }
-
+        // Switch to using Linq
         private static List<BookRequest> UnwrapBookRequests(IEnumerable<ICollection<BookRequest>> wrappedRequests)
         {
             var allRequests = new List<BookRequest>();

@@ -1,9 +1,6 @@
-using System.Net.Http;
+using System;
 using System.Linq;
 using LibraryAPI.Models;
-using System.Net;
-using System.Text.Json;
-using System;
 
 namespace LibraryAPI.Services
 {

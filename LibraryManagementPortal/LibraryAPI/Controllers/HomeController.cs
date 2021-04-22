@@ -1,6 +1,6 @@
-using System;
 using System.Net;
 using System.Net.Http;
+using LibraryAPI.Enums;
 using LibraryAPI.Models.Requests;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -16,8 +16,9 @@ namespace LibraryAPI.Controllers
         {
             _service = service;
         }
+
         [HttpPost("login")]
-        public HttpResponseMessage Login([FromBody] LoginRequest info)
+        public HttpResponseMessage Login([FromForm] LoginRequest info)
         {
             var user = _service.Login(info.Username, info.Password);
 
@@ -36,6 +37,11 @@ namespace LibraryAPI.Controllers
             };
 
             response.Headers.Add("AuthToken", user.Token.Token);
+
+            if (user.Role == UserRole.Admin)
+            {
+                response.Headers.Add("Admin", "");
+            }
 
             return response;
         }

@@ -1,13 +1,13 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using LibraryAPI.Models.Requests;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using LibraryAPI.Filters;
 using LibraryAPI.Enums;
 using System.Collections.Generic;
 using System;
+using LibraryAPI.Models.Results;
 
 namespace LibraryAPI.Controllers
 {
@@ -24,6 +24,14 @@ namespace LibraryAPI.Controllers
             _resultService = resultService;
         }
 
+        [HttpGet("")]
+        public UserResult GetCurrentUser()
+        {
+            var user = _service.GetCurrentUser(Request.Headers["AuthToken"]);
+
+            return _resultService.GetUserResult(user, true, false);
+        }
+
         [HttpPost("request-books")]
         public async Task<HttpResponseMessage> CreateNewRequestAsync(List<Guid> bookIds)
         {
@@ -36,7 +44,6 @@ namespace LibraryAPI.Controllers
             var requests = _service
                 .GetAllRequests(Request.Headers["AuthToken"]);
 
-            if(requests == null) return null;
             return Ok(requests.Select(r => _resultService.GetRequestResult(r, true)));
         }
     }

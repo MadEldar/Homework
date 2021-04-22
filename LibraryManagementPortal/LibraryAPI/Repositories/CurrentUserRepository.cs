@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using LibraryAPI.Enums;
 using LibraryAPI.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace LibraryAPI.Repositories
 {

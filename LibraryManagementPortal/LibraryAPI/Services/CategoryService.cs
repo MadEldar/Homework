@@ -54,11 +54,11 @@ namespace LibraryAPI.Services
 
         public async Task<bool> DeleteAsync(Guid id)
         {
-            var book = await GetByIdAsync(id).ConfigureAwait(false);
+            var category = await GetByIdAsync(id).ConfigureAwait(false);
 
-            if (book == null) throw new ArgumentNullException(nameof(id));
+            if (category == null) throw new ArgumentNullException(nameof(id));
 
-            return await _repo.DeleteAsync(book).ConfigureAwait(false);
+            return await _repo.DeleteCategoryAsync(category).ConfigureAwait(false);
         }
     }
 }
