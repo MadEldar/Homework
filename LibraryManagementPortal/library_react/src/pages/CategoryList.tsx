@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { useLocation } from "react-router-dom";
-import BookItem from "../components/BookItem";
+import CategoryItem from "../components/CategoryItem";
 import Pagination from "../components/Pagination";
-import Book from "../models/Book";
+import Category from "../models/Category";
 import PaginationInfo from "../models/PaginationInfo";
 import StringResource from "../resources/StringResource";
 import APICaller from "../services/APICaller.service";
 
-export default function Books() {
+export default function Categories() {
     const history = useHistory();
-    const [books, setBooks] = useState<Book[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
     const [pagination, setPagination] = useState<PaginationInfo>({
-        link: StringResource.linkBookList,
+        link: StringResource.linkCategoryList,
         page: 1,
         limit: 10,
         totalPage: 1,
@@ -22,7 +22,7 @@ export default function Books() {
 
     if (!query.get("page")) {
         history.replace({
-            pathname: StringResource.linkBookList,
+            pathname: StringResource.linkCategoryList,
             search: "?page=1&limit=10",
         });
     }
@@ -34,53 +34,52 @@ export default function Books() {
 
     useEffect(() => {
         (async () => {
-            const booksData: {
-                books: Book[];
-                totalBooks: number;
+            const categoriesData: {
+                categories: Category[];
+                totalCategories: number;
                 page: number;
                 limit: number;
-            } = await APICaller.getBooks(
+            } = await APICaller.getCategories(
                 isNaN(page) ? 1 : page,
                 isNaN(limit) ? 10 : limit
             );
 
-            setBooks(booksData.books);
+            console.log(categoriesData)
 
-            var totalPage = Math.ceil(booksData.totalBooks / booksData.limit);
+            setCategories(categoriesData.categories);
+
+            var totalPage = Math.ceil(categoriesData.totalCategories / categoriesData.limit);
 
             setPagination({
-                link: StringResource.linkBookList,
-                page: booksData.page,
-                limit: booksData.limit,
+                link: StringResource.linkCategoryList,
+                page: categoriesData.page,
+                limit: categoriesData.limit,
                 totalPage: totalPage,
             });
 
-            setFirstIndex((booksData.page - 1) * limit);
+            setFirstIndex((categoriesData.page - 1) * limit);
         })();
     }, [page]);
-
-    console.log(pagination);
 
     let indexIncrement = 0;
     return (
         <div className="container mt-5">
             <div className="row">
-                <h2 className="w-100 text-center">Book List</h2>
+                <h2 className="w-100 text-center">Category List</h2>
                 <table className="table table-striped mt-5">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Title</th>
-                            <th scope="col">Author</th>
-                            <th scope="col">Category</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Books</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {books.map((b) => (
-                            <BookItem
-                                book={b}
+                        {categories.map((c) => (
+                            <CategoryItem
+                                category={c}
                                 index={firstIndex + ++indexIncrement}
-                                key={b.id}
+                                key={c.id}
                             />
                         ))}
                     </tbody>

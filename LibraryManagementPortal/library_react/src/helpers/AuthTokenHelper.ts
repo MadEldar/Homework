@@ -32,5 +32,6 @@ export const logout = () => {
 
 export default {
     getAuthToken,
-    setAuthToken
+    setAuthToken,
+    logout
 }

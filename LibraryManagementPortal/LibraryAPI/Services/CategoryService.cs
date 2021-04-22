@@ -16,6 +16,11 @@ namespace LibraryAPI.Services
             _repo = repo;
         }
 
+        public async Task<int> GetCountAsync()
+        {
+            return await _repo.GetAll().CountAsync().ConfigureAwait(false);
+        }
+
         public IQueryable<Category> GetPaginatedList(int page, int limit)
         {
             return _repo

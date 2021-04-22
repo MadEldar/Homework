@@ -8,7 +8,7 @@ using LibraryAPI.Filters;
 
 namespace LibraryAPI.Controllers
 {
-    [Route("api/admin/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     [AuthorizeAtrribute(UserRole.User)]
     public class BookController : Controller
@@ -30,13 +30,20 @@ namespace LibraryAPI.Controllers
         }
 
         [HttpGet("")]
-        public IActionResult GetBookPaginationList(int page = 1, int limit = 10)
+        public async Task<IActionResult> GetBookPaginationListAsync(int page = 1, int limit = 10)
         {
             var books = _service
                 .GetPaginatedList(page, limit)
                 .Select(b => _resultService.GetBookResult(b, false));
 
-            return Ok(books);
+            var totalBooks = await _service.GetCount().ConfigureAwait(false);
+
+            return Ok(new {
+                books,
+                totalBooks,
+                page,
+                limit
+            });
         }
     }
 }

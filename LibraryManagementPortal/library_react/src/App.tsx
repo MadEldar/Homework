@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter as Router, Switch, Link, Route } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Link, Route, useHistory } from "react-router-dom";
 import Login from "./pages/Login";
 import { UserProfile } from "./pages/UserProfile";
 import { Alert } from "./components/Alert";
@@ -7,9 +7,12 @@ import { useState } from "react";
 import AlertMessage from "./models/AlertMessage";
 import StringResource from "./resources/StringResource";
 import { logout } from "./helpers/AuthTokenHelper";
+import Books from "./pages/BookList";
+import Categories from "./pages/CategoryList";
 
 function App() {
     const authToken = localStorage.getItem("AuthToken");
+    const history = useHistory();
 
     if (
         (!authToken || authToken === "") &&
@@ -30,6 +33,14 @@ function App() {
             name: "User profile",
         },
         {
+            link: StringResource.linkBookList,
+            name: "Book list"
+        },
+        {
+            link: StringResource.linkCategoryList,
+            name: "Category list"
+        },
+        {
             link: StringResource.linkLogout,
             name: "Logout",
         },
@@ -39,8 +50,6 @@ function App() {
         message: "",
         type: "danger",
     });
-
-    console.log(localStorage.getItem(StringResource.admin));
 
     return (
         <div className="container">
@@ -88,7 +97,7 @@ function App() {
                                             </li>
                                         ))}
 
-                                        {localStorage.getItem(StringResource.admin) !== null ?? (
+                                        {localStorage.getItem(StringResource.admin) !== null ?? 
                                             <li className="nav-item dropdown">
                                                 <a
                                                     className="nav-link dropdown-toggle"
@@ -119,7 +128,7 @@ function App() {
                                                     <div className="dropdown-divider"></div>
                                                 </div>
                                             </li>
-                                        )}
+                                        }
                                     </ul>
                                     <form className="form-inline my-2 my-lg-0">
                                         <input
@@ -140,6 +149,12 @@ function App() {
                             <Switch>
                                 <Route path={StringResource.linkUserProfile}>
                                     <UserProfile />
+                                </Route>
+                                <Route path={StringResource.linkBookList}>
+                                    <Books />
+                                </Route>
+                                <Route path={StringResource.linkCategoryList}>
+                                    <Categories />
                                 </Route>
                                 <Route path={StringResource.linkLogout}>
                                     {() => logout()}

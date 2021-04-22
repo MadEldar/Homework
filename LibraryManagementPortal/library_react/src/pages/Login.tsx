@@ -50,8 +50,8 @@ export function Login({
     };
 
     return (
-        <div className="container d-flex" style={{ height: "100vh" }}>
-            <div className="row col-12 justify-content-center align-self-center">
+        <div className="container center-aligned">
+            <div className="row">
                 <form className="col-5" onSubmit={handleSubmit(onSubmit)}>
                     <div className="form-group mt-3">
                         <label htmlFor="username">Username</label>

@@ -8,7 +8,7 @@ using LibraryAPI.Enums;
 
 namespace LibraryAPI.Controllers
 {
-    [Route("api/admin/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     [AuthorizeAtrribute(UserRole.User)]
     public class CategoryController : Controller
@@ -31,13 +31,15 @@ namespace LibraryAPI.Controllers
         }
 
         [HttpGet("")]
-        public IActionResult GetCategoryPaginationList(int page = 1, int limit = 10)
+        public async Task<IActionResult> GetCategoryPaginationListAsync(int page = 1, int limit = 10)
         {
             var categories = _service
                 .GetPaginatedList(page, limit)
                 .Select(c => _resultService.GetCategoryResult(c, true, false));
 
-            return Ok(categories);
+            int totalCategories = await _service.GetCountAsync().ConfigureAwait(false);
+
+            return Ok(new {categories, totalCategories, page, limit});
         }
     }
 }
