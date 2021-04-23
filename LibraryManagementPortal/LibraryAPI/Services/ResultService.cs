@@ -7,32 +7,32 @@ namespace LibraryAPI.Services
     // Change Models into corresponding Results
     public class ResultService
     {
-        public UserResult GetUserResult(User user, bool includeRequest = false, bool includeBook = false)
+        public UserResult GetUserResult(User user, bool includeRequests = false, bool includeBooks = false)
         {
             return new UserResult
             {
                 Id = user.Id,
                 Username = user.Username,
                 Role = user.Role,
-                Requests = includeRequest ? user.Requests
-                    .Select(r => GetRequestResult(r, includeBook))
+                Requests = includeRequests ? user.Requests
+                    .Select(r => GetRequestResult(r, includeBooks))
                     .ToList() : null
             };
         }
 
-        public CategoryResult GetCategoryResult(Category category, bool includeBook = false, bool includeRequest = false)
+        public CategoryResult GetCategoryResult(Category category, bool includeBooks = false, bool includeRequests = false)
         {
             return new CategoryResult
             {
                 Id = category.Id,
                 Name = category.Name,
-                Books = includeBook ? category.Books
-                    .Select(b => GetBookResult(b, includeRequest))
+                Books = includeBooks ? category.Books
+                    .Select(b => GetBookResult(b, includeRequests))
                     .ToList() : null
             };
         }
 
-        public BookResult GetBookResult(Book book, bool includeRequest = false)
+        public BookResult GetBookResult(Book book, bool includeRequests = false)
         {
             return new BookResult
             {
@@ -41,13 +41,13 @@ namespace LibraryAPI.Services
                 Author = book.Author,
                 CategoryId = book.CategoryId,
                 Category = new CategoryResult { Id = book.Category.Id, Name = book.Category.Name },
-                Requests = includeRequest ? book.BookRequests
+                Requests = includeRequests ? book.BookRequests
                     .Select(br => GetRequestResult(br.Request))
                     .ToList() : null
             };
         }
 
-        public RequestResult GetRequestResult(RequestModel request, bool includeBook = false)
+        public RequestResult GetRequestResult(RequestModel request, bool includeBooks = false)
         {
             return new RequestResult
             {
@@ -57,7 +57,7 @@ namespace LibraryAPI.Services
                 UpdatedDate = request.UpdatedDate ?? default,
                 UserId = request.UserId,
                 User = GetUserResult(request.User),
-                Books = includeBook ? request.BookRequests
+                Books = includeBooks ? request.BookRequests
                     .Select(br => GetBookResult(br.Book))
                     .ToList() : null
             };

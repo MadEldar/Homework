@@ -44,8 +44,6 @@ export default function Categories() {
                 isNaN(limit) ? 10 : limit
             );
 
-            console.log(categoriesData)
-
             setCategories(categoriesData.categories);
 
             var totalPage = Math.ceil(categoriesData.totalCategories / categoriesData.limit);
@@ -59,9 +57,10 @@ export default function Categories() {
 
             setFirstIndex((categoriesData.page - 1) * limit);
         })();
-    }, [page]);
+    }, [page, limit]);
 
     let indexIncrement = 0;
+
     return (
         <div className="container mt-5">
             <div className="row">
@@ -78,7 +77,7 @@ export default function Categories() {
                         {categories.map((c) => (
                             <CategoryItem
                                 category={c}
-                                index={firstIndex + ++indexIncrement}
+                                index={isNaN(firstIndex) ? 0 : firstIndex + ++indexIncrement}
                                 key={c.id}
                             />
                         ))}

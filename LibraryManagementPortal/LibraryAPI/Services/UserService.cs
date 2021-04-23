@@ -37,7 +37,7 @@ namespace LibraryAPI.Services
                 .ConfigureAwait(false);
         }
 
-        public async Task<bool> CreateAsync(User user)
+        public async Task<OperatingStatus> CreateAsync(User user)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
             else if (user.CheckEmptyFields()) throw new MissingFieldException();
@@ -45,7 +45,7 @@ namespace LibraryAPI.Services
             return await _repo.CreateAsync(user).ConfigureAwait(false);
         }
 
-        public async Task<bool> EditAsync(Guid id, User editedUser)
+        public async Task<OperatingStatus> EditAsync(Guid id, User editedUser)
         {
             if (editedUser.CheckEmptyFields()) throw new MissingFieldException();
 
@@ -54,7 +54,7 @@ namespace LibraryAPI.Services
             return await _repo.EditAsync(editedUser).ConfigureAwait(false);
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<OperatingStatus> DeleteAsync(Guid id)
         {
             var user = await GetByIdAsync(id).ConfigureAwait(false);
 

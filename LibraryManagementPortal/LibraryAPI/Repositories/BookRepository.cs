@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using LibraryAPI.Enums;
 using LibraryAPI.Models;
 
 namespace LibraryAPI.Repositories
@@ -7,9 +8,10 @@ namespace LibraryAPI.Repositories
     {
         public BookRepository(LibraryContext context) : base(context) { }
 
-        public async Task<bool> DeleteBookAsync(Book book)
+        public async Task<OperatingStatus> DeleteBookAsync(Book book)
         {
-            if (book.BookRequests.Count > 0) return false;
+            if (book.BookRequests.Count > 0) return OperatingStatus.RelationshipExists;
+            
             return await DeleteAsync(book).ConfigureAwait(false);
         }
     }

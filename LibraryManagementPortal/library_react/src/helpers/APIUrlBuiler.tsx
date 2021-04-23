@@ -1,7 +1,13 @@
-export default {
-    login: `${process.env.REACT_APP_API_BASE_URL}login`,
-    currentUser: `${process.env.REACT_APP_API_BASE_URL}user`,
-    currentUserRequests: `${process.env.REACT_APP_API_BASE_URL}user/requests`,
-    getBooks: `${process.env.REACT_APP_API_BASE_URL}book`,
-    getCategories: `${process.env.REACT_APP_API_BASE_URL}category`,
+const baseUrl = process.env.REACT_APP_API_BASE_URL;
+
+const APIUrlBuiler = {
+    login: `${baseUrl}login`,
+    currentUser: `${baseUrl}user`,
+    currentUserRequests: `${baseUrl}user/requests`,
+    getAdminAllCategories: `${baseUrl}admin/categorymanagement/all`,
+    getAdminBookManagement: `${baseUrl}admin/bookmanagement`,
+    getBooks: `${baseUrl}book`,
+    getCategories: `${baseUrl}category`,
 };
+
+export default APIUrlBuiler;

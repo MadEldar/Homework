@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LibraryAPI.Models;
 using LibraryAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
+using LibraryAPI.Enums;
 
 namespace LibraryAPI.Services
 {
@@ -40,15 +41,15 @@ namespace LibraryAPI.Services
                 .ConfigureAwait(false);
         }
 
-        public async Task<bool> CreateAsync(Book book)
+        public async Task<OperatingStatus> CreateAsync(Book book)
         {
-            if (book == null) throw new ArgumentNullException(nameof(book));
-            else if (book.CheckEmptyFields()) throw new MissingFieldException();
+            if (book == null) return OperatingStatus.KeyNotFound;
+            else if (book.CheckEmptyFields()) return OperatingStatus.EmptyArgument;
 
             return await _repo.CreateAsync(book).ConfigureAwait(false);
         }
 
-        public async Task<bool> EditAsync(Guid id, Book editedBook)
+        public async Task<OperatingStatus> EditAsync(Guid id, Book editedBook)
         {
             if (editedBook.CheckEmptyFields()) throw new MissingFieldException();
 
@@ -57,11 +58,11 @@ namespace LibraryAPI.Services
             return await _repo.EditAsync(editedBook).ConfigureAwait(false);
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<OperatingStatus> DeleteAsync(Guid id)
         {
             var book = await GetByIdAsync(id).ConfigureAwait(false);
 
-            if (book == null) throw new ArgumentNullException(nameof(id));
+            if (book == null) return OperatingStatus.KeyNotFound;
 
             return await _repo.DeleteBookAsync(book).ConfigureAwait(false);
         }

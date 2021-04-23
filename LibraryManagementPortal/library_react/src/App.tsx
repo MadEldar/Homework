@@ -1,5 +1,5 @@
 import "./App.css";
-import { BrowserRouter as Router, Switch, Link, Route, useHistory } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Link, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import { UserProfile } from "./pages/UserProfile";
 import { Alert } from "./components/Alert";
@@ -7,12 +7,16 @@ import { useState } from "react";
 import AlertMessage from "./models/AlertMessage";
 import StringResource from "./resources/StringResource";
 import { logout } from "./helpers/AuthTokenHelper";
-import Books from "./pages/BookList";
+import BookList from "./pages/BookList";
 import Categories from "./pages/CategoryList";
+import AdminBookList from "./pages/Admin/BookList";
+import { AdminBookCreate } from "./pages/Admin/BookCreate";
+import { AdminBookEdit } from "./pages/Admin/BookEdit";
+import 'antd/dist/antd.css';
 
 function App() {
+    // const [isAdmin, setIsAdmin] = useState(false);
     const authToken = localStorage.getItem("AuthToken");
-    const history = useHistory();
 
     if (
         (!authToken || authToken === "") &&
@@ -50,6 +54,10 @@ function App() {
         message: "",
         type: "danger",
     });
+
+    // useEffect(() => {
+    //     setIsAdmin(localStorage.getItem(StringResource.admin) !== null);
+    // }, []);
 
     return (
         <div className="container">
@@ -97,18 +105,18 @@ function App() {
                                             </li>
                                         ))}
 
-                                        {localStorage.getItem(StringResource.admin) !== null ?? 
+                                        {/* {isAdmin ??  */}
                                             <li className="nav-item dropdown">
-                                                <a
-                                                    className="nav-link dropdown-toggle"
+                                                <button
+                                                    className="btn nav-link dropdown-toggle"
                                                     id="adminNavigation"
                                                     data-toggle="dropdown"
                                                     aria-haspopup="true"
                                                     aria-expanded="false"
-                                                    role="button"
+                                                    // role="button"
                                                 >
                                                     Admin
-                                                </a>
+                                                </button>
                                                 <div
                                                     className="dropdown-menu"
                                                     aria-labelledby="adminNavigation"
@@ -128,7 +136,7 @@ function App() {
                                                     <div className="dropdown-divider"></div>
                                                 </div>
                                             </li>
-                                        }
+                                        {/* } */}
                                     </ul>
                                     <form className="form-inline my-2 my-lg-0">
                                         <input
@@ -151,13 +159,22 @@ function App() {
                                     <UserProfile />
                                 </Route>
                                 <Route path={StringResource.linkBookList}>
-                                    <Books />
+                                    <BookList />
                                 </Route>
                                 <Route path={StringResource.linkCategoryList}>
                                     <Categories />
                                 </Route>
                                 <Route path={StringResource.linkLogout}>
                                     {() => logout()}
+                                </Route>
+                                <Route path={StringResource.linkAdminBookCreate}>
+                                    <AdminBookCreate />
+                                </Route>
+                                <Route path={StringResource.linkAdminBookEdit + "/:id"}>
+                                    <AdminBookEdit />
+                                </Route>
+                                <Route path={StringResource.linkAdminBookList}>
+                                    <AdminBookList />
                                 </Route>
                             </Switch>
                         </Route>

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LibraryAPI.Enums;
 using LibraryAPI.Models;
 using LibraryAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -40,7 +41,7 @@ namespace LibraryAPI.Services
                 .ConfigureAwait(false);
         }
 
-        public async Task<bool> CreateAsync(Category category)
+        public async Task<OperatingStatus> CreateAsync(Category category)
         {
             if (category == null) throw new ArgumentNullException(nameof(category));
             else if (category.CheckEmptyFields()) throw new MissingFieldException();
@@ -48,7 +49,7 @@ namespace LibraryAPI.Services
             return await _repo.CreateAsync(category).ConfigureAwait(false);
         }
 
-        public async Task<bool> EditAsync(Guid id, Category editedCategory)
+        public async Task<OperatingStatus> EditAsync(Guid id, Category editedCategory)
         {
             if (editedCategory.CheckEmptyFields()) throw new MissingFieldException();
 
@@ -57,7 +58,7 @@ namespace LibraryAPI.Services
             return await _repo.EditAsync(editedCategory).ConfigureAwait(false);
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<OperatingStatus> DeleteAsync(Guid id)
         {
             var category = await GetByIdAsync(id).ConfigureAwait(false);
 

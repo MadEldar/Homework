@@ -34,12 +34,12 @@ namespace LibraryAPI.Controllers
         public async Task<IActionResult> GetCategoryPaginationListAsync(int page = 1, int limit = 10)
         {
             var categories = _service
-                .GetPaginatedList(page, limit)
-                .Select(c => _resultService.GetCategoryResult(c, true, false));
+                .GetPaginatedList(page <= 0 ? 10 : page, limit <= 0 ? 10 : limit)
+                .Select(c => _resultService.GetCategoryResult(c, true, true));
 
             int totalCategories = await _service.GetCountAsync().ConfigureAwait(false);
 
-            return Ok(new {categories, totalCategories, page, limit});
+            return Ok(new { categories, totalCategories, page, limit });
         }
     }
 }

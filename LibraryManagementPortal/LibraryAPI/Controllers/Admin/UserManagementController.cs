@@ -47,65 +47,35 @@ namespace LibraryAPI.Controllers
         [HttpPost("")]
         public async Task<HttpResponseMessage> CreateUser(User user)
         {
-            if (await _service.CreateAsync(user).ConfigureAwait(false))
+            var operationResult = await _service.CreateAsync(user).ConfigureAwait(false);
+            return new HttpResponseMessage
             {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.Created,
-                    ReasonPhrase = $"Added new user with id: {user.Id}",
-                    Content = new StringContent(JsonSerializer.Serialize(user))
-                };
-            }
-            else
-            {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "New user cannot be created"
-                };
-            }
+                StatusCode = HttpStatusCode.Created,
+                ReasonPhrase = $"Added new user with id: {user.Id}",
+                Content = new StringContent(JsonSerializer.Serialize(user))
+            };
         }
 
         [HttpPut("{id}")]
         public async Task<HttpResponseMessage> EditUser(Guid id, User user)
         {
-            if (await _service.EditAsync(id, user).ConfigureAwait(false))
+            var operationResult = await _service.EditAsync(id, user).ConfigureAwait(false);
+            return new HttpResponseMessage
             {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.Accepted,
-                    ReasonPhrase = $"Edited user with id: {id}"
-                };
-            }
-            else
-            {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "New user cannot be created"
-                };
-            }
+                StatusCode = HttpStatusCode.Accepted,
+                ReasonPhrase = $"Edited user with id: {id}"
+            };
         }
 
         [HttpDelete("{id}")]
         public async Task<HttpResponseMessage> DeleteUser(Guid id)
         {
-            if (await _service.DeleteAsync(id).ConfigureAwait(false))
+            var operationResult = await _service.DeleteAsync(id).ConfigureAwait(false);
+            return new HttpResponseMessage
             {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.Accepted,
-                    ReasonPhrase = $"Deleted user with id: {id}"
-                };
-            }
-            else
-            {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "User was not deleted"
-                };
-            }
+                StatusCode = HttpStatusCode.Accepted,
+                ReasonPhrase = $"Deleted user with id: {id}"
+            };
         }
     }
 }

@@ -30,8 +30,10 @@ export const logout = () => {
     window.location.href = StringResource.linkLogin;
 }
 
-export default {
+const AuthTokenHelper = {
     getAuthToken,
     setAuthToken,
     logout
 }
+
+export default AuthTokenHelper;

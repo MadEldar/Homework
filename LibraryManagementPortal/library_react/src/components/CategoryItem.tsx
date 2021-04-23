@@ -9,8 +9,8 @@ export default function CategoryItem({
     index: number;
 }) {
     return (
-        <tr>
-            <th scope="row">{index}</th>
+        <tr key={index}>
+            <th scope="row">{isNaN(index) ? 1 : index}</th>
             <td>{category.name}</td>
             <td>
                 {!category.books || category.books.length === 0 ? (

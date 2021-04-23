@@ -22,7 +22,7 @@ export function Login({
         formData.append("username", data.username);
         formData.append("password", data.password);
 
-        const result = await APICaller.login(formData);
+        const result = await APICaller.postLogin(formData);
 
         if (result.data.statusCode === 200) {
             setAuthToken(result.data.headers.find(
