@@ -6,6 +6,8 @@ import APICaller from "../../services/APICaller.service";
 export function AdminBookCreate() {
     const history = useHistory();
 
+    console.log("")
+
     function submitCreate(data: {
         id?: string;
         title: string;
@@ -30,7 +32,7 @@ export function AdminBookCreate() {
                 const reasonPhrase: string = response.data.reasonPhrase;
 
                 history.push(
-                    StringResource.linkAdminBookDetails + `/${reasonPhrase.slice(reasonPhrase.indexOf(": "))}`
+                    StringResource.linkAdminBookDetails + `/${reasonPhrase.slice(reasonPhrase.indexOf(": ") + 2)}`
                 );
             }
         })();

@@ -41,7 +41,7 @@ namespace LibraryAPI.Services
                 .ConfigureAwait(false);
         }
 
-        public async Task<List<Book>> GetManyByIdAsync(List<Guid> ids)
+        public async Task<List<Book>> GetManyByIdAsync(List<Guid> ids, int page, int limit)
         {
             foreach (var id in ids)
             {
@@ -51,6 +51,9 @@ namespace LibraryAPI.Services
             return await _repo
                 .GetAll()
                 .Where(b => ids.Contains(b.Id))
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .OrderBy(b => b.Title)
                 .ToListAsync()
                 .ConfigureAwait(false);
         }

@@ -5,13 +5,12 @@ using System.Threading.Tasks;
 using LibraryAPI.Models;
 using LibraryAPI.Repositories;
 using LibraryAPI.Enums;
+using LibraryAPI.Resources;
 
 namespace LibraryAPI.Services
 {
     public class CurrentUserService
     {
-        private const int monthlyTotalRequests = 3;
-        private const int monthlyTotalBooks = 5;
         private readonly CurrentUserRepository _repo;
         public CurrentUserService(CurrentUserRepository repo)
         {
@@ -49,9 +48,9 @@ namespace LibraryAPI.Services
 
             var allRequests = currentMonthRequests.SelectMany(r => r.BookRequests);
 
-            if (currentMonthRequests.Count() == monthlyTotalRequests) return OperatingStatus.ExceedMonthlyRequestLimit;
-            else if (allRequests.Count() > monthlyTotalBooks) return OperatingStatus.ExceedMonthlyBookLimit;
-            else if (allRequests.Count() + bookIds.Count > monthlyTotalBooks) return OperatingStatus.ExceedRemainingMonthlyRequestLimit;
+            if (currentMonthRequests.Count() == IntegerResource.monthlyTotalRequests) return OperatingStatus.ExceedMonthlyRequestLimit;
+            else if (allRequests.Count() > IntegerResource.monthlyTotalBooks) return OperatingStatus.ExceedMonthlyBookLimit;
+            else if (allRequests.Count() + bookIds.Count > IntegerResource.monthlyTotalBooks) return OperatingStatus.ExceedRemainingMonthlyRequestLimit;
 
             await _repo.CreateBookRequestAsync(user.Id, bookIds).ConfigureAwait(false);
 

@@ -6,6 +6,7 @@ export default function Pagination({
     page,
     limit,
     totalPage,
+    className
 }: PaginationInfo) {
     var indexer = [];
 
@@ -17,7 +18,7 @@ export default function Pagination({
     const isLastPage = page === totalPage;
 
     return (
-        <div>
+        <div className={className ?? ""}>
             <nav aria-label="Page navigation example">
                 <ul className="pagination justify-content-end">
                     <li

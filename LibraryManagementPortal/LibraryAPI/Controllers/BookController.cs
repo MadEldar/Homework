@@ -30,20 +30,19 @@ namespace LibraryAPI.Controllers
             return Ok(book);
         }
 
-        [HttpGet("many")]
-        public async Task<IActionResult> GetBooksByIdsAsync()
+        [HttpPost("many")]
+        public async Task<IActionResult> GetBooksByIdsAsync(List<Guid> ids, int page = 1, int limit = 10)
         {
-            var ids = Request.Query["ids"]
-                .ToString()
-                .Split(",", 5, StringSplitOptions.TrimEntries)
-                .Select(id => Guid.Parse(id))
-                .ToList();
-
             var books = (await _service
-                .GetManyByIdAsync(ids).ConfigureAwait(false))
+                .GetManyByIdAsync(ids, page, limit).ConfigureAwait(false))
                 .Select(b => _resultService.GetBookResult(b, false));
 
-            return Ok(books);
+            return Ok(new {
+                books,
+                totalBooks = ids.Count,
+                page,
+                limit
+            });
         }
 
         [HttpGet("")]

@@ -39,12 +39,11 @@ const APICaller = {
             },
         }).then((res) => res.data);
     },
-    getBooksByIds: async (ids: string[]) => {
-        const query = `ids=${ids.join("&ids=")}`;
-        
+    getBooksByIds: async (ids: string[], page: number, limit: number) => {
         return await axios({
-            method: "get",
-            url: APIUrlBuiler.getBooks + `/many?${query}`,
+            method: "post",
+            url: APIUrlBuiler.getBooks + `/many?page=${page}&limit=${limit}`,
+            data: ids,
             headers: {
                 AuthToken: getAuthToken(),
             },

@@ -9,7 +9,7 @@ export default function CategoryItem({
     index: number;
 }) {
     return (
-        <tr key={index}>
+        <tr key={category.id}>
             <th scope="row">{isNaN(index) ? 1 : index}</th>
             <td>{category.name}</td>
             <td>

@@ -11,12 +11,14 @@ import StringResource from "../resources/StringResource";
 export default function BookItem({
     book,
     index,
-    isAdmin,
+    isAdmin = false,
+    hasRequest = false,
     setTargetId,
 }: {
     book: Book;
     index: number;
     isAdmin: boolean;
+    hasRequest: boolean;
     setTargetId?: Dispatch<SetStateAction<string>>;
 }) {
     const [savedBooksIds, setSavedBookIds] = useState<string[]>(
@@ -61,18 +63,22 @@ export default function BookItem({
                     </>
                 ) : (
                     <>
-                        <div className="form-group">
-                            <label className="form-check-label">
-                                <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    name="ids"
-                                    value={book.id}
-                                    disabled={!isSaved}
-                                />
-                                Request
-                            </label>
-                        </div>
+                        {hasRequest ? (
+                            <div className="form-group">
+                                <label className="form-check-label">
+                                    <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        name="ids"
+                                        value={book.id}
+                                        disabled={!isSaved}
+                                    />
+                                    Request
+                                </label>
+                            </div>
+                        ) : (
+                            <></>
+                        )}
                         {!isSaved ? (
                             <a
                                 type="button"

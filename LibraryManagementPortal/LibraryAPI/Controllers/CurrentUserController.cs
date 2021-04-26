@@ -45,7 +45,9 @@ namespace LibraryAPI.Controllers
                 };
             }
 
-            var operationResult = await _service.CreateNewRequestAsync(Request.Headers["AuthToken"], bookIds).ConfigureAwait(false);
+            var operationResult = await _service
+                .CreateNewRequestAsync(Request.Headers["AuthToken"], bookIds)
+                .ConfigureAwait(false);
 
             return operationResult switch
             {

@@ -1,11 +1,34 @@
 import { useEffect, useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import BookItem from "../components/BookItem";
+import Pagination from "../components/Pagination";
 import { getSavedBookIds } from "../helpers/LocalStorageHelper";
 import Book from "../models/Book";
+import PaginationInfo from "../models/PaginationInfo";
+import StringResource from "../resources/StringResource";
 import APICaller from "../services/APICaller.service";
 
 export default function NewRequest() {
+    const history = useHistory();
     const [requestBooks, setRequestBooks] = useState<Book[]>([]);
+    const [pagination, setPagination] = useState<PaginationInfo>({
+        link: StringResource.linkNewRequest,
+        page: 1,
+        limit: 10,
+        totalPage: 1,
+    });
+
+    let query = new URLSearchParams(useLocation().search);
+
+    if (!query.get("page") && !query.get("limit")) {
+        history.replace({
+            pathname: StringResource.linkNewRequest,
+            search: "?page=1&limit=10",
+        });
+    }
+
+    const page = Number.parseInt(query.get("page")!);
+    const limit = Number.parseInt(query.get("limit")!);
 
     useEffect(() => {
         (async () => {
@@ -14,36 +37,37 @@ export default function NewRequest() {
             if (bookIds.length === 0) {
                 setRequestBooks([]);
             } else {
-                const response = await APICaller.getBooksByIds(bookIds).then();
+                const response = await APICaller.getBooksByIds(bookIds, page, limit).then();
 
-                setRequestBooks(response);
+                setRequestBooks(response.books);
+
+                var totalPage = Math.ceil(response.totalBooks / response.limit);
+    
+                setPagination({
+                    link: StringResource.linkNewRequest,
+                    page: response.page,
+                    limit: response.limit,
+                    totalPage: totalPage,
+                });
             }
         })();
-    }, []);
+    }, [page, limit]);
 
-    let indexIncrement = 0;
+    let indexIncrement = (page - 1) * limit;
 
     async function sendBookRequest(e: any) {
         e.preventDefault();
         const formData = new FormData(e.target);
 
-        // const ids = formData.getAll("ids").map(id => id);
-
-        let ids: string[] = [];
-
-        formData.getAll("ids").map(id => id).forEach(id => {
-            ids.push(id.toString());
-        });
+        const ids: string[] = formData.getAll("ids").map(id => id.toString());
 
         const result = await APICaller.postRequest(ids).then();
-
-        console.log(result);
     }
 
     return (
         <div className="container mt-5">
             <form id="requestForm" className="row" onSubmit={sendBookRequest}>
-                <h2 className="w-100 text-center">Book List</h2>
+                <h2 className="w-100 text-center">Saved books</h2>
                 <table className="table table-striped mt-5">
                     <thead>
                         <tr>
@@ -72,15 +96,21 @@ export default function NewRequest() {
                                     index={++indexIncrement}
                                     key={b.id}
                                     isAdmin={false}
+                                    hasRequest={true}
                                 />
                             ))
                         ) : (
-                            <p className="text-center">There is no book saved in your request</p>
+                            <p className="text-center">
+                                There is no book saved in your request
+                            </p>
                         )}
                     </tbody>
                 </table>
                 <div className="col-12">
-                <button className="btn btn-primary float-right mr-2">Request books</button>
+                    <Pagination className="float-left" {...pagination} />
+                    <button className="btn btn-primary float-right mr-2">
+                        Request books
+                    </button>
                 </div>
             </form>
         </div>

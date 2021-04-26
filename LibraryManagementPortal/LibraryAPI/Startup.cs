@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using LibraryAPI.Middlewares;
+using LibraryAPI.Resources;
 
 namespace LibraryAPI
 {

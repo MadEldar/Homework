@@ -32,7 +32,7 @@ export default function AdminBookList() {
 
     let query = new URLSearchParams(useLocation().search);
 
-    if (!query.get("page")) {
+    if (!query.get("page") && !query.get("limit")) {
         history.replace({
             pathname: StringResource.linkAdminBookList,
             search: "?page=1&limit=10",
@@ -41,8 +41,6 @@ export default function AdminBookList() {
 
     const page = Number.parseInt(query.get("page")!);
     const limit = Number.parseInt(query.get("limit")!);
-
-    const [firstIndex, setFirstIndex] = useState(0);
 
     useEffect(() => {
         (async () => {
@@ -66,12 +64,10 @@ export default function AdminBookList() {
                 limit: booksData.limit,
                 totalPage: totalPage,
             });
-
-            setFirstIndex((booksData.page - 1) * limit);
         })();
     }, [page, limit]);
 
-    let indexIncrement = 0;
+    let indexIncrement = (page - 1) * limit;
 
     return (
         <>
@@ -99,12 +95,14 @@ export default function AdminBookList() {
                                 <BookItem
                                     book={b}
                                     index={
-                                        isNaN(firstIndex)
-                                            ? 0
-                                            : firstIndex + ++indexIncrement
+                                        // isNaN(firstIndex)
+                                        //     ? 0
+                                        //     : firstIndex + 
+                                            ++indexIncrement
                                     }
                                     key={b.id}
                                     isAdmin={true}
+                                    hasRequest={false}
                                     setTargetId={setDeleteTargetId}
                                 />
                             ))}

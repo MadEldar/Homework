@@ -47,7 +47,7 @@ function App() {
         },
         {
             link: StringResource.linkNewRequest,
-            name: "New request",
+            name: "Saved",
         },
         {
             link: StringResource.linkLogout,
@@ -194,7 +194,7 @@ function App() {
                             </nav>
                             <Switch>
                                 {routes.map((r) => (
-                                    <Route path={r.link} /* key={r} */>
+                                    <Route path={r.link} exact>
                                         {r.page}
                                     </Route>
                                 ))}

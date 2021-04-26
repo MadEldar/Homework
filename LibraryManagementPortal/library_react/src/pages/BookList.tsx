@@ -82,6 +82,7 @@ export default function BookList() {
                                 index={isNaN(firstIndex) ? 0 : firstIndex + ++indexIncrement}
                                 key={b.id}
                                 isAdmin={false}
+                                hasRequest={false}
                             />
                         ))}
                     </tbody>
