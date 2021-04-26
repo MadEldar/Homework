@@ -3,19 +3,20 @@ import { BrowserRouter as Router, Switch, Link, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import { UserProfile } from "./pages/UserProfile";
 import { Alert } from "./components/Alert";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AlertMessage from "./models/AlertMessage";
 import StringResource from "./resources/StringResource";
-import { logout } from "./helpers/AuthTokenHelper";
+import { logout } from "./helpers/LocalStorageHelper";
 import BookList from "./pages/BookList";
-import Categories from "./pages/CategoryList";
+import CategoryList from "./pages/CategoryList";
 import AdminBookList from "./pages/Admin/BookList";
 import { AdminBookCreate } from "./pages/Admin/BookCreate";
 import { AdminBookEdit } from "./pages/Admin/BookEdit";
-import 'antd/dist/antd.css';
+import "antd/dist/antd.css";
+import NewRequest from "./pages/NewRequest";
 
 function App() {
-    // const [isAdmin, setIsAdmin] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
     const authToken = localStorage.getItem("AuthToken");
 
     if (
@@ -38,15 +39,50 @@ function App() {
         },
         {
             link: StringResource.linkBookList,
-            name: "Book list"
+            name: "Book list",
         },
         {
             link: StringResource.linkCategoryList,
-            name: "Category list"
+            name: "Category list",
+        },
+        {
+            link: StringResource.linkNewRequest,
+            name: "New request",
         },
         {
             link: StringResource.linkLogout,
             name: "Logout",
+        },
+    ];
+
+    const routes: { link: string; page: JSX.Element }[] = [
+        {
+            link: StringResource.linkUserProfile,
+            page: <UserProfile />,
+        },
+        {
+            link: StringResource.linkBookList,
+            page: <BookList />,
+        },
+        {
+            link: StringResource.linkCategoryList,
+            page: <CategoryList />,
+        },
+        {
+            link: StringResource.linkNewRequest,
+            page: <NewRequest />,
+        },
+        {
+            link: StringResource.linkAdminBookList,
+            page: <AdminBookList />,
+        },
+        {
+            link: StringResource.linkAdminBookCreate,
+            page: <AdminBookCreate />,
+        },
+        {
+            link: StringResource.linkAdminBookEdit + "/:id",
+            page: <AdminBookEdit />,
         },
     ];
 
@@ -55,9 +91,9 @@ function App() {
         type: "danger",
     });
 
-    // useEffect(() => {
-    //     setIsAdmin(localStorage.getItem(StringResource.admin) !== null);
-    // }, []);
+    useEffect(() => {
+        setIsAdmin(localStorage.getItem(StringResource.admin) !== null);
+    }, []);
 
     return (
         <div className="container">
@@ -105,7 +141,7 @@ function App() {
                                             </li>
                                         ))}
 
-                                        {/* {isAdmin ??  */}
+                                        {isAdmin ? (
                                             <li className="nav-item dropdown">
                                                 <button
                                                     className="btn nav-link dropdown-toggle"
@@ -136,7 +172,9 @@ function App() {
                                                     <div className="dropdown-divider"></div>
                                                 </div>
                                             </li>
-                                        {/* } */}
+                                        ) : (
+                                            <></>
+                                        )}
                                     </ul>
                                     <form className="form-inline my-2 my-lg-0">
                                         <input
@@ -155,26 +193,13 @@ function App() {
                                 </div>
                             </nav>
                             <Switch>
-                                <Route path={StringResource.linkUserProfile}>
-                                    <UserProfile />
-                                </Route>
-                                <Route path={StringResource.linkBookList}>
-                                    <BookList />
-                                </Route>
-                                <Route path={StringResource.linkCategoryList}>
-                                    <Categories />
-                                </Route>
+                                {routes.map((r) => (
+                                    <Route path={r.link} /* key={r} */>
+                                        {r.page}
+                                    </Route>
+                                ))}
                                 <Route path={StringResource.linkLogout}>
                                     {() => logout()}
-                                </Route>
-                                <Route path={StringResource.linkAdminBookCreate}>
-                                    <AdminBookCreate />
-                                </Route>
-                                <Route path={StringResource.linkAdminBookEdit + "/:id"}>
-                                    <AdminBookEdit />
-                                </Route>
-                                <Route path={StringResource.linkAdminBookList}>
-                                    <AdminBookList />
                                 </Route>
                             </Switch>
                         </Route>

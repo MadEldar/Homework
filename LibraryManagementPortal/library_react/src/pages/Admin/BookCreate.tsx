@@ -1,5 +1,5 @@
 import { useHistory } from "react-router";
-import { BookFrom } from "../../components/BookForm";
+import { BookForm } from "../../components/BookForm";
 import StringResource from "../../resources/StringResource";
 import APICaller from "../../services/APICaller.service";
 
@@ -22,12 +22,15 @@ export function AdminBookCreate() {
             const response = await APICaller.postBook(formData).then();
 
             if (response.data.statusCode === 201) {
-                const bookId = response.data.headers.find(
-                    (h: { key: string; value: string[] }) => h.key === "BookId"
-                ).value[0];
+                // TODO: fix api header to send book id
+                // const bookId = response.data.headers.find(
+                //     (h: { key: string; value: string[] }) => h.key === "BookId"
+                // ).value[0];
+
+                const reasonPhrase: string = response.data.reasonPhrase;
 
                 history.push(
-                    StringResource.linkAdminBookDetails + `/${bookId}`
+                    StringResource.linkAdminBookDetails + `/${reasonPhrase.slice(reasonPhrase.indexOf(": "))}`
                 );
             }
         })();
@@ -36,7 +39,7 @@ export function AdminBookCreate() {
     return (
         <div className="container center-aligned">
             <div className="row">
-                <BookFrom handler={submitCreate} />
+                <BookForm handler={submitCreate} />
             </div>
         </div>
     );

@@ -47,10 +47,7 @@ namespace LibraryAPI.Repositories
 
         public async Task<OperatingStatus> DeleteAsync(T entity)
         {
-            if (entity == null)
-            {
-                throw new KeyNotFoundException();
-            }
+            if (entity == null) return OperatingStatus.KeyNotFound;
 
             int currentCount = await _dbSet.CountAsync().ConfigureAwait(false);
 

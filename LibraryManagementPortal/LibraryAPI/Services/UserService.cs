@@ -39,15 +39,15 @@ namespace LibraryAPI.Services
 
         public async Task<OperatingStatus> CreateAsync(User user)
         {
-            if (user == null) throw new ArgumentNullException(nameof(user));
-            else if (user.CheckEmptyFields()) throw new MissingFieldException();
+            if (user == null) return OperatingStatus.InvalidArgument;
+            else if (user.CheckEmptyFields()) return OperatingStatus.EmptyArgument;
 
             return await _repo.CreateAsync(user).ConfigureAwait(false);
         }
 
         public async Task<OperatingStatus> EditAsync(Guid id, User editedUser)
         {
-            if (editedUser.CheckEmptyFields()) throw new MissingFieldException();
+            if (editedUser.CheckEmptyFields()) return OperatingStatus.EmptyArgument;
 
             editedUser.Id = id;
 
@@ -58,7 +58,7 @@ namespace LibraryAPI.Services
         {
             var user = await GetByIdAsync(id).ConfigureAwait(false);
 
-            if (user == null) throw new ArgumentNullException(nameof(id));
+            if (user == null) return OperatingStatus.KeyNotFound;
 
             return await _repo.DeleteUserAsync(user).ConfigureAwait(false);
         }

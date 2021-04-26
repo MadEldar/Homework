@@ -18,24 +18,27 @@ namespace LibraryAPI.Services
 
         public IQueryable<RequestModel> GetPaginatedList(int page, int limit)
         {
-            return _repo.GetAll()
+            return _repo
+                .GetAll()
                 .OrderBy(r => r.Status)
                 .ThenBy(r => r.RequestedDate)
                 .Skip((page - 1) * limit)
                 .Take(limit);
         }
 
-        public Task<int> ChangeRequestStatus(Guid id, RequestStatus status)
+        public async Task<OperatingStatus> ChangeRequestStatus(Guid id, RequestStatus status)
         {
-            if (id == default) throw new KeyNotFoundException(nameof(id));
+            if (id == default) return OperatingStatus.KeyNotFound;
 
             var request = _repo
                 .GetAll()
                 .SingleOrDefault(r => r.Id == id);
 
-            if (request == null) throw new KeyNotFoundException(nameof(id));
+            if (request == null) return OperatingStatus.KeyNotFound;
 
-            return _repo.ChangeRequestStatusAsync(request, status);
+            return await _repo
+                .ChangeRequestStatusAsync(request, status)
+                .ConfigureAwait(false);
         }
     }
 }

@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import AlertMessage from "../models/AlertMessage";
 import { Dispatch, SetStateAction } from "react";
 import APICaller from "../services/APICaller.service";
-import { setAuthToken } from "../helpers/AuthTokenHelper";
+import { setAuthToken } from "../helpers/LocalStorageHelper";
 import StringResource from "../resources/StringResource";
 
 export function Login({

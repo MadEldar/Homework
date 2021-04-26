@@ -1,8 +1,17 @@
 import axios from "axios";
 import APIUrlBuiler from "../helpers/APIUrlBuiler";
-import { getAuthToken } from "../helpers/AuthTokenHelper";
+import { getAuthToken } from "../helpers/LocalStorageHelper";
 
 const APICaller = {
+    deleteBook: async (bookId: string) => {
+        return await axios({
+            method: "delete",
+            url: APIUrlBuiler.getAdminBookManagement + `/${bookId}`,
+            headers: {
+                AuthToken: getAuthToken(),
+            },
+        }).then((res) => res.data);
+    },
     getAdminAllCategories: async () => {
         return await axios({
             method: "get",
@@ -29,6 +38,18 @@ const APICaller = {
                 AuthToken: getAuthToken(),
             },
         }).then((res) => res.data);
+    },
+    getBooksByIds: async (ids: string[]) => {
+        const query = `ids=${ids.join("&ids=")}`;
+        
+        return await axios({
+            method: "get",
+            url: APIUrlBuiler.getBooks + `/many?${query}`,
+            headers: {
+                AuthToken: getAuthToken(),
+            },
+        }).then((res) => res.data)
+        .catch(e => console.log(e));
     },
     getCategories: async (page: number = 1, limit: number = 10) => {
         return await axios({
@@ -57,13 +78,6 @@ const APICaller = {
             },
         }).then((res) => res.data);
     },
-    postLogin: async (form: FormData) => {
-        return await axios({
-            method: "post",
-            url: APIUrlBuiler.login,
-            data: form,
-        }).then();
-    },
     postBook: async (form: FormData) => {
         return await axios({
             method: "post",
@@ -74,8 +88,24 @@ const APICaller = {
             },
         }).then();
     },
+    postLogin: async (form: FormData) => {
+        return await axios({
+            method: "post",
+            url: APIUrlBuiler.login,
+            data: form,
+        }).then();
+    },
+    postRequest: async (ids: string[]) => {
+        return await axios({
+            method: "post",
+            url: APIUrlBuiler.requestBook,
+            data: ids,
+            headers: {
+                AuthToken: getAuthToken(),
+            },
+        }).then();
+    },
     putBook: async (form: FormData) => {
-        console.log(form.get("id"));
         return await axios({
             method: "put",
             url: APIUrlBuiler.getAdminBookManagement + `/${form.get("id")}`,

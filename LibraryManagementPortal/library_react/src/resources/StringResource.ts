@@ -1,5 +1,6 @@
 const StringResource = {
     admin: "Admin",
+    requestedBookIds: "requestedBookIds",
     token: "AuthToken",
     linkAdminBookList: "/admin/books/",
     linkAdminBookCreate: "/admin/books/create",
@@ -11,6 +12,7 @@ const StringResource = {
     linkLogin: "/login/",
     linkLogout: "/logout/",
     linkHome: "/",
+    linkNewRequest: "/new-request",
     linkUserProfile: "/user-profile/"
 };
 

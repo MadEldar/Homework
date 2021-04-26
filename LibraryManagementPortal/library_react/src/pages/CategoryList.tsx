@@ -8,7 +8,7 @@ import PaginationInfo from "../models/PaginationInfo";
 import StringResource from "../resources/StringResource";
 import APICaller from "../services/APICaller.service";
 
-export default function Categories() {
+export default function CategoryList() {
     const history = useHistory();
     const [categories, setCategories] = useState<Category[]>([]);
     const [pagination, setPagination] = useState<PaginationInfo>({

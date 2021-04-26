@@ -48,22 +48,70 @@ namespace LibraryAPI.Controllers
         public async Task<HttpResponseMessage> CreateUser(User user)
         {
             var operationResult = await _service.CreateAsync(user).ConfigureAwait(false);
-            return new HttpResponseMessage
+
+            switch (operationResult)
             {
-                StatusCode = HttpStatusCode.Created,
-                ReasonPhrase = $"Added new user with id: {user.Id}",
-                Content = new StringContent(JsonSerializer.Serialize(user))
-            };
+                case OperatingStatus.Created:
+                    Request.Headers.Add("UserId", $"{user.Id}");
+
+                    return new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.Created,
+                        ReasonPhrase = $"Added new user with id: {user.Id}"
+                    };
+                case OperatingStatus.InvalidArgument:
+                    return new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.BadRequest,
+                        ReasonPhrase = "User id does not exists"
+                    };
+                case OperatingStatus.EmptyArgument:
+                    return new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.BadRequest,
+                        ReasonPhrase = "All fields must be filled"
+                    };
+                case OperatingStatus.InternalError:
+                    return new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.InternalServerError,
+                        ReasonPhrase = "Something went wrong while saving new user"
+                    };
+                default:
+                    return new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.BadRequest,
+                        ReasonPhrase = "New user cannot be created"
+                    };
+            }
         }
 
         [HttpPut("{id}")]
         public async Task<HttpResponseMessage> EditUser(Guid id, User user)
         {
             var operationResult = await _service.EditAsync(id, user).ConfigureAwait(false);
-            return new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.Accepted,
-                ReasonPhrase = $"Edited user with id: {id}"
+
+            return operationResult switch {
+                OperatingStatus.Modified => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    ReasonPhrase = $"Edited user with id: {user.Id}"
+                },
+                OperatingStatus.KeyNotFound => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ReasonPhrase = "User id does not exists"
+                },
+                OperatingStatus.EmptyArgument => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ReasonPhrase = "All fields must be filled"
+                },
+                _ => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ReasonPhrase = "New user cannot be created"
+                },
             };
         }
 
@@ -71,10 +119,33 @@ namespace LibraryAPI.Controllers
         public async Task<HttpResponseMessage> DeleteUser(Guid id)
         {
             var operationResult = await _service.DeleteAsync(id).ConfigureAwait(false);
-            return new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.Accepted,
-                ReasonPhrase = $"Deleted user with id: {id}"
+
+            return operationResult switch {
+                OperatingStatus.Deleted => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    ReasonPhrase = $"User with the followinng id was deleted: {id}"
+                },
+                OperatingStatus.KeyNotFound => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ReasonPhrase = "User id does not exists"
+                },
+                OperatingStatus.RelationshipExists => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ReasonPhrase = "User contains requests. Delete them before proceding"
+                },
+                OperatingStatus.InternalError => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    ReasonPhrase = "Something went wrong while deleting user"
+                },
+                _ => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ReasonPhrase = "User cannot be deleted"
+                },
             };
         }
     }

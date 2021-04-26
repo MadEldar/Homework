@@ -68,10 +68,11 @@ export default function BookList() {
                 <table className="table table-striped mt-5">
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Title</th>
-                            <th scope="col">Author</th>
-                            <th scope="col">Category</th>
+                            <th scope="col" className=" text-center">#</th>
+                            <th scope="col" className=" text-center">Title</th>
+                            <th scope="col" className=" text-center">Author</th>
+                            <th scope="col" className=" text-center">Category</th>
+                            <th scope="col" className=" text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>

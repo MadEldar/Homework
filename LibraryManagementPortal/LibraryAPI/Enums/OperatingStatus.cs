@@ -13,6 +13,11 @@ namespace LibraryAPI.Enums
         InternalError,
         Modified,
         Deleted,
-        RelationshipExists
+        RelationshipExists,
+        InvalidArgument,
+        DuplicatedArgument,
+        ExceedMonthlyRequestLimit,
+        ExceedMonthlyBookLimit,
+        ExceedRemainingMonthlyRequestLimit
     }
 }

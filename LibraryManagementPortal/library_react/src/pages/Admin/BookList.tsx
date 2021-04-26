@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { Link, useLocation } from "react-router-dom";
 import BookItem from "../../components/BookItem";
+import ConfirmModal from "../../components/ConfirmModal";
 import Pagination from "../../components/Pagination";
 import Book from "../../models/Book";
 import PaginationInfo from "../../models/PaginationInfo";
@@ -17,6 +18,17 @@ export default function AdminBookList() {
         limit: 10,
         totalPage: 1,
     });
+    const [deleteTargetId, setDeleteTargetId] = useState("");
+
+    function deleteBook() {
+        (async() => {
+            const result = await APICaller.deleteBook(deleteTargetId).then();
+
+            if (result.statusCode === 200) {
+                setBooks(books.filter(b => b.id !== deleteTargetId))
+            }
+        })();
+    }
 
     let query = new URLSearchParams(useLocation().search);
 
@@ -60,35 +72,56 @@ export default function AdminBookList() {
     }, [page, limit]);
 
     let indexIncrement = 0;
-    
+
     return (
-        <div className="container mt-5">
-            <div className="row">
-                <h2 className="col-8 offset-2 text-center">Book List</h2>
-                <Link to={StringResource.linkAdminBookCreate} className="col-2 btn btn-primary">Create new book</Link>
-                <table className="table table-striped mt-5">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Title</th>
-                            <th scope="col">Author</th>
-                            <th scope="col">Category</th>
-                            <th scope="col">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {books.map((b) => (
-                            <BookItem
-                                book={b}
-                                index={isNaN(firstIndex) ? 0 : firstIndex + ++indexIncrement}
-                                key={b.id}
-                                isAdmin={true}
-                            />
-                        ))}
-                    </tbody>
-                </table>
-                <Pagination {...pagination} />
+        <>
+            <div className="container mt-5">
+                <div className="row">
+                    <h2 className="col-8 offset-2 text-center">Book List</h2>
+                    <Link
+                        to={StringResource.linkAdminBookCreate}
+                        className="col-2 btn btn-primary"
+                    >
+                        Create new book
+                    </Link>
+                    <table className="table table-striped mt-5">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Author</th>
+                                <th scope="col">Category</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {books.map((b) => (
+                                <BookItem
+                                    book={b}
+                                    index={
+                                        isNaN(firstIndex)
+                                            ? 0
+                                            : firstIndex + ++indexIncrement
+                                    }
+                                    key={b.id}
+                                    isAdmin={true}
+                                    setTargetId={setDeleteTargetId}
+                                />
+                            ))}
+                        </tbody>
+                    </table>
+                    <Pagination {...pagination} />
+                </div>
             </div>
-        </div>
+
+            <ConfirmModal
+                id="modalDelete"
+                action="delete"
+                confirmMessage="Are you sure you want to delete this book?"
+                title="Delete book"
+                handleConfirm={deleteBook}
+                targetId={deleteTargetId}
+            />
+        </>
     );
 }

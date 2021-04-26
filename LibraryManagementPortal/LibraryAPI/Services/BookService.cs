@@ -41,9 +41,23 @@ namespace LibraryAPI.Services
                 .ConfigureAwait(false);
         }
 
+        public async Task<List<Book>> GetManyByIdAsync(List<Guid> ids)
+        {
+            foreach (var id in ids)
+            {
+                if (id == default) throw new KeyNotFoundException();
+            }
+
+            return await _repo
+                .GetAll()
+                .Where(b => ids.Contains(b.Id))
+                .ToListAsync()
+                .ConfigureAwait(false);
+        }
+
         public async Task<OperatingStatus> CreateAsync(Book book)
         {
-            if (book == null) return OperatingStatus.KeyNotFound;
+            if (book == null) return OperatingStatus.InvalidArgument;
             else if (book.CheckEmptyFields()) return OperatingStatus.EmptyArgument;
 
             return await _repo.CreateAsync(book).ConfigureAwait(false);
@@ -51,7 +65,8 @@ namespace LibraryAPI.Services
 
         public async Task<OperatingStatus> EditAsync(Guid id, Book editedBook)
         {
-            if (editedBook.CheckEmptyFields()) throw new MissingFieldException();
+            if (editedBook.CheckEmptyFields()) return OperatingStatus.KeyNotFound;
+            else if (editedBook.CheckEmptyFields()) return OperatingStatus.EmptyArgument;
 
             editedBook.Id = id;
 

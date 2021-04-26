@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { useParams } from "react-router-dom";
-import { BookFrom } from "../../components/BookForm";
+import { BookForm } from "../../components/BookForm";
 import Book from "../../models/Book";
-import StringResource from "../../resources/StringResource";
 import APICaller from "../../services/APICaller.service";
 
 export function AdminBookEdit() {
     const history = useHistory();
-    const {id} = useParams<{id: string}>();
-    const [book,  setBook]  = useState<Book>();
+    const { id } = useParams<{ id: string }>();
+    const [book, setBook] = useState<Book>();
 
     useEffect(() => {
         (async () => {
@@ -28,7 +27,7 @@ export function AdminBookEdit() {
         let formData = new FormData();
 
         console.log(data);
-        
+
         formData.append("id", data.id);
         formData.append("title", data.title);
         formData.append("author", data.author);
@@ -50,10 +49,12 @@ export function AdminBookEdit() {
     }
 
     return (
-        <div className="container">
-            <div className="row col-12">
-                <BookFrom book={book} handler={submitEdit} />
+        <>
+            <div className="container center-aligned">
+                <div className="row col-12">
+                    <BookForm book={book} handler={submitEdit} />
+                </div>
             </div>
-        </div>
+        </>
     );
 }

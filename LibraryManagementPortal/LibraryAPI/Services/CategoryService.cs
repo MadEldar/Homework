@@ -43,15 +43,15 @@ namespace LibraryAPI.Services
 
         public async Task<OperatingStatus> CreateAsync(Category category)
         {
-            if (category == null) throw new ArgumentNullException(nameof(category));
-            else if (category.CheckEmptyFields()) throw new MissingFieldException();
+            if (category == null) return OperatingStatus.InvalidArgument;
+            else if (category.CheckEmptyFields()) return OperatingStatus.EmptyArgument;
 
             return await _repo.CreateAsync(category).ConfigureAwait(false);
         }
 
         public async Task<OperatingStatus> EditAsync(Guid id, Category editedCategory)
         {
-            if (editedCategory.CheckEmptyFields()) throw new MissingFieldException();
+            if (editedCategory.CheckEmptyFields()) return OperatingStatus.KeyNotFound;
 
             editedCategory.Id = id;
 
@@ -62,7 +62,7 @@ namespace LibraryAPI.Services
         {
             var category = await GetByIdAsync(id).ConfigureAwait(false);
 
-            if (category == null) throw new ArgumentNullException(nameof(id));
+            if (category == null) return OperatingStatus.KeyNotFound;
 
             return await _repo.DeleteCategoryAsync(category).ConfigureAwait(false);
         }

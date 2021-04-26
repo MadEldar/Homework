@@ -34,6 +34,7 @@ namespace LibraryAPI.Controllers
         public async Task<HttpResponseMessage> CreateBook([FromForm] Book book)
         {
             var operationResult = await _service.CreateAsync(book).ConfigureAwait(false);
+
             switch (operationResult)
             {
                 case OperatingStatus.Created:
@@ -44,7 +45,7 @@ namespace LibraryAPI.Controllers
                         StatusCode = HttpStatusCode.Created,
                         ReasonPhrase = $"Added new book with id: {book.Id}"
                     };
-                case OperatingStatus.KeyNotFound:
+                case OperatingStatus.InvalidArgument:
                     return new HttpResponseMessage
                     {
                         StatusCode = HttpStatusCode.BadRequest,
@@ -74,7 +75,6 @@ namespace LibraryAPI.Controllers
         [HttpPut("{id}")]
         public async Task<HttpResponseMessage> EditBook(Guid id, Book book)
         {
-            Console.WriteLine(id);
             var operationResult = await _service.EditAsync(id, book).ConfigureAwait(false);
             return operationResult switch {
                 OperatingStatus.Modified => new HttpResponseMessage
@@ -92,11 +92,6 @@ namespace LibraryAPI.Controllers
                     StatusCode = HttpStatusCode.BadRequest,
                     ReasonPhrase = "All fields must be filled"
                 },
-                OperatingStatus.InternalError => new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.InternalServerError,
-                    ReasonPhrase = "Something went wrong while saving new book"
-                },
                 _ => new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.BadRequest,
@@ -109,31 +104,32 @@ namespace LibraryAPI.Controllers
         public async Task<HttpResponseMessage> DeleteBook(Guid id)
         {
             var operationResult = await _service.DeleteAsync(id).ConfigureAwait(false);
+
             return operationResult switch {
-                OperatingStatus.Modified => new HttpResponseMessage
+                OperatingStatus.Deleted => new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    ReasonPhrase = $"Added new book with id: {id}"
+                    ReasonPhrase = $"Book with the followinng id was deleted: {id}"
                 },
                 OperatingStatus.KeyNotFound => new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.BadRequest,
                     ReasonPhrase = "Book id does not exists"
                 },
-                OperatingStatus.EmptyArgument => new HttpResponseMessage
+                OperatingStatus.RelationshipExists => new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "All fields must be filled"
+                    ReasonPhrase = "Book requests exists. Delete them before proceding"
                 },
                 OperatingStatus.InternalError => new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.InternalServerError,
-                    ReasonPhrase = "Something went wrong while saving new book"
+                    ReasonPhrase = "Something went wrong while deleting book"
                 },
                 _ => new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "New book cannot be created"
+                    ReasonPhrase = "Book cannot be deleted"
                 },
             };
         }

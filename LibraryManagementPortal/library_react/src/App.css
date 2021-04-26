@@ -57,8 +57,13 @@
   max-width: 500px;
 }
 
-h1, h2, h3, h4, h5, p {
-  margin: 0px;
+#app-root h1,
+#app-root h2,
+#app-root h3,
+#app-root h4,
+#app-root h5,
+#app-root p {
+  margin-bottom: 0px;
 }
 
 #app-root > .navbar {
