@@ -3,6 +3,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import BookItem from "../components/BookItem";
 import Pagination from "../components/Pagination";
 import { getSavedBookIds } from "../helpers/LocalStorageHelper";
+import ParamBuilder from "../helpers/ParamBuilder";
 import Book from "../models/Book";
 import PaginationInfo from "../models/PaginationInfo";
 import StringResource from "../resources/StringResource";
@@ -20,15 +21,18 @@ export default function NewRequest() {
 
     let query = new URLSearchParams(useLocation().search);
 
-    if (!query.get("page") && !query.get("limit")) {
+    if (!query.get("page") || !query.get("limit")) {
         history.replace({
             pathname: StringResource.linkNewRequest,
-            search: "?page=1&limit=10",
+            search: ParamBuilder({
+                page: "1",
+                limit: "10",
+            }),
         });
     }
 
-    const page = Number.parseInt(query.get("page")!);
-    const limit = Number.parseInt(query.get("limit")!);
+    const page = Number.parseInt(query.get("page")!) || 1;
+    const limit = Number.parseInt(query.get("limit")!) || 10;
 
     useEffect(() => {
         (async () => {
@@ -37,12 +41,16 @@ export default function NewRequest() {
             if (bookIds.length === 0) {
                 setRequestBooks([]);
             } else {
-                const response = await APICaller.getBooksByIds(bookIds, page, limit).then();
+                const response = await APICaller.getBooksByIds(
+                    bookIds,
+                    page,
+                    limit
+                ).then();
 
                 setRequestBooks(response.books);
 
                 var totalPage = Math.ceil(response.totalBooks / response.limit);
-    
+
                 setPagination({
                     link: StringResource.linkNewRequest,
                     page: response.page,
@@ -59,7 +67,7 @@ export default function NewRequest() {
         e.preventDefault();
         const formData = new FormData(e.target);
 
-        const ids: string[] = formData.getAll("ids").map(id => id.toString());
+        const ids: string[] = formData.getAll("ids").map((id) => id.toString());
 
         const result = await APICaller.postRequest(ids).then();
     }

@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { BookForm } from "../../components/BookForm";
-import Book from "../../models/Book";
+import { CategoryForm } from "../../components/CategoryForm";
+import Category from "../../models/Category";
 import APICaller from "../../services/APICaller.service";
 
-export function AdminBookEdit() {
+export function AdminCategoryEdit() {
     const { id } = useParams<{ id: string }>();
-    const [book, setBook] = useState<Book>();
+    const [category, setCategory] = useState<Category>();
 
     useEffect(() => {
         (async () => {
-            const book = await APICaller.getBookById(id).then();
+            const category = await APICaller.getCategoryById(id).then();
 
-            setBook(book);
+            setCategory(category);
         })();
     }, [id]);
 
@@ -32,15 +32,15 @@ export function AdminBookEdit() {
         formData.append("categoryId", data.category);
 
         // (async () => {
-        //     const response = await APICaller.putBook(formData).then();
+        //     const response = await APICaller.putCategory(formData).then();
 
         //     if (response.data.statusCode === 201) {
-        //         const bookId = response.data.headers.find(
-        //             (h: { key: string; value: string[] }) => h.key === "BookId"
+        //         const categoryId = response.data.headers.find(
+        //             (h: { key: string; value: string[] }) => h.key === "CategoryId"
         //         ).value[0];
 
         //         history.push(
-        //             StringResource.linkAdminBookDetails + `/${bookId}`
+        //             StringResource.linkAdminCategoryDetails + `/${categoryId}`
         //         );
         //     }
         // })();
@@ -50,7 +50,7 @@ export function AdminBookEdit() {
         <>
             <div className="container center-aligned">
                 <div className="row col-12">
-                    <BookForm book={book} handler={submitEdit} />
+                    <CategoryForm category={category} handler={submitEdit} />
                 </div>
             </div>
         </>

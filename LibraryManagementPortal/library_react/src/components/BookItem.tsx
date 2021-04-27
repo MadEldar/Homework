@@ -45,7 +45,7 @@ export default function BookItem({
                         <Link
                             className="btn"
                             to={
-                                StringResource.linkAdminBookEdit + `/${book.id}`
+                                StringResource.linkAdminBookEdit + `${book.id}`
                             }
                         >
                             Edit

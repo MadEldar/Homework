@@ -4,7 +4,7 @@ const capitalize = (phrase: string) =>
 export const StringFormatter = {
     capitalize,
     validationForMinLength: (field: string, minLength: number) =>
-        `${capitalize(field)}'s length must be longer than ${minLength} characters`,
+        `${capitalize(field)}'s length must be longer than ${minLength - 1} characters`,
     validationForRequired: (field: string) => `${capitalize(field)} is required`,
 };
 

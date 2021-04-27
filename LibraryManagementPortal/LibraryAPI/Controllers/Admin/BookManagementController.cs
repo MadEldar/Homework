@@ -17,17 +17,9 @@ namespace LibraryAPI.Controllers
     public class BookManagementController : Controller
     {
         private readonly BookService _service;
-        private readonly ResultService _resultService;
-        public BookManagementController(BookService service, ResultService resultService)
+        public BookManagementController(BookService service)
         {
             _service = service;
-            _resultService = resultService;
-        }
-
-        [HttpGet("{id}")]
-        public async Task<BookResult> GetBookByIdAsync(Guid id)
-        {
-            return _resultService.GetBookResult(await _service.GetByIdAsync(id).ConfigureAwait(false), false);
         }
 
         [HttpPost("")]

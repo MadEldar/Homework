@@ -17,32 +17,14 @@ namespace LibraryAPI.Controllers
     public class CategoryManagementController : Controller
     {
         private readonly CategoryService _service;
-        private readonly ResultService _resultService;
 
-        public CategoryManagementController(CategoryService service, ResultService resultService)
+        public CategoryManagementController(CategoryService service)
         {
             _service = service;
-            _resultService = resultService;
-        }
-
-        [HttpGet("all")]
-        public async Task<IActionResult> GetAllCategoryAsync()
-        {
-            var categories = _service
-                .GetPaginatedList(1, await _service.GetCountAsync().ConfigureAwait(false))
-                .Select(c =>
-                    _resultService.GetCategoryResult(
-                        c,
-                        false,
-                        false
-                    )
-                );
-
-            return Ok(categories);
         }
 
         [HttpPost("")]
-        public async Task<HttpResponseMessage> CreateCategory(Category category)
+        public async Task<HttpResponseMessage> CreateCategory([FromForm] Category category)
         {
             var operationResult = await _service.CreateAsync(category).ConfigureAwait(false);
 

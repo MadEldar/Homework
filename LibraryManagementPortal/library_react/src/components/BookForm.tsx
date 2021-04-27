@@ -16,7 +16,7 @@ export function BookForm({ book, handler }: { book?: Book; handler: any }) {
 
     useEffect(() => {
         (async () => {
-            const allCategories = await APICaller.getAdminAllCategories().then();
+            const allCategories = await APICaller.getAllCategories().then();
 
             setCategories(allCategories);
         })();
@@ -31,10 +31,7 @@ export function BookForm({ book, handler }: { book?: Book; handler: any }) {
     }, []);
 
     return (
-        <form
-            className="col-6"
-            onSubmit={handleSubmit(handler)}
-        >
+        <form className="col-6" onSubmit={handleSubmit(handler)}>
             <div className="col-12 form-group">
                 <label htmlFor="title">Book title</label>
                 <input
@@ -48,8 +45,10 @@ export function BookForm({ book, handler }: { book?: Book; handler: any }) {
                         ),
                         minLength: {
                             value: 3,
-                            message:
-                                "Book title length must be longer than 2 characters",
+                            message: StringFormatter.validationForMinLength(
+                                "book title",
+                                3
+                            ),
                         },
                     })}
                 />
@@ -110,11 +109,7 @@ export function BookForm({ book, handler }: { book?: Book; handler: any }) {
                 </select>
             </div>
             <div className="row justify-content-center col-12 form-group">
-                <input
-                    type="hidden"
-                    value={book?.id}
-                    {...register("id")}
-                />
+                <input type="hidden" value={book?.id} {...register("id")} />
                 <button className="btn btn-primary" type="submit">
                     Submit
                 </button>

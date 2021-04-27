@@ -32,7 +32,7 @@ export function AdminBookCreate() {
                 const reasonPhrase: string = response.data.reasonPhrase;
 
                 history.push(
-                    StringResource.linkAdminBookDetails + `/${reasonPhrase.slice(reasonPhrase.indexOf(": ") + 2)}`
+                    StringResource.linkAdminBookDetails + `${reasonPhrase.slice(reasonPhrase.indexOf(": ") + 2)}`
                 );
             }
         })();

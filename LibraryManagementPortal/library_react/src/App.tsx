@@ -14,6 +14,8 @@ import { AdminBookCreate } from "./pages/Admin/BookCreate";
 import { AdminBookEdit } from "./pages/Admin/BookEdit";
 import "antd/dist/antd.css";
 import NewRequest from "./pages/NewRequest";
+import AdminCategoryList from "./pages/Admin/CategoryList";
+import { AdminCategoryCreate } from "./pages/Admin/CategoryCreate";
 
 function App() {
     const [isAdmin, setIsAdmin] = useState(false);
@@ -38,11 +40,11 @@ function App() {
             name: "User profile",
         },
         {
-            link: StringResource.linkBookList,
+            link: StringResource.linkBook,
             name: "Book list",
         },
         {
-            link: StringResource.linkCategoryList,
+            link: StringResource.linkCategory,
             name: "Category list",
         },
         {
@@ -61,11 +63,11 @@ function App() {
             page: <UserProfile />,
         },
         {
-            link: StringResource.linkBookList,
+            link: StringResource.linkBook,
             page: <BookList />,
         },
         {
-            link: StringResource.linkCategoryList,
+            link: StringResource.linkCategory,
             page: <CategoryList />,
         },
         {
@@ -81,8 +83,16 @@ function App() {
             page: <AdminBookCreate />,
         },
         {
-            link: StringResource.linkAdminBookEdit + "/:id",
+            link: StringResource.linkAdminBookEdit + ":id",
             page: <AdminBookEdit />,
+        },
+        {
+            link: StringResource.linkAdminCategoryCreate,
+            page: <AdminCategoryCreate />,
+        },
+        {
+            link: StringResource.linkAdminCategoryList,
+            page: <AdminCategoryList />,
         },
     ];
 
@@ -149,7 +159,6 @@ function App() {
                                                     data-toggle="dropdown"
                                                     aria-haspopup="true"
                                                     aria-expanded="false"
-                                                    // role="button"
                                                 >
                                                     Admin
                                                 </button>
