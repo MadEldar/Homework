@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LibraryAPI.Models;
 using LibraryAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
+using LibraryAPI.Enums;
 
 namespace LibraryAPI.Services
 {
@@ -40,28 +41,46 @@ namespace LibraryAPI.Services
                 .ConfigureAwait(false);
         }
 
-        public async Task<bool> CreateAsync(Book book)
+        public async Task<List<Book>> GetManyByIdAsync(List<Guid> ids, int page, int limit)
         {
-            if (book == null) throw new ArgumentNullException(nameof(book));
-            else if (book.CheckEmptyFields()) throw new MissingFieldException();
+            foreach (var id in ids)
+            {
+                if (id == default) throw new KeyNotFoundException();
+            }
+
+            return await _repo
+                .GetAll()
+                .Where(b => ids.Contains(b.Id))
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .OrderBy(b => b.Title)
+                .ToListAsync()
+                .ConfigureAwait(false);
+        }
+
+        public async Task<OperatingStatus> CreateAsync(Book book)
+        {
+            if (book == null) return OperatingStatus.InvalidArgument;
+            else if (book.CheckEmptyFields()) return OperatingStatus.EmptyArgument;
 
             return await _repo.CreateAsync(book).ConfigureAwait(false);
         }
 
-        public async Task<bool> EditAsync(Guid id, Book editedBook)
+        public async Task<OperatingStatus> EditAsync(Guid id, Book editedBook)
         {
-            if (editedBook.CheckEmptyFields()) throw new MissingFieldException();
+            if (editedBook.CheckEmptyFields()) return OperatingStatus.KeyNotFound;
+            else if (editedBook.CheckEmptyFields()) return OperatingStatus.EmptyArgument;
 
             editedBook.Id = id;
 
             return await _repo.EditAsync(editedBook).ConfigureAwait(false);
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<OperatingStatus> DeleteAsync(Guid id)
         {
             var book = await GetByIdAsync(id).ConfigureAwait(false);
 
-            if (book == null) throw new ArgumentNullException(nameof(id));
+            if (book == null) return OperatingStatus.KeyNotFound;
 
             return await _repo.DeleteBookAsync(book).ConfigureAwait(false);
         }

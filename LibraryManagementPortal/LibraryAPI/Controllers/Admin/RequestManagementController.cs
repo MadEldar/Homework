@@ -35,26 +35,32 @@ namespace LibraryAPI.Controllers
         [HttpPost("{id}")]
         public async Task<HttpResponseMessage> ChangeRequestStatusAsync(Guid id, RequestStatus status)
         {
-            int result = await _service
+            var operationResult = await _service
                 .ChangeRequestStatus(id, status)
                 .ConfigureAwait(false);
 
-            if (result == 1)
-            {
-                return new HttpResponseMessage
+            return operationResult switch {
+                OperatingStatus.Modified => new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    ReasonPhrase = $"Changed request status to {Enum.GetName(typeof(RequestStatus), status)}"
-                };
-            }
-            else
-            {
-                return new HttpResponseMessage
+                    ReasonPhrase = $"Request with the followinng id was changed: {id}"
+                },
+                OperatingStatus.KeyNotFound => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ReasonPhrase = "Request id does not exists"
+                },
+                OperatingStatus.InternalError => new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.InternalServerError,
-                    ReasonPhrase = $"1 row was expected to changed, but instead {result}"
-                };
-            }
+                    ReasonPhrase = "Something went wrong while changing request status"
+                },
+                _ => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ReasonPhrase = "Category cannot be deleted"
+                },
+            };
         }
     }
 }

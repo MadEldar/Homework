@@ -12,11 +12,13 @@ namespace LibraryAPI.Repositories
             _context = context;
         }
 
-        public async Task<int> ChangeRequestStatusAsync(RequestModel request, RequestStatus status)
+        public async Task<OperatingStatus> ChangeRequestStatusAsync(RequestModel request, RequestStatus status)
         {
             request.Status = status;
 
-            return await _context.SaveChangesAsync().ConfigureAwait(false);
+            return await _context.SaveChangesAsync().ConfigureAwait(false) > 0
+                ? OperatingStatus.Modified
+                : OperatingStatus.InternalError;
         }
     }
 }

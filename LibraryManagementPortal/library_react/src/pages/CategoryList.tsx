@@ -3,16 +3,17 @@ import { useHistory } from "react-router";
 import { useLocation } from "react-router-dom";
 import CategoryItem from "../components/CategoryItem";
 import Pagination from "../components/Pagination";
+import ParamBuilder from "../helpers/ParamBuilder";
 import Category from "../models/Category";
 import PaginationInfo from "../models/PaginationInfo";
 import StringResource from "../resources/StringResource";
 import APICaller from "../services/APICaller.service";
 
-export default function Categories() {
+export default function CategoryList() {
     const history = useHistory();
     const [categories, setCategories] = useState<Category[]>([]);
     const [pagination, setPagination] = useState<PaginationInfo>({
-        link: StringResource.linkCategoryList,
+        link: StringResource.linkCategory,
         page: 1,
         limit: 10,
         totalPage: 1,
@@ -20,15 +21,18 @@ export default function Categories() {
 
     let query = new URLSearchParams(useLocation().search);
 
-    if (!query.get("page")) {
+    if (!query.get("page") || !query.get("limit")) {
         history.replace({
-            pathname: StringResource.linkCategoryList,
-            search: "?page=1&limit=10",
+            pathname: StringResource.linkCategory,
+            search: ParamBuilder({
+                page: "1",
+                limit: "10",
+            }),
         });
     }
 
-    const page = Number.parseInt(query.get("page")!);
-    const limit = Number.parseInt(query.get("limit")!);
+    const page = Number.parseInt(query.get("page")!) || 1;
+    const limit = Number.parseInt(query.get("limit")!) || 10;
 
     const [firstIndex, setFirstIndex] = useState(0);
 
@@ -39,19 +43,17 @@ export default function Categories() {
                 totalCategories: number;
                 page: number;
                 limit: number;
-            } = await APICaller.getCategories(
+            } = await APICaller.getCategoryList(
                 isNaN(page) ? 1 : page,
                 isNaN(limit) ? 10 : limit
             );
-
-            console.log(categoriesData)
 
             setCategories(categoriesData.categories);
 
             var totalPage = Math.ceil(categoriesData.totalCategories / categoriesData.limit);
 
             setPagination({
-                link: StringResource.linkCategoryList,
+                link: StringResource.linkCategory,
                 page: categoriesData.page,
                 limit: categoriesData.limit,
                 totalPage: totalPage,
@@ -59,9 +61,10 @@ export default function Categories() {
 
             setFirstIndex((categoriesData.page - 1) * limit);
         })();
-    }, [page]);
+    }, [page, limit]);
 
     let indexIncrement = 0;
+
     return (
         <div className="container mt-5">
             <div className="row">
@@ -72,13 +75,15 @@ export default function Categories() {
                             <th scope="col">#</th>
                             <th scope="col">Name</th>
                             <th scope="col">Books</th>
+                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {categories.map((c) => (
                             <CategoryItem
                                 category={c}
-                                index={firstIndex + ++indexIncrement}
+                                index={isNaN(firstIndex) ? 0 : firstIndex + ++indexIncrement}
+                                isAdmin={false}
                                 key={c.id}
                             />
                         ))}

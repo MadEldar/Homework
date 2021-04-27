@@ -19,7 +19,7 @@ export function BookRequest() {
             <div className="row">
                 <h3 className="col-12 my-3">Past requests</h3>
                 {requests.map((r: RequestInterface) => (
-                    <div className="col-sm-6" key={r.id}>
+                    <div className="col-sm-6 my-3" key={r.id}>
                         <div className="card">
                             <div className="card-header">
                                 <h5 className="card-title">

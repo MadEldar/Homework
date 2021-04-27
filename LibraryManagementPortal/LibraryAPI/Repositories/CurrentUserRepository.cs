@@ -21,8 +21,6 @@ namespace LibraryAPI.Repositories
                 .Where(u => u.Token != null && u.Token.Token == token)
                 .FirstOrDefault();
 
-            if (user != null) user.Token.RefreshToken();
-
             _context.SaveChanges();
 
             return user;
@@ -42,6 +40,12 @@ namespace LibraryAPI.Repositories
             );
 
             await _context.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+        public void RemoveExpiredToken(UserToken token)
+        {
+            _context.Tokens.Remove(token);
+            _context.SaveChanges();
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using LibraryAPI.Enums;
 using LibraryAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,9 +21,10 @@ namespace LibraryAPI.Repositories
             return _dbSet.Where(func);
         }
 
-        public async Task<bool> DeleteUserAsync(User user)
+        public async Task<OperatingStatus> DeleteUserAsync(User user)
         {
-            if (user.Requests.Count > 0) return false;
+            if (user.Requests.Count > 0) return OperatingStatus.RelationshipExists;
+            
             return await DeleteAsync(user).ConfigureAwait(false);
         }
     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using LibraryAPI.Enums;
 using LibraryAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,11 +23,9 @@ namespace LibraryAPI.Repositories
             return _dbSet;
         }
 
-        public async Task<bool> CreateAsync(T entity)
+        public async Task<OperatingStatus> CreateAsync(T entity)
         {
-            if (entity == null) {
-                throw new MissingFieldException();
-            }
+            if (entity == null) return OperatingStatus.EmptyArgument;
 
             int currentCount = _dbSet.Count();
 
@@ -34,24 +33,21 @@ namespace LibraryAPI.Repositories
 
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
-            return CountChanged(currentCount);
+            return CountChanged(currentCount) ? OperatingStatus.Created : OperatingStatus.InternalError;
         }
 
-        public async Task<bool> EditAsync(T editedEntity)
+        public async Task<OperatingStatus> EditAsync(T editedEntity)
         {
             _context.Entry(editedEntity).State = EntityState.Modified;
 
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
-            return true;
+            return OperatingStatus.Modified;
         }
 
-        public async Task<bool> DeleteAsync(T entity)
+        public async Task<OperatingStatus> DeleteAsync(T entity)
         {
-            if (entity == null)
-            {
-                throw new KeyNotFoundException();
-            }
+            if (entity == null) return OperatingStatus.KeyNotFound;
 
             int currentCount = await _dbSet.CountAsync().ConfigureAwait(false);
 
@@ -59,7 +55,7 @@ namespace LibraryAPI.Repositories
 
             _context.SaveChanges();
 
-            return CountChanged(currentCount);
+            return CountChanged(currentCount) ? OperatingStatus.Deleted : OperatingStatus.InternalError;
         }
 
         private bool CountChanged(int currentCount)

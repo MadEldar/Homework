@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using LibraryAPI.Enums;
 
 namespace LibraryAPI.Repositories
 {
@@ -7,8 +8,8 @@ namespace LibraryAPI.Repositories
         where T : class
     {
         IQueryable<T> GetAll();
-        Task<bool> CreateAsync(T entity);
-        Task<bool> EditAsync(T editedEntity);
-        Task<bool> DeleteAsync(T entity);
+        Task<OperatingStatus> CreateAsync(T entity);
+        Task<OperatingStatus> EditAsync(T editedEntity);
+        Task<OperatingStatus> DeleteAsync(T entity);
     }
 }

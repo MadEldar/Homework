@@ -1,18 +1,16 @@
-using System.Net;
-using System.Net.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LibraryAPI.Models;
 using LibraryAPI.Repositories;
+using LibraryAPI.Enums;
+using LibraryAPI.Resources;
 
 namespace LibraryAPI.Services
 {
     public class CurrentUserService
     {
-        private const int monthlyTotalRequests = 3;
-        private const int monthlyTotalBooks = 5;
         private readonly CurrentUserRepository _repo;
         public CurrentUserService(CurrentUserRepository repo)
         {
@@ -23,67 +21,40 @@ namespace LibraryAPI.Services
         {
             if (string.IsNullOrWhiteSpace(token)) return null;
 
-            return _repo.GetCurrentUser(token);
+            var user =  _repo.GetCurrentUser(token);
+
+            if (user != null)
+            {
+                if (user.Token.ExpirationDate.AddHours(2) < DateTime.Now)
+                {
+                    _repo.RemoveExpiredToken(user.Token);
+                    return null;
+                }
+                user.Token.RefreshToken();
+            }
+
+            return user;
         }
 
-        public async Task<HttpResponseMessage> CreateNewRequestAsync(string username, List<Guid> bookIds)
+        public async Task<OperatingStatus> CreateNewRequestAsync(string token, List<Guid> bookIds)
         {
-            if (bookIds.Count != bookIds.Distinct().Count())
-            {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "You cannot borrow the same book more than once in one request"
-                };
-            }
+            if (bookIds.Count != bookIds.Distinct().Count()) return OperatingStatus.DuplicatedArgument;
 
-            User user = _repo.GetCurrentUser(username);
+            User user = _repo.GetCurrentUser(token);
 
-            if (user == null)
-            {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "Cannot find user. Please login again"
-                };
-            }
+            if (user == null) return OperatingStatus.KeyNotFound;
 
             var currentMonthRequests = user.Requests.Where(r => r.RequestedDate.Month == DateTime.Now.Month);
 
-            var allRequests = UnwrapBookRequests(currentMonthRequests.Select(r => r.BookRequests));
+            var allRequests = currentMonthRequests.SelectMany(r => r.BookRequests);
 
-            if (currentMonthRequests.Count() == monthlyTotalRequests)
-            {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.ExpectationFailed,
-                    ReasonPhrase = "You have already reached this month's request limit"
-                };
-            }
-            else if (allRequests.Count > monthlyTotalBooks)
-            {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.ExpectationFailed,
-                    ReasonPhrase = "You have already reached this month's book limit"
-                };
-            }
-            else if (allRequests.Count + bookIds.Count > monthlyTotalBooks)
-            {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.ExpectationFailed,
-                    ReasonPhrase = "Total books requested exceeds your remaining book limit"
-                };
-            }
+            if (currentMonthRequests.Count() == IntegerResource.monthlyTotalRequests) return OperatingStatus.ExceedMonthlyRequestLimit;
+            else if (allRequests.Count() > IntegerResource.monthlyTotalBooks) return OperatingStatus.ExceedMonthlyBookLimit;
+            else if (allRequests.Count() + bookIds.Count > IntegerResource.monthlyTotalBooks) return OperatingStatus.ExceedRemainingMonthlyRequestLimit;
 
             await _repo.CreateBookRequestAsync(user.Id, bookIds).ConfigureAwait(false);
 
-            return new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.Created,
-                ReasonPhrase = $"Successfully requested {bookIds.Count} books"
-            };
+            return OperatingStatus.Created;
         }
 
         public ICollection<RequestModel> GetAllRequests(string token)
@@ -93,21 +64,6 @@ namespace LibraryAPI.Services
             if (user == null) return null;
 
             return user.Requests;
-        }
-        // Switch to using Linq
-        private static List<BookRequest> UnwrapBookRequests(IEnumerable<ICollection<BookRequest>> wrappedRequests)
-        {
-            var allRequests = new List<BookRequest>();
-
-            foreach (var bookRequests in wrappedRequests)
-            {
-                foreach (var request in bookRequests)
-                {
-                    allRequests.Add(request);
-                }
-            }
-
-            return allRequests;
         }
     }
 }

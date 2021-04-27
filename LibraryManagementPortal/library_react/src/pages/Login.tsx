@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import AlertMessage from "../models/AlertMessage";
 import { Dispatch, SetStateAction } from "react";
 import APICaller from "../services/APICaller.service";
-import { setAuthToken } from "../helpers/AuthTokenHelper";
+import { setAuthToken } from "../helpers/LocalStorageHelper";
 import StringResource from "../resources/StringResource";
 
 export function Login({
@@ -22,7 +22,7 @@ export function Login({
         formData.append("username", data.username);
         formData.append("password", data.password);
 
-        const result = await APICaller.login(formData);
+        const result = await APICaller.postLogin(formData);
 
         if (result.data.statusCode === 200) {
             setAuthToken(result.data.headers.find(

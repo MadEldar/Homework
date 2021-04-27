@@ -81,13 +81,13 @@ namespace LibraryAPI.Controllers.Test
             controller = new CurrentUserController(testService, resultService);
         }
 
-        [Order(1)]
-        [TestCaseSource(nameof(GetCorrectCreateBookRequests))]
-        public async Task CreateNewRequest_UniqueBookIdAndWithinLimit_ShouldPassAsync(CreateBookRequest req, HttpStatusCode statusCode)
-        {
-            // HttpResponseMessage result = await controller.CreateNewRequestAsync(req).ConfigureAwait(false);
+        // [Order(1)]
+        // [TestCaseSource(nameof(GetCorrectCreateBookRequests))]
+        // public async Task CreateNewRequest_UniqueBookIdAndWithinLimit_ShouldPassAsync(CreateBookRequest req, HttpStatusCode statusCode)
+        // {
+        //     HttpResponseMessage result = await controller.CreateNewRequestAsync(req).ConfigureAwait(false);
 
-            // Assert.AreEqual(statusCode, result.StatusCode, "Book request was not created");
-        }
+        //     Assert.AreEqual(statusCode, result.StatusCode, "Book request was not created");
+        // }
     }
 }

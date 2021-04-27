@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net;
 using LibraryAPI.Filters;
 using LibraryAPI.Enums;
+using System.Linq;
 
 namespace LibraryAPI.Controllers
 {
@@ -23,66 +24,108 @@ namespace LibraryAPI.Controllers
         }
 
         [HttpPost("")]
-        public async Task<HttpResponseMessage> CreateCategory(Category category)
+        public async Task<HttpResponseMessage> CreateCategory([FromForm] Category category)
         {
-            if (await _service.CreateAsync(category).ConfigureAwait(false))
+            var operationResult = await _service.CreateAsync(category).ConfigureAwait(false);
+
+            switch (operationResult)
             {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.Created,
-                    ReasonPhrase = $"Added new category with id: {category.Id}"
-                };
-            }
-            else
-            {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "New category cannot be created"
-                };
+                case OperatingStatus.Created:
+                    Request.Headers.Add("CategoryId", $"{category.Id}");
+
+                    return new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.Created,
+                        ReasonPhrase = $"Added new category with id: {category.Id}"
+                    };
+                case OperatingStatus.InvalidArgument:
+                    return new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.BadRequest,
+                        ReasonPhrase = "Category id does not exists"
+                    };
+                case OperatingStatus.EmptyArgument:
+                    return new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.BadRequest,
+                        ReasonPhrase = "All fields must be filled"
+                    };
+                case OperatingStatus.InternalError:
+                    return new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.InternalServerError,
+                        ReasonPhrase = "Something went wrong while saving new category"
+                    };
+                default:
+                    return new HttpResponseMessage
+                    {
+                        StatusCode = HttpStatusCode.BadRequest,
+                        ReasonPhrase = "New category cannot be created"
+                    };
             }
         }
 
         [HttpPut("{id}")]
         public async Task<HttpResponseMessage> EditCategory(Guid id, Category category)
         {
-            if (await _service.EditAsync(id, category).ConfigureAwait(false))
-            {
-                return new HttpResponseMessage
+            var operationResult = await _service.EditAsync(id, category).ConfigureAwait(false);
+
+            return operationResult switch {
+                OperatingStatus.Modified => new HttpResponseMessage
                 {
-                    StatusCode = HttpStatusCode.Accepted,
-                    ReasonPhrase = $"Edited category with id: {id}"
-                };
-            }
-            else
-            {
-                return new HttpResponseMessage
+                    StatusCode = HttpStatusCode.OK,
+                    ReasonPhrase = $"Edited category with id: {category.Id}"
+                },
+                OperatingStatus.KeyNotFound => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ReasonPhrase = "Category id does not exists"
+                },
+                OperatingStatus.EmptyArgument => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ReasonPhrase = "All fields must be filled"
+                },
+                _ => new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.BadRequest,
                     ReasonPhrase = "New category cannot be created"
-                };
-            }
+                },
+            };
         }
 
         [HttpDelete("{id}")]
         public async Task<HttpResponseMessage> DeleteCategory(Guid id)
         {
-            if (await _service.DeleteAsync(id).ConfigureAwait(false))
-            {
-                return new HttpResponseMessage
+            var operationResult = await _service.DeleteAsync(id).ConfigureAwait(false);
+
+            return operationResult switch {
+                OperatingStatus.Deleted => new HttpResponseMessage
                 {
-                    StatusCode = HttpStatusCode.Accepted,
-                    ReasonPhrase = $"Deleted category with id: {id}"
-                };
-            }
-            else
-            {
-                return new HttpResponseMessage
+                    StatusCode = HttpStatusCode.OK,
+                    ReasonPhrase = $"Category with the followinng id was deleted: {id}"
+                },
+                OperatingStatus.KeyNotFound => new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "Category was not deleted"
-                };
-            }
+                    ReasonPhrase = "Category id does not exists"
+                },
+                OperatingStatus.RelationshipExists => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ReasonPhrase = "Category contains books. Delete them before proceding"
+                },
+                OperatingStatus.InternalError => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    ReasonPhrase = "Something went wrong while deleting category"
+                },
+                _ => new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.BadRequest,
+                    ReasonPhrase = "Category cannot be deleted"
+                },
+            };
         }
     }
 }

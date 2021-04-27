@@ -6,27 +6,19 @@ export default function Pagination({
     page,
     limit,
     totalPage,
+    className
 }: PaginationInfo) {
-    var links = [];
+    var indexer = [];
 
     for (let i = 1; i <= totalPage; i++) {
-        links.push(
-            <li className={`page-item${i === page ? " disabled" : ""}`} key={i}>
-                <Link
-                    className="page-link"
-                    to={link + `?page=${i}&limit=${limit}`}
-                >
-                    {i}
-                </Link>
-            </li>
-        );
+        indexer.push(i);
     }
 
     const isFirstPage = page - 1 === 0;
-    const isLastPage = (page === totalPage);
+    const isLastPage = page === totalPage;
 
     return (
-        <div>
+        <div className={className ?? ""}>
             <nav aria-label="Page navigation example">
                 <ul className="pagination justify-content-end">
                     <li
@@ -40,7 +32,21 @@ export default function Pagination({
                             Previous
                         </Link>
                     </li>
-                    {links.map((l) => l)}
+                    {indexer.map((i) => (
+                        <li
+                            className={`page-item${
+                                i === page ? " disabled" : ""
+                            }`}
+                            key={i}
+                        >
+                            <Link
+                                className="page-link"
+                                to={link + `?page=${i}&limit=${limit}`}
+                            >
+                                {i}
+                            </Link>
+                        </li>
+                    ))}
                     <li className={`page-item${isLastPage ? " disabled" : ""}`}>
                         <Link
                             className="page-link"
