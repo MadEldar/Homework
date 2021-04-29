@@ -12,9 +12,10 @@ import APICaller from "../../services/APICaller.service";
 
 export default function AdminCategoryList() {
     const history = useHistory();
+    const pathname = history.location.pathname;
     const [categories, setCategories] = useState<Category[]>([]);
     const [pagination, setPagination] = useState<PaginationInfo>({
-        link: StringResource.linkAdminCategoryList,
+        link: pathname,
         page: 1,
         limit: 10,
         totalPage: 1,
@@ -39,7 +40,7 @@ export default function AdminCategoryList() {
 
     if (!query.get("page") || !query.get("limit")) {
         history.replace({
-            pathname: StringResource.linkAdminCategoryList,
+            pathname: pathname,
             search: ParamBuilder({
                 page: "1",
                 limit: "10",
@@ -52,12 +53,14 @@ export default function AdminCategoryList() {
 
     useEffect(() => {
         (async () => {
+            setCategories([]);
+
             const categoriesData: {
                 categories: Category[];
                 totalCategories: number;
                 page: number;
                 limit: number;
-            } = await APICaller.getCategoryList(1, 10);
+            } = await APICaller.getCategoryList(page, limit);
 
             setCategories(categoriesData.categories);
 
@@ -66,13 +69,13 @@ export default function AdminCategoryList() {
             );
 
             setPagination({
-                link: StringResource.linkAdminCategoryList,
+                link: pathname,
                 page: categoriesData.page,
                 limit: categoriesData.limit,
                 totalPage: totalPage,
             });
         })();
-    }, [page, limit]);
+    }, [page, limit, pathname]);
 
     let indexIncrement = (page - 1) * limit;
 

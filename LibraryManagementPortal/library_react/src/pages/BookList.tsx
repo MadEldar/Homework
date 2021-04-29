@@ -6,62 +6,66 @@ import Pagination from "../components/Pagination";
 import ParamBuilder from "../helpers/ParamBuilder";
 import Book from "../models/Book";
 import PaginationInfo from "../models/PaginationInfo";
-import StringResource from "../resources/StringResource";
 import APICaller from "../services/APICaller.service";
 
-export default function BookList() {
+export default function BookList({initBooks}: {initBooks?: Book[]}) {
     const history = useHistory();
-    const [books, setBooks] = useState<Book[]>([]);
+    const pathname = history.location.pathname;
+
+    const query = new URLSearchParams(useLocation().search);
+    const page = Number.parseInt(query.get("page")!) || 1;
+    const limit = Number.parseInt(query.get("limit")!) || 10;
+
+    const [books, setBooks] = useState<Book[]>(initBooks ?? []);
     const [pagination, setPagination] = useState<PaginationInfo>({
-        link: StringResource.linkBook,
+        link: pathname,
         page: 1,
         limit: 10,
         totalPage: 1,
     });
+    const hasBooks = initBooks && initBooks.length > 0;
 
-    let query = new URLSearchParams(useLocation().search);
-
-    if (!query.get("page") || !query.get("limit")) {
-        history.replace({
-            pathname: StringResource.linkBook,
-            search: ParamBuilder({
-                page: "1",
-                limit: "10",
-            }),
-        });
+    if (!hasBooks) {    
+        if (!query.get("page") || !query.get("limit")) {
+            history.replace({
+                pathname: pathname,
+                search: ParamBuilder({
+                    page: "1",
+                    limit: "10",
+                }),
+            });
+        }
     }
-
-    const page = Number.parseInt(query.get("page")!) || 1;
-    const limit = Number.parseInt(query.get("limit")!) || 10;
 
     const [firstIndex, setFirstIndex] = useState(0);
 
     useEffect(() => {
-        (async () => {
-            const booksData: {
-                books: Book[];
-                totalBooks: number;
-                page: number;
-                limit: number;
-            } = await APICaller.getBookList(
-                isNaN(page) ? 1 : page,
-                isNaN(limit) ? 10 : limit
-            );
-
-            setBooks(booksData.books);
-
-            var totalPage = Math.ceil(booksData.totalBooks / booksData.limit);
-
-            setPagination({
-                link: StringResource.linkBook,
-                page: booksData.page,
-                limit: booksData.limit,
-                totalPage: totalPage,
-            });
-
-            setFirstIndex((booksData.page - 1) * limit);
-        })();
-    }, [page, limit]);
+        if (!hasBooks) {
+            (async () => {
+                setBooks([]);
+                
+                const booksData: {
+                    books: Book[];
+                    totalBooks: number;
+                    page: number;
+                    limit: number;
+                } = await APICaller.getBookList(page, limit);
+    
+                setBooks(booksData.books);
+    
+                var totalPage = Math.ceil(booksData.totalBooks / booksData.limit);
+    
+                setPagination({
+                    link: pathname,
+                    page: booksData.page,
+                    limit: booksData.limit,
+                    totalPage: totalPage,
+                });
+    
+                setFirstIndex((booksData.page - 1) * booksData.limit);
+            })();
+        }
+    }, [page, limit, hasBooks, pathname]);
 
     let indexIncrement = 0;
     
@@ -83,7 +87,7 @@ export default function BookList() {
                         {books.map((b) => (
                             <BookItem
                                 book={b}
-                                index={isNaN(firstIndex) ? 0 : firstIndex + ++indexIncrement}
+                                index={firstIndex + ++indexIncrement}
                                 key={b.id}
                                 isAdmin={false}
                                 hasRequest={false}

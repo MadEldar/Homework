@@ -18,8 +18,8 @@ export default function Pagination({
     const isLastPage = page === totalPage;
 
     return (
-        <div className={className ?? ""}>
-            <nav aria-label="Page navigation example">
+        <div className={(className ?? "") + " row"}>
+            <nav aria-label="Page navigation">
                 <ul className="pagination justify-content-end">
                     <li
                         className={`page-item${isFirstPage ? " disabled" : ""}`}
@@ -58,6 +58,13 @@ export default function Pagination({
                     </li>
                 </ul>
             </nav>
+            <div className="form-group ml-3">
+                <select name="limit" className="form-control">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                </select>
+            </div>
         </div>
     );
 }

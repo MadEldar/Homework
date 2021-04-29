@@ -1,4 +1,4 @@
-import { BookRequest } from "../components/BookRequest";
+import { BookRequestItem } from "../components/BookRequestItem";
 import { UserInfo } from "../components/UserInfo";
 
 export function UserProfile() {
@@ -6,12 +6,12 @@ export function UserProfile() {
         <>
             <div className="col-12 container">
                 <div className="row">
-                    <UserInfo />
+                    <UserInfo isAdmin={false} />
                 </div>
             </div>
             <div className="col-12 container">
                 <div className="row">
-                    <BookRequest />
+                    <BookRequestItem />
                 </div>
             </div>
         </>

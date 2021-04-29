@@ -24,7 +24,7 @@ namespace LibraryAPI.Repositories
         public async Task<OperatingStatus> DeleteUserAsync(User user)
         {
             if (user.Requests.Count > 0) return OperatingStatus.RelationshipExists;
-            
+
             return await DeleteAsync(user).ConfigureAwait(false);
         }
     }

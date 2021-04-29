@@ -3,7 +3,7 @@ import Book from "../models/Book";
 import RequestInterface from "../models/RequestInterface";
 import APICaller from "../services/APICaller.service";
 
-export function BookRequest() {
+export function BookRequestItem() {
     const [requests, setRequests] = useState<RequestInterface[]>([]);
 
     useEffect(() => {
@@ -23,7 +23,16 @@ export function BookRequest() {
                         <div className="card">
                             <div className="card-header">
                                 <h5 className="card-title">
-                                    {new Date(Date.parse(r.requestedDate)).toLocaleString("en-US")}
+                                    {new Date(
+                                        Date.parse(r.requestedDate)
+                                    ).toLocaleString("en-US")}
+                                    <span className="float-right">
+                                        {r.status === 0
+                                            ? "Pending"
+                                            : r.status === 1
+                                                ? "Approved"
+                                                : "Rejected"}
+                                    </span>
                                 </h5>
                             </div>
                             <div className="card-body">

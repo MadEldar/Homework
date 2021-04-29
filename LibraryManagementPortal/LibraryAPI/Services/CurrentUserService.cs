@@ -44,7 +44,7 @@ namespace LibraryAPI.Services
 
             if (user == null) return OperatingStatus.KeyNotFound;
 
-            var currentMonthRequests = user.Requests.Where(r => r.RequestedDate.Month == DateTime.Now.Month);
+            var currentMonthRequests = user.Requests.Where(r => r.RequestedDate.Month == DateTime.Now.Month && r.Status != RequestStatus.Rejected);
 
             var allRequests = currentMonthRequests.SelectMany(r => r.BookRequests);
 

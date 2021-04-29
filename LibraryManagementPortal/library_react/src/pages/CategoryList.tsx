@@ -6,14 +6,14 @@ import Pagination from "../components/Pagination";
 import ParamBuilder from "../helpers/ParamBuilder";
 import Category from "../models/Category";
 import PaginationInfo from "../models/PaginationInfo";
-import StringResource from "../resources/StringResource";
 import APICaller from "../services/APICaller.service";
 
 export default function CategoryList() {
     const history = useHistory();
+    const pathname = history.location.pathname;
     const [categories, setCategories] = useState<Category[]>([]);
     const [pagination, setPagination] = useState<PaginationInfo>({
-        link: StringResource.linkCategory,
+        link: pathname,
         page: 1,
         limit: 10,
         totalPage: 1,
@@ -23,7 +23,7 @@ export default function CategoryList() {
 
     if (!query.get("page") || !query.get("limit")) {
         history.replace({
-            pathname: StringResource.linkCategory,
+            pathname: pathname,
             search: ParamBuilder({
                 page: "1",
                 limit: "10",
@@ -38,22 +38,21 @@ export default function CategoryList() {
 
     useEffect(() => {
         (async () => {
+            setCategories([]);
+            
             const categoriesData: {
                 categories: Category[];
                 totalCategories: number;
                 page: number;
                 limit: number;
-            } = await APICaller.getCategoryList(
-                isNaN(page) ? 1 : page,
-                isNaN(limit) ? 10 : limit
-            );
+            } = await APICaller.getCategoryList(page, limit);
 
             setCategories(categoriesData.categories);
 
             var totalPage = Math.ceil(categoriesData.totalCategories / categoriesData.limit);
 
             setPagination({
-                link: StringResource.linkCategory,
+                link: pathname,
                 page: categoriesData.page,
                 limit: categoriesData.limit,
                 totalPage: totalPage,
@@ -61,7 +60,7 @@ export default function CategoryList() {
 
             setFirstIndex((categoriesData.page - 1) * limit);
         })();
-    }, [page, limit]);
+    }, [page, limit, pathname]);
 
     let indexIncrement = 0;
 
@@ -75,7 +74,6 @@ export default function CategoryList() {
                             <th scope="col">#</th>
                             <th scope="col">Name</th>
                             <th scope="col">Books</th>
-                            <th scope="col">Actions</th>
                         </tr>
                     </thead>
                     <tbody>

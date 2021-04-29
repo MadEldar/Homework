@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import {
     saveBookIds,
     getSavedBookIds,
@@ -21,6 +21,7 @@ export default function BookItem({
     hasRequest: boolean;
     setTargetId?: Dispatch<SetStateAction<string>>;
 }) {
+    const history = useHistory();
     const [savedBooksIds, setSavedBookIds] = useState<string[]>(
         getSavedBookIds()
     );
@@ -36,17 +37,31 @@ export default function BookItem({
             <th scope="row" className=" text-center">
                 {index}
             </th>
-            <td>{book.title}</td>
+            <td>
+                <Link to={StringResource.linkBookDetails + book.id}>
+                    {book.title}
+                </Link>
+            </td>
             <td>{book.author}</td>
-            <td>{book.category!.name}</td>
+            <td>
+                {!history.location.pathname.includes(StringResource.linkCategoryDetails) ? (
+                    <Link
+                        to={
+                            StringResource.linkCategoryDetails + book.categoryId
+                        }
+                    >
+                        {book.category!.name}
+                    </Link>
+                ) : (
+                    book.category!.name
+                )}
+            </td>
             <td className=" text-center">
                 {isAdmin ? (
                     <>
                         <Link
                             className="btn"
-                            to={
-                                StringResource.linkAdminBookEdit + `${book.id}`
-                            }
+                            to={StringResource.linkAdminBookEdit + `${book.id}`}
                         >
                             Edit
                         </Link>
@@ -80,7 +95,8 @@ export default function BookItem({
                             <></>
                         )}
                         {!isSaved ? (
-                            <a
+                            <button
+                                className="btn"
                                 type="button"
                                 onClick={() => {
                                     saveBookIds(book.id);
@@ -88,9 +104,10 @@ export default function BookItem({
                                 }}
                             >
                                 Add to saved
-                            </a>
+                            </button>
                         ) : (
-                            <a
+                            <button
+                                className="btn"
                                 type="button"
                                 onClick={() => {
                                     removeSavedBookIds(book.id);
@@ -98,7 +115,7 @@ export default function BookItem({
                                 }}
                             >
                                 Remove from saved
-                            </a>
+                            </button>
                         )}
                     </>
                 )}

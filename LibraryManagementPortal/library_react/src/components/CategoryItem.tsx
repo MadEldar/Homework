@@ -1,5 +1,6 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { Link } from "react-router-dom";
+import Book from "../models/Book";
 import Category from "../models/Category";
 import StringResource from "../resources/StringResource";
 
@@ -17,12 +18,20 @@ export default function CategoryItem({
     return (
         <tr key={category.id}>
             <th scope="row">{isNaN(index) ? 1 : index}</th>
-            <td>{category.name}</td>
+            <td>
+                <Link to={StringResource.linkCategoryDetails + category.id}>
+                    {category.name}
+                </Link>
+            </td>
             <td>
                 {!category.books || category.books.length === 0 ? (
-                    <p>No category was found in this category</p>
+                    <p>No book was found in this category</p>
                 ) : (
-                    category.books!.map((b) => <Link to="">{b.title}, </Link>)
+                    category.books!.map((b: Book) => (
+                        <Link to={StringResource.linkBookDetails + b.id}>
+                            {b.title},{" "}
+                        </Link>
+                    ))
                 )}
             </td>
             <td>
@@ -49,9 +58,7 @@ export default function CategoryItem({
                         </button>
                     </>
                 ) : (
-                    <Link to={StringResource.linkCategory + category.id}>
-                        Browse
-                    </Link>
+                    <></>
                 )}
             </td>
         </tr>

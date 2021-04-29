@@ -16,6 +16,8 @@ import "antd/dist/antd.css";
 import NewRequest from "./pages/NewRequest";
 import AdminCategoryList from "./pages/Admin/CategoryList";
 import { AdminCategoryCreate } from "./pages/Admin/CategoryCreate";
+import CategoryDetails from "./pages/CategoryDetails";
+import BookDetails from "./pages/BookDetails";
 
 function App() {
     const [isAdmin, setIsAdmin] = useState(false);
@@ -67,8 +69,16 @@ function App() {
             page: <BookList />,
         },
         {
+            link: StringResource.linkBookDetails + ":id",
+            page: <BookDetails />,
+        },
+        {
             link: StringResource.linkCategory,
             page: <CategoryList />,
+        },
+        {
+            link: StringResource.linkCategoryDetails + ":id",
+            page: <CategoryDetails />,
         },
         {
             link: StringResource.linkNewRequest,
@@ -185,6 +195,7 @@ function App() {
                                             <></>
                                         )}
                                     </ul>
+                                    {/* TODO: search function
                                     <form className="form-inline my-2 my-lg-0">
                                         <input
                                             className="form-control mr-sm-2"
@@ -198,7 +209,7 @@ function App() {
                                         >
                                             Search
                                         </button>
-                                    </form>
+                                    </form> */}
                                 </div>
                             </nav>
                             <Switch>

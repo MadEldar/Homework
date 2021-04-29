@@ -12,9 +12,10 @@ import APICaller from "../../services/APICaller.service";
 
 export default function AdminBookList() {
     const history = useHistory();
+    const pathname = history.location.pathname
     const [books, setBooks] = useState<Book[]>([]);
     const [pagination, setPagination] = useState<PaginationInfo>({
-        link: StringResource.linkAdminBookList,
+        link: pathname,
         page: 1,
         limit: 10,
         totalPage: 1,
@@ -35,7 +36,7 @@ export default function AdminBookList() {
 
     if (!query.get("page") || !query.get("limit")) {
         history.replace({
-            pathname: StringResource.linkAdminBookList,
+            pathname: pathname,
             search: ParamBuilder({
                 page: "1",
                 limit: "10",
@@ -48,28 +49,27 @@ export default function AdminBookList() {
 
     useEffect(() => {
         (async () => {
+            setBooks([]);
+
             const booksData: {
                 books: Book[];
                 totalBooks: number;
                 page: number;
                 limit: number;
-            } = await APICaller.getBookList(
-                isNaN(page) ? 1 : page,
-                isNaN(limit) ? 10 : limit
-            );
+            } = await APICaller.getBookList(page, limit);
 
             setBooks(booksData.books);
 
             var totalPage = Math.ceil(booksData.totalBooks / booksData.limit);
 
             setPagination({
-                link: StringResource.linkAdminBookList,
+                link: pathname,
                 page: booksData.page,
                 limit: booksData.limit,
                 totalPage: totalPage,
             });
         })();
-    }, [page, limit]);
+    }, [page, limit, pathname]);
 
     let indexIncrement = (page - 1) * limit;
 

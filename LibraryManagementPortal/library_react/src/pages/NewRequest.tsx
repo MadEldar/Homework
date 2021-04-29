@@ -11,9 +11,10 @@ import APICaller from "../services/APICaller.service";
 
 export default function NewRequest() {
     const history = useHistory();
+    const pathname = history.location.pathname;
     const [requestBooks, setRequestBooks] = useState<Book[]>([]);
     const [pagination, setPagination] = useState<PaginationInfo>({
-        link: StringResource.linkNewRequest,
+        link: pathname,
         page: 1,
         limit: 10,
         totalPage: 1,
@@ -23,7 +24,7 @@ export default function NewRequest() {
 
     if (!query.get("page") || !query.get("limit")) {
         history.replace({
-            pathname: StringResource.linkNewRequest,
+            pathname: pathname,
             search: ParamBuilder({
                 page: "1",
                 limit: "10",
@@ -38,9 +39,9 @@ export default function NewRequest() {
         (async () => {
             const bookIds = getSavedBookIds();
 
-            if (bookIds.length === 0) {
-                setRequestBooks([]);
-            } else {
+            setRequestBooks([]);
+
+            if (bookIds.length > 0) {
                 const response = await APICaller.getBooksByIds(
                     bookIds,
                     page,
@@ -52,14 +53,14 @@ export default function NewRequest() {
                 var totalPage = Math.ceil(response.totalBooks / response.limit);
 
                 setPagination({
-                    link: StringResource.linkNewRequest,
+                    link: pathname,
                     page: response.page,
                     limit: response.limit,
                     totalPage: totalPage,
                 });
             }
         })();
-    }, [page, limit]);
+    }, [page, limit, pathname]);
 
     let indexIncrement = (page - 1) * limit;
 
@@ -70,6 +71,10 @@ export default function NewRequest() {
         const ids: string[] = formData.getAll("ids").map((id) => id.toString());
 
         const result = await APICaller.postRequest(ids).then();
+
+        if (result.data.statusCode === 201) {
+            history.push(StringResource.linkUserProfile);
+        }
     }
 
     return (
