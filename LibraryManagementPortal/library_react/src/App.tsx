@@ -44,6 +44,12 @@ function App() {
 
     const routes: { link: string; page: JSX.Element }[] = [
         {
+            link: StringResource.linkHome,
+            page: <div className="container">
+                <h3 className="text-center">Welcome</h3>
+            </div>,
+        },
+        {
             link: StringResource.linkUserProfile,
             page: <UserProfile />,
         },

@@ -66,6 +66,7 @@ export default function NewRequest() {
 
     async function sendBookRequest(e: any) {
         e.preventDefault();
+
         const formData = new FormData(e.target);
 
         const ids: string[] = formData.getAll("ids").map((id) => id.toString());
@@ -79,31 +80,35 @@ export default function NewRequest() {
 
     return (
         <div className="container mt-5">
-            <form id="requestForm" className="row" onSubmit={sendBookRequest}>
-                <h2 className="w-100 text-center">Saved books</h2>
-                <table className="table table-striped mt-5">
-                    <thead>
-                        <tr>
-                            <th scope="col" className=" text-center">
-                                #
-                            </th>
-                            <th scope="col" className=" text-center">
-                                Title
-                            </th>
-                            <th scope="col" className=" text-center">
-                                Author
-                            </th>
-                            <th scope="col" className=" text-center">
-                                Category
-                            </th>
-                            <th scope="col" className=" text-center">
-                                Action
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {requestBooks.length > 0 ? (
-                            requestBooks.map((b) => (
+            {requestBooks.length > 0 ? (
+                <form
+                    id="requestForm"
+                    className="row"
+                    onSubmit={sendBookRequest}
+                >
+                    <h2 className="w-100 text-center">Saved books</h2>
+                    <table className="table table-striped mt-5">
+                        <thead>
+                            <tr>
+                                <th scope="col" className="text-center">
+                                    #
+                                </th>
+                                <th scope="col" className="text-center">
+                                    Title
+                                </th>
+                                <th scope="col" className="text-center">
+                                    Author
+                                </th>
+                                <th scope="col" className="text-center">
+                                    Category
+                                </th>
+                                <th scope="col" className="text-center">
+                                    Action
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {requestBooks.map((b) => (
                                 <BookItem
                                     book={b}
                                     index={++indexIncrement}
@@ -111,21 +116,19 @@ export default function NewRequest() {
                                     isAdmin={false}
                                     hasRequest={true}
                                 />
-                            ))
-                        ) : (
-                            <p className="text-center">
-                                There is no book saved in your request
-                            </p>
-                        )}
-                    </tbody>
-                </table>
-                <div className="col-12">
-                    <Pagination className="float-left" {...pagination} />
-                    <button className="btn btn-primary float-right mr-2">
-                        Request books
-                    </button>
-                </div>
-            </form>
+                            ))}
+                        </tbody>
+                    </table>
+                    <div className="col-12">
+                        <Pagination className="float-left" {...pagination} />
+                        <button className="btn btn-primary float-right mr-2">
+                            Request books
+                        </button>
+                    </div>
+                </form>
+            ) : (
+                <h5 className="text-center">You haven't saved any book</h5>
+            )}
         </div>
     );
 }

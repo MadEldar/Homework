@@ -75,7 +75,7 @@ export default function AdminBookList({ initBooks }: { initBooks?: Book[] }) {
                 });
             })();
         }
-    }, [page, limit, pathname]);
+    }, [page, limit, pathname, hasBooks]);
 
     let indexIncrement = (page - 1) * limit;
 

@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Dispatch, SetStateAction } from "react";
+import { Link } from "react-router-dom";
 import User from "../models/User";
 import StringResource from "../resources/StringResource";
 

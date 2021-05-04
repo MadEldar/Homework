@@ -66,8 +66,6 @@ export default function AdminRequestList({
                     requestData.totalCategories / requestData.limit
                 );
 
-                console.log(requestData);
-
                 setPagination({
                     link: pathname,
                     page: requestData.page,
@@ -76,7 +74,7 @@ export default function AdminRequestList({
                 });
             }
         })();
-    }, [page, limit, pathname, stateChange]);
+    }, [page, limit, pathname, stateChange, hasRequests]);
 
     let indexIncrement = (page - 1) * limit;
 

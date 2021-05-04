@@ -13,37 +13,37 @@ const APICaller = {
     deleteBook: async (bookId: string) => {
         return await axios({
             method: "delete",
-            url: APIUrlBuiler.getAdminBookManagement + `${bookId}`,
+            url: APIUrlBuiler.getAdminBookManagement + bookId,
         }).then((res) => res.data);
     },
     deleteCategory: async (categoryId: string) => {
         return await axios({
             method: "delete",
-            url: APIUrlBuiler.getAdminCategoryManagement + `${categoryId}`,
+            url: APIUrlBuiler.getAdminCategoryManagement + categoryId,
         }).then((res) => res.data);
     },
     deleteRequest: async (requestId: string) => {
         return await axios({
             method: "delete",
-            url: APIUrlBuiler.getAdminRequestManagement + `${requestId}`,
+            url: APIUrlBuiler.getAdminRequestManagement + requestId,
         }).then((res) => res.data);
     },
     deleteUser: async (userId: string) => {
         return await axios({
             method: "delete",
-            url: APIUrlBuiler.getAdminUserManagement + `${userId}`,
+            url: APIUrlBuiler.getAdminUserManagement + userId,
         }).then((res) => res.data);
     },
     getBookById: async (id: string) => {
         return await axios({
             method: "get",
-            url: APIUrlBuiler.getBook + `${id}`,
+            url: APIUrlBuiler.getBook + id,
         }).then((res) => res.data);
     },
     getBookList: async (page: number = 1, limit: number = 10) => {
         return await axios({
             method: "get",
-            url: APIUrlBuiler.getBook + `?page=${page}&limit=${limit}`,
+            url: APIUrlBuiler.getBook + `list?page=${page}&limit=${limit}`,
         }).then((res) => res.data);
     },
     getBooksByIds: async (ids: string[], page: number, limit: number) => {
@@ -62,7 +62,7 @@ const APICaller = {
     getCategoryById: async (id: string) => {
         return await axios({
             method: "get",
-            url: APIUrlBuiler.getCategory + `${id}`,
+            url: APIUrlBuiler.getCategory + id,
         }).then((res) => res.data);
     },
     getCategoryList: async (page: number = 1, limit: number = 10) => {
@@ -86,7 +86,7 @@ const APICaller = {
     getUserById: async (id: string) => {
         return await axios({
             method: "get",
-            url: APIUrlBuiler.getAdminUserManagement + `${id}`,
+            url: APIUrlBuiler.getAdminUserManagement + id,
         }).then((res) => res.data);
     },
     getCurrentUser: async () => {

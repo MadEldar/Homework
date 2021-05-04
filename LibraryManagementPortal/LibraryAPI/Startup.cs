@@ -34,6 +34,7 @@ namespace LibraryAPI
                     name: StringResource.CorsAllowedOrigin,
                     builder => builder
                         .WithOrigins("http://localhost:3000")
+                        .WithOrigins("http://172.16.26.33:3000/")
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials()

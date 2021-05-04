@@ -45,7 +45,7 @@ namespace LibraryAPI.Controllers
             });
         }
 
-        [HttpGet("")]
+        [HttpGet("list")]
         public async Task<IActionResult> GetBookPaginationListAsync(int page = 1, int limit = 10)
         {
             var books = _service

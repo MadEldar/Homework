@@ -28,7 +28,7 @@ export function BookForm({ book, handler }: { book?: Book; handler: any }) {
                 id: book?.id,
             });
         }
-    }, []);
+    }, [book, reset]);
 
     return (
         <form className="col-6" onSubmit={handleSubmit(handler)}>
