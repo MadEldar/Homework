@@ -3,7 +3,7 @@ import { CategoryForm } from "../../components/CategoryForm";
 import StringResource from "../../resources/StringResource";
 import APICaller from "../../services/APICaller.service";
 
-export function AdminCategoryCreate() {
+export default function AdminCategoryCreate() {
     const history = useHistory();
 
     function submitCreate(data: {
@@ -16,16 +16,16 @@ export function AdminCategoryCreate() {
         (async () => {
             const response = await APICaller.postCategory(formData).then();
 
-            if (response.data.statusCode === 201) {
+            if (response.statusCode === 201) {
                 // TODO: fix api header to send book id
-                // const bookId = response.data.headers.find(
+                // const bookId = response.headers.find(
                 //     (h: { key: string; value: string[] }) => h.key === "CategoryId"
                 // ).value[0];
 
-                const reasonPhrase: string = response.data.reasonPhrase;
+                const reasonPhrase: string = response.reasonPhrase;
 
                 history.push(
-                    StringResource.linkAdminCategoryDetails + `${reasonPhrase.slice(reasonPhrase.indexOf(": ") + 2)}`
+                    StringResource.linkCategoryDetails + `${reasonPhrase.slice(reasonPhrase.indexOf(": ") + 2)}`
                 );
             }
         })();

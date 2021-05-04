@@ -65,7 +65,7 @@ export default function CategoryList() {
     let indexIncrement = 0;
 
     return (
-        <div className="container mt-5">
+        <div className="container mt-4">
             <div className="row">
                 <h2 className="w-100 text-center">Category List</h2>
                 <table className="table table-striped mt-5">

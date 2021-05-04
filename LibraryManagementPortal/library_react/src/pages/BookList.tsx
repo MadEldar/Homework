@@ -70,7 +70,7 @@ export default function BookList({initBooks}: {initBooks?: Book[]}) {
     let indexIncrement = 0;
     
     return (
-        <div className="container mt-5">
+        <div className="container mt-4">
             <div className="row">
                 <h2 className="w-100 text-center">Book List</h2>
                 <table className="table table-striped mt-5">
@@ -95,7 +95,7 @@ export default function BookList({initBooks}: {initBooks?: Book[]}) {
                         ))}
                     </tbody>
                 </table>
-                <Pagination {...pagination} />
+                {!hasBooks ? <Pagination {...pagination} /> : <></>}
             </div>
         </div>
     );

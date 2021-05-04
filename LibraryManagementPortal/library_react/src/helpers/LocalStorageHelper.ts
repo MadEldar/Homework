@@ -35,10 +35,7 @@ export const saveBookIds = (id: string) => {
 
     storageIds.push(id);
 
-    localStorage.setItem(
-        StringResource.requestedBookIds,
-        storageIds.join("&")
-    );
+    localStorage.setItem(StringResource.requestedBookIds, storageIds.join("&"));
 };
 
 export const removeSavedBookIds = (id: string) => {
@@ -61,9 +58,9 @@ const LocalStorageHelper = {
     getAuthToken,
     setAuthToken,
     logout,
-    getRequestBookIds: getSavedBookIds,
-    addRequestBookIds: saveBookIds,
-    removeRequestBookIds: removeSavedBookIds,
+    getSavedBookIds,
+    saveBookIds,
+    removeSavedBookIds,
 };
 
 export default LocalStorageHelper;

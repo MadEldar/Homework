@@ -1,5 +1,6 @@
 using System;
 using LibraryAPI.Helpers;
+using LibraryAPI.Resources;
 
 namespace LibraryAPI.Models
 {
@@ -7,7 +8,7 @@ namespace LibraryAPI.Models
     {
         public Guid UserId { get; set; }
         public string Token { get; set; }
-        public DateTime ExpirationDate { get; set; } = DateTime.Now.AddHours(3);
+        public DateTime ExpirationDate { get; set; } = DateTime.Now.AddHours(IntegerResource.sessionTime);
         public virtual User User { get; set; }
 
         public UserToken(Guid userId)
@@ -18,7 +19,7 @@ namespace LibraryAPI.Models
 
         public void RefreshToken()
         {
-            ExpirationDate = ExpirationDate.AddHours(3);
+            ExpirationDate = ExpirationDate.AddHours(IntegerResource.sessionTime);
         }
     }
 }

@@ -19,7 +19,13 @@ export default function CategoryItem({
         <tr key={category.id}>
             <th scope="row">{isNaN(index) ? 1 : index}</th>
             <td>
-                <Link to={StringResource.linkCategoryDetails + category.id}>
+                <Link
+                    to={
+                        (isAdmin
+                            ? StringResource.linkAdminCategoryDetails
+                            : StringResource.linkCategoryDetails) + category.id
+                    }
+                >
                     {category.name}
                 </Link>
             </td>
@@ -28,7 +34,13 @@ export default function CategoryItem({
                     <p>No book was found in this category</p>
                 ) : (
                     category.books!.map((b: Book) => (
-                        <Link to={StringResource.linkBookDetails + b.id}>
+                        <Link
+                            to={
+                                (isAdmin
+                                    ? StringResource.linkAdminBookDetails
+                                    : StringResource.linkBookDetails) + b.id
+                            }
+                        >
                             {b.title},{" "}
                         </Link>
                     ))

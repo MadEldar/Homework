@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { Link, useLocation } from "react-router-dom";
-import CategoryItem from "../../components/CategoryItem";
+import UserItem from "../../components/UserItem";
 import ConfirmModal from "../../components/ConfirmModal";
 import Pagination from "../../components/Pagination";
 import ParamBuilder from "../../helpers/ParamBuilder";
-import Category from "../../models/Category";
+import User from "../../models/User";
 import PaginationInfo from "../../models/PaginationInfo";
 import StringResource from "../../resources/StringResource";
 import APICaller from "../../services/APICaller.service";
 
-export default function AdminCategoryList() {
+export default function AdminUserList() {
     const history = useHistory();
     const pathname = history.location.pathname;
-    const [categories, setCategories] = useState<Category[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
     const [pagination, setPagination] = useState<PaginationInfo>({
         link: pathname,
         page: 1,
@@ -22,16 +22,12 @@ export default function AdminCategoryList() {
     });
     const [deleteTargetId, setDeleteTargetId] = useState("");
 
-    function deleteCategory() {
+    function deleteUser() {
         (async () => {
-            const result = await APICaller.deleteCategory(
-                deleteTargetId
-            ).then();
+            const result = await APICaller.deleteUser(deleteTargetId).then();
 
             if (result.statusCode === 200) {
-                setCategories(
-                    categories.filter((b) => b.id !== deleteTargetId)
-                );
+                setUsers(users.filter((b) => b.id !== deleteTargetId));
             }
         })();
     }
@@ -53,25 +49,23 @@ export default function AdminCategoryList() {
 
     useEffect(() => {
         (async () => {
-            setCategories([]);
+            setUsers([]);
 
-            const categoriesData: {
-                categories: Category[];
-                totalCategories: number;
+            const usersData: {
+                users: User[];
+                totalUsers: number;
                 page: number;
                 limit: number;
-            } = await APICaller.getCategoryList(page, limit);
+            } = await APICaller.getUserList(page, limit);
 
-            setCategories(categoriesData.categories);
+            setUsers(usersData.users);
 
-            var totalPage = Math.ceil(
-                categoriesData.totalCategories / categoriesData.limit
-            );
+            var totalPage = Math.ceil(usersData.totalUsers / usersData.limit);
 
             setPagination({
                 link: pathname,
-                page: categoriesData.page,
-                limit: categoriesData.limit,
+                page: usersData.page,
+                limit: usersData.limit,
                 totalPage: totalPage,
             });
         })();
@@ -83,28 +77,25 @@ export default function AdminCategoryList() {
         <>
             <div className="container mt-4">
                 <div className="row">
-                    <h2 className="col-8 offset-2 text-center">
-                        Category List
-                    </h2>
+                    <h2 className="col-8 offset-2 text-center">User List</h2>
                     <Link
-                        to={StringResource.linkAdminCategoryCreate}
+                        to={StringResource.linkAdminUserCreate}
                         className="col-2 btn btn-primary"
                     >
-                        Create new category
+                        Create new user
                     </Link>
                     <table className="table table-striped mt-5">
                         <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Name</th>
-                                <th scope="col">Books</th>
-                                <th scope="col">Action</th>
+                                <th scope="col">Username</th>
+                                <th scope="col">Role</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {categories.map((b) => (
-                                <CategoryItem
-                                    category={b}
+                            {users.map((b) => (
+                                <UserItem
+                                    user={b}
                                     index={++indexIncrement}
                                     key={b.id}
                                     isAdmin={true}
@@ -120,9 +111,9 @@ export default function AdminCategoryList() {
             <ConfirmModal
                 id="modalDelete"
                 action="delete"
-                confirmMessage="Are you sure you want to delete this category?"
-                title="Delete category"
-                handleConfirm={deleteCategory}
+                confirmMessage="Are you sure you want to delete this user?"
+                title="Delete user"
+                handleConfirm={deleteUser}
                 targetId={deleteTargetId}
             />
         </>

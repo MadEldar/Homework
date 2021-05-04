@@ -5,6 +5,8 @@ const APIUrlBuiler = {
     currentUserRequests: `${baseUrl}user/requests/`,
     getAdminBookManagement: `${baseUrl}admin/bookmanagement/`,
     getAdminCategoryManagement: `${baseUrl}admin/categorymanagement/`,
+    getAdminUserManagement: `${baseUrl}admin/usermanagement/`,
+    getAdminRequestManagement: `${baseUrl}admin/requestmanagement/`,
     getBook: `${baseUrl}book/`,
     getCategory: `${baseUrl}category/`,
     requestBook: `${baseUrl}user/request-books/`,

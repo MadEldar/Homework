@@ -38,16 +38,27 @@ export default function BookItem({
                 {index}
             </th>
             <td>
-                <Link to={StringResource.linkBookDetails + book.id}>
+                <Link
+                    to={
+                        (isAdmin
+                            ? StringResource.linkAdminBookDetails
+                            : StringResource.linkBookDetails) + book.id
+                    }
+                >
                     {book.title}
                 </Link>
             </td>
             <td>{book.author}</td>
             <td>
-                {!history.location.pathname.includes(StringResource.linkCategoryDetails) ? (
+                {!history.location.pathname.includes(
+                    StringResource.linkCategoryDetails
+                ) ? (
                     <Link
                         to={
-                            StringResource.linkCategoryDetails + book.categoryId
+                            (isAdmin
+                                ? StringResource.linkAdminCategoryDetails
+                                : StringResource.linkCategoryDetails) +
+                            book.categoryId
                         }
                     >
                         {book.category!.name}

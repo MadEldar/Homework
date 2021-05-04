@@ -1,8 +1,8 @@
 import "./App.css";
-import { BrowserRouter as Router, Switch, Link, Route } from "react-router-dom";
+import { Switch, Route, useHistory } from "react-router-dom";
 import Login from "./pages/Login";
-import { UserProfile } from "./pages/UserProfile";
-import { Alert } from "./components/Alert";
+import UserProfile from "./pages/UserProfile";
+import Alert from "./components/Alert";
 import { useEffect, useState } from "react";
 import AlertMessage from "./models/AlertMessage";
 import StringResource from "./resources/StringResource";
@@ -10,54 +10,37 @@ import { logout } from "./helpers/LocalStorageHelper";
 import BookList from "./pages/BookList";
 import CategoryList from "./pages/CategoryList";
 import AdminBookList from "./pages/Admin/BookList";
-import { AdminBookCreate } from "./pages/Admin/BookCreate";
-import { AdminBookEdit } from "./pages/Admin/BookEdit";
-import "antd/dist/antd.css";
+import AdminBookCreate from "./pages/Admin/BookCreate";
+import AdminBookEdit from "./pages/Admin/BookEdit";
 import NewRequest from "./pages/NewRequest";
 import AdminCategoryList from "./pages/Admin/CategoryList";
-import { AdminCategoryCreate } from "./pages/Admin/CategoryCreate";
+import AdminCategoryCreate from "./pages/Admin/CategoryCreate";
 import CategoryDetails from "./pages/CategoryDetails";
 import BookDetails from "./pages/BookDetails";
+import NavigationBar from "./components/NavigationBar";
+import AdminUserList from "./pages/Admin/UserList";
+import AdminUserDetails from "./pages/Admin/UserDetails";
+import AdminRequestList from "./pages/Admin/RequestList";
+import AdminCategoryDetails from "./pages/Admin/CategoryDetails";
+import AdminBookDetails from "./pages/Admin/BookDetails";
 
 function App() {
-    const [isAdmin, setIsAdmin] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(localStorage.getItem(StringResource.admin) !== null);
     const authToken = localStorage.getItem("AuthToken");
+    const history = useHistory();
 
     if (
         (!authToken || authToken === "") &&
-        window.location.pathname !== StringResource.linkLogin
+        history.location.pathname !== StringResource.linkLogin
     ) {
-        window.location.href = StringResource.linkLogin;
+        history.push(StringResource.linkLogin);
     } else if (
         authToken &&
         authToken !== "" &&
-        window.location.pathname === StringResource.linkLogin
+        history.location.pathname === StringResource.linkLogin
     ) {
-        window.location.href = StringResource.linkHome;
+        history.push(StringResource.linkHome);
     }
-
-    const navLinks: { link: string; name: string }[] = [
-        {
-            link: StringResource.linkUserProfile,
-            name: "User profile",
-        },
-        {
-            link: StringResource.linkBook,
-            name: "Book list",
-        },
-        {
-            link: StringResource.linkCategory,
-            name: "Category list",
-        },
-        {
-            link: StringResource.linkNewRequest,
-            name: "Saved",
-        },
-        {
-            link: StringResource.linkLogout,
-            name: "Logout",
-        },
-    ];
 
     const routes: { link: string; page: JSX.Element }[] = [
         {
@@ -85,8 +68,8 @@ function App() {
             page: <NewRequest />,
         },
         {
-            link: StringResource.linkAdminBookList,
-            page: <AdminBookList />,
+            link: StringResource.linkAdminBookDetails + ":id",
+            page: <AdminBookDetails />,
         },
         {
             link: StringResource.linkAdminBookCreate,
@@ -97,12 +80,32 @@ function App() {
             page: <AdminBookEdit />,
         },
         {
+            link: StringResource.linkAdminBookList,
+            page: <AdminBookList />,
+        },
+        {
             link: StringResource.linkAdminCategoryCreate,
             page: <AdminCategoryCreate />,
         },
         {
+            link: StringResource.linkAdminCategoryDetails + ":id",
+            page: <AdminCategoryDetails />,
+        },
+        {
             link: StringResource.linkAdminCategoryList,
             page: <AdminCategoryList />,
+        },
+        {
+            link: StringResource.linkAdminRequestList,
+            page: <AdminRequestList />,
+        },
+        {
+            link: StringResource.linkAdminUserList,
+            page: <AdminUserList />,
+        },
+        {
+            link: StringResource.linkAdminUserDetails + ":id",
+            page: <AdminUserDetails />,
         },
     ];
 
@@ -113,7 +116,7 @@ function App() {
 
     useEffect(() => {
         setIsAdmin(localStorage.getItem(StringResource.admin) !== null);
-    }, []);
+    }, [authToken]);
 
     return (
         <div className="container">
@@ -123,108 +126,24 @@ function App() {
                     type={alertMessage.type}
                     statusCode={alertMessage.statusCode}
                 />
-                <Router>
-                    <Switch>
-                        <Route path={StringResource.linkLogin}>
-                            <Login setAlertMessage={setAlertMessage} />
-                        </Route>
-                        <Route path={StringResource.linkHome}>
-                            <nav className="col-12 navbar navbar-expand-lg navbar-light">
-                                <Link
-                                    className="navbar-brand"
-                                    to={StringResource.linkHome}
-                                >
-                                    L<span>ibrary</span> M<span>anagement</span>
-                                    P<span>ortal</span>
-                                </Link>
-                                <div
-                                    className="collapse navbar-collapse"
-                                    id="navbarSupportedContent"
-                                >
-                                    <ul className="navbar-nav mr-auto">
-                                        {navLinks.map((n) => (
-                                            <li
-                                                key={n.link}
-                                                className={`nav-item${
-                                                    window.location.pathname ===
-                                                    n.link
-                                                        ? " active"
-                                                        : ""
-                                                }`}
-                                            >
-                                                <Link
-                                                    className="nav-link"
-                                                    to={n.link}
-                                                >
-                                                    {n.name}
-                                                </Link>
-                                            </li>
-                                        ))}
-
-                                        {isAdmin ? (
-                                            <li className="nav-item dropdown">
-                                                <button
-                                                    className="btn nav-link dropdown-toggle"
-                                                    id="adminNavigation"
-                                                    data-toggle="dropdown"
-                                                    aria-haspopup="true"
-                                                    aria-expanded="false"
-                                                >
-                                                    Admin
-                                                </button>
-                                                <div
-                                                    className="dropdown-menu"
-                                                    aria-labelledby="adminNavigation"
-                                                >
-                                                    <Link
-                                                        className="dropdown-item"
-                                                        to="/admin/books"
-                                                    >
-                                                        Book list
-                                                    </Link>
-                                                    <Link
-                                                        className="dropdown-item"
-                                                        to="/admin/categories"
-                                                    >
-                                                        Category list
-                                                    </Link>
-                                                    <div className="dropdown-divider"></div>
-                                                </div>
-                                            </li>
-                                        ) : (
-                                            <></>
-                                        )}
-                                    </ul>
-                                    {/* TODO: search function
-                                    <form className="form-inline my-2 my-lg-0">
-                                        <input
-                                            className="form-control mr-sm-2"
-                                            type="search"
-                                            placeholder="Search"
-                                            aria-label="Search"
-                                        />
-                                        <button
-                                            className="btn btn-outline-success my-2 my-sm-0"
-                                            type="submit"
-                                        >
-                                            Search
-                                        </button>
-                                    </form> */}
-                                </div>
-                            </nav>
-                            <Switch>
-                                {routes.map((r) => (
-                                    <Route path={r.link} exact>
-                                        {r.page}
-                                    </Route>
-                                ))}
-                                <Route path={StringResource.linkLogout}>
-                                    {() => logout()}
+                <Switch>
+                    <Route path={StringResource.linkLogin}>
+                        <Login setAlertMessage={setAlertMessage} />
+                    </Route>
+                    <Route path={StringResource.linkHome}>
+                        <NavigationBar isAdmin={isAdmin} />
+                        <Switch>
+                            {routes.map((r) => (
+                                <Route path={r.link} exact key={r.link}>
+                                    {r.page}
                                 </Route>
-                            </Switch>
-                        </Route>
-                    </Switch>
-                </Router>
+                            ))}
+                            <Route path={StringResource.linkLogout}>
+                                {() => logout()}
+                            </Route>
+                        </Switch>
+                    </Route>
+                </Switch>
             </div>
         </div>
     );

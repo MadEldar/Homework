@@ -70,9 +70,9 @@ export default function NewRequest() {
 
         const ids: string[] = formData.getAll("ids").map((id) => id.toString());
 
-        const result = await APICaller.postRequest(ids).then();
+        const response = await APICaller.postRequest(ids).then();
 
-        if (result.data.statusCode === 201) {
+        if (response.statusCode === 201) {
             history.push(StringResource.linkUserProfile);
         }
     }

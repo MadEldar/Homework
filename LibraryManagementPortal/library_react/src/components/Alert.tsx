@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import AlertMessage from "../models/AlertMessage";
 
-export function Alert({ message, type, statusCode }: AlertMessage) {
+export default function Alert({ message, type, statusCode }: AlertMessage) {
     useEffect(() => {
         
     });

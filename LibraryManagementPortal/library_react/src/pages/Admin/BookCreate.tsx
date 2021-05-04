@@ -3,7 +3,7 @@ import { BookForm } from "../../components/BookForm";
 import StringResource from "../../resources/StringResource";
 import APICaller from "../../services/APICaller.service";
 
-export function AdminBookCreate() {
+export default function AdminBookCreate() {
     const history = useHistory();
 
     console.log("")
@@ -23,16 +23,16 @@ export function AdminBookCreate() {
         (async () => {
             const response = await APICaller.postBook(formData).then();
 
-            if (response.data.statusCode === 201) {
+            if (response.statusCode === 201) {
                 // TODO: fix api header to send book id
-                // const bookId = response.data.headers.find(
+                // const bookId = response.headers.find(
                 //     (h: { key: string; value: string[] }) => h.key === "BookId"
                 // ).value[0];
 
-                const reasonPhrase: string = response.data.reasonPhrase;
+                const reasonPhrase: string = response.reasonPhrase;
 
                 history.push(
-                    StringResource.linkAdminBookDetails + `${reasonPhrase.slice(reasonPhrase.indexOf(": ") + 2)}`
+                    StringResource.linkBookDetails + `${reasonPhrase.slice(reasonPhrase.indexOf(": ") + 2)}`
                 );
             }
         })();

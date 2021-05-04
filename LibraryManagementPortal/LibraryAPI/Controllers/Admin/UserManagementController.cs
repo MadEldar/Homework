@@ -29,19 +29,26 @@ namespace LibraryAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
-            var user = _resultService.GetUserResult(await _service.GetByIdAsync(id).ConfigureAwait(false), true);
+            var user = _resultService.GetUserResult(await _service.GetByIdAsync(id).ConfigureAwait(false), true, true);
 
             return Ok(user);
         }
 
-        [HttpGet("")]
-        public IActionResult GetUserPaginationList(int page = 1, int limit = 10)
+        [HttpGet("list")]
+        public async Task<IActionResult> GetUserPaginationListAsync(int page = 1, int limit = 10)
         {
             var users = _service
                 .GetPaginatedList(page, limit)
                 .Select(u => _resultService.GetUserResult(u, false, false));
 
-            return Ok(users);
+            var totalUsers = await _service
+                .GetCountAsync()
+                .ConfigureAwait(false);
+
+            return Ok(new {
+                users,
+                totalUsers
+            });
         }
 
         [HttpPost("")]

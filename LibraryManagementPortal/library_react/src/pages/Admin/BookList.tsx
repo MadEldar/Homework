@@ -10,31 +10,35 @@ import PaginationInfo from "../../models/PaginationInfo";
 import StringResource from "../../resources/StringResource";
 import APICaller from "../../services/APICaller.service";
 
-export default function AdminBookList() {
+export default function AdminBookList({ initBooks }: { initBooks?: Book[] }) {
     const history = useHistory();
-    const pathname = history.location.pathname
-    const [books, setBooks] = useState<Book[]>([]);
+    const pathname = history.location.pathname;
+    const [books, setBooks] = useState<Book[]>(initBooks ?? []);
     const [pagination, setPagination] = useState<PaginationInfo>({
         link: pathname,
         page: 1,
         limit: 10,
         totalPage: 1,
     });
+
+    const query = new URLSearchParams(useLocation().search);
+    const page = Number.parseInt(query.get("page")!) || 1;
+    const limit = Number.parseInt(query.get("limit")!) || 10;
+
+    const hasBooks = initBooks && initBooks.length > 0;
     const [deleteTargetId, setDeleteTargetId] = useState("");
 
     function deleteBook() {
-        (async() => {
+        (async () => {
             const result = await APICaller.deleteBook(deleteTargetId).then();
 
             if (result.statusCode === 200) {
-                setBooks(books.filter(b => b.id !== deleteTargetId))
+                setBooks(books.filter((b) => b.id !== deleteTargetId));
             }
         })();
     }
 
-    let query = new URLSearchParams(useLocation().search);
-
-    if (!query.get("page") || !query.get("limit")) {
+    if (!hasBooks && (!query.get("page") || !query.get("limit"))) {
         history.replace({
             pathname: pathname,
             search: ParamBuilder({
@@ -44,38 +48,40 @@ export default function AdminBookList() {
         });
     }
 
-    const page = Number.parseInt(query.get("page")!) || 1;
-    const limit = Number.parseInt(query.get("limit")!) || 10;
-
     useEffect(() => {
-        (async () => {
-            setBooks([]);
+        if (!hasBooks) {
+            console.log(!hasBooks);
+            (async () => {
+                setBooks([]);
 
-            const booksData: {
-                books: Book[];
-                totalBooks: number;
-                page: number;
-                limit: number;
-            } = await APICaller.getBookList(page, limit);
+                const booksData: {
+                    books: Book[];
+                    totalBooks: number;
+                    page: number;
+                    limit: number;
+                } = await APICaller.getBookList(page, limit);
 
-            setBooks(booksData.books);
+                setBooks(booksData.books);
 
-            var totalPage = Math.ceil(booksData.totalBooks / booksData.limit);
+                var totalPage = Math.ceil(
+                    booksData.totalBooks / booksData.limit
+                );
 
-            setPagination({
-                link: pathname,
-                page: booksData.page,
-                limit: booksData.limit,
-                totalPage: totalPage,
-            });
-        })();
+                setPagination({
+                    link: pathname,
+                    page: booksData.page,
+                    limit: booksData.limit,
+                    totalPage: totalPage,
+                });
+            })();
+        }
     }, [page, limit, pathname]);
 
     let indexIncrement = (page - 1) * limit;
 
     return (
         <>
-            <div className="container mt-5">
+            <div className="container mt-4">
                 <div className="row">
                     <h2 className="col-8 offset-2 text-center">Book List</h2>
                     <Link
@@ -101,8 +107,8 @@ export default function AdminBookList() {
                                     index={
                                         // isNaN(firstIndex)
                                         //     ? 0
-                                        //     : firstIndex + 
-                                            ++indexIncrement
+                                        //     : firstIndex +
+                                        ++indexIncrement
                                     }
                                     key={b.id}
                                     isAdmin={true}
@@ -112,7 +118,7 @@ export default function AdminBookList() {
                             ))}
                         </tbody>
                     </table>
-                    <Pagination {...pagination} />
+                    {!hasBooks ? <Pagination {...pagination} /> : <></>}
                 </div>
             </div>
 

@@ -4,7 +4,7 @@ import { BookForm } from "../../components/BookForm";
 import Book from "../../models/Book";
 import APICaller from "../../services/APICaller.service";
 
-export function AdminBookEdit() {
+export default function AdminBookEdit() {
     const { id } = useParams<{ id: string }>();
     const [book, setBook] = useState<Book>();
 

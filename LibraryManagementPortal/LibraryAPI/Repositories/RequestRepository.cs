@@ -1,6 +1,9 @@
+using System.Linq;
+using System;
 using System.Threading.Tasks;
 using LibraryAPI.Enums;
 using LibraryAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LibraryAPI.Repositories
 {
@@ -19,6 +22,15 @@ namespace LibraryAPI.Repositories
             return await _context.SaveChangesAsync().ConfigureAwait(false) > 0
                 ? OperatingStatus.Modified
                 : OperatingStatus.InternalError;
+        }
+
+        public Task<OperatingStatus> DeleteRequest(RequestModel request)
+        {
+            if (request.BookRequests.Count > 0) {
+                _context.RemoveRange(request.BookRequests.ToList());
+            }
+
+            return DeleteAsync(request);
         }
     }
 }

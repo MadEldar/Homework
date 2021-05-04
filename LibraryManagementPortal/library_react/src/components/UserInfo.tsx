@@ -1,22 +1,6 @@
-import { useEffect, useState } from "react";
 import User from "../models/User";
-import APICaller from "../services/APICaller.service";
 
-export function UserInfo({ isAdmin }: { isAdmin: boolean }) {
-    const [user, setUser] = useState<User>({
-        id: "",
-        username: "",
-        role: 0,
-    });
-
-    useEffect(() => {
-        (async () => {
-            const currentUser: User = await APICaller.getCurrentUser();
-
-            setUser(currentUser);
-        })();
-    }, []);
-
+export default function UserInfo({ user, isAdmin }: { user: User, isAdmin: boolean }) {
     return (
         <div className="container">
             <div className="row">

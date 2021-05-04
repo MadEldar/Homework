@@ -22,16 +22,18 @@ export function Login({
         formData.append("username", data.username);
         formData.append("password", data.password);
 
-        const result = await APICaller.postLogin(formData);
+        const response = await APICaller.postLogin(formData);
 
-        if (result.data.statusCode === 200) {
-            setAuthToken(result.data.headers.find(
+        if (response.statusCode === 200) {
+            const token = response.headers.find(
                 (h: { key: string; value: string[] }) =>
                     h.key === "AuthToken"
-            ).value[0]);
+            ).value[0];
+            
+            setAuthToken(token);
 
             if (
-                result.data.headers.find(
+                response.headers.find(
                     (h: { key: string; value: string[] }) =>
                         h.key === "Admin"
                 )
@@ -42,9 +44,9 @@ export function Login({
             window.location.href = StringResource.linkHome;
         } else {
             setAlertMessage({
-                message: result.data.reasonPhrase ?? "",
+                message: response.reasonPhrase ?? "",
                 type: "danger",
-                statusCode: result.data.statusCode,
+                statusCode: response.statusCode,
             });
         }
     };

@@ -1,17 +1,44 @@
-import { BookRequestItem } from "../components/BookRequestItem";
-import { UserInfo } from "../components/UserInfo";
+import { useEffect, useState } from "react";
+import RequestCardItem from "../components/RequestCardItem";
+import UserInfo from "../components/UserInfo";
+import RequestInterface from "../models/RequestInterface";
+import User from "../models/User";
+import APICaller from "../services/APICaller.service";
 
-export function UserProfile() {
+export default function UserProfile() {
+    const [stateChange, setStateChange] = useState(false);
+    const [user, setUser] = useState<User>({
+        id: "",
+        username: "",
+        role: 0,
+    });
+    const [requests, setRequests] = useState<RequestInterface[]>([]);
+
+    useEffect(() => {
+        (async () => {
+            const currentUser: User = await APICaller.getCurrentUser();
+            const currentUserRequests: RequestInterface[] = await APICaller.getCurrentUserRequests();
+
+            setUser(currentUser);
+            setRequests(currentUserRequests);
+        })();
+    }, [stateChange]);
+
     return (
         <>
-            <div className="col-12 container">
+            <div className="col-12 container mt-3">
                 <div className="row">
-                    <UserInfo isAdmin={false} />
+                    <UserInfo user={user} isAdmin={false} />
                 </div>
             </div>
-            <div className="col-12 container">
+            <div className="col-12 container mt-3">
                 <div className="row">
-                    <BookRequestItem />
+                    <RequestCardItem
+                        setStateChange={setStateChange}
+                        stateChange={stateChange}
+                        requests={requests}
+                        isAdmin={false}
+                    />
                 </div>
             </div>
         </>

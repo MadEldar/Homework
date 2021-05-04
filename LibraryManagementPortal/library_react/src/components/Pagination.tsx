@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import PaginationInfo from "../models/PaginationInfo";
 
 export default function Pagination({
@@ -8,6 +8,7 @@ export default function Pagination({
     totalPage,
     className
 }: PaginationInfo) {
+    const history = useHistory();
     var indexer = [];
 
     for (let i = 1; i <= totalPage; i++) {
@@ -16,6 +17,19 @@ export default function Pagination({
 
     const isFirstPage = page - 1 === 0;
     const isLastPage = page === totalPage;
+
+    const currentParams = history.location.search;    
+    const params = new URLSearchParams(currentParams);
+
+    function selectLimit(e: any) {
+        const newLimit = e.target.value || 10;
+        params.set("limit", newLimit);
+
+        history.push({
+            pathname: link,
+            search: params.toString()
+        })
+    }
 
     return (
         <div className={(className ?? "") + " row"}>
@@ -59,10 +73,14 @@ export default function Pagination({
                 </ul>
             </nav>
             <div className="form-group ml-3">
-                <select name="limit" className="form-control">
+                <select name="limit" className="form-control" value={params.get("limit") || 10} onChange={(e) => selectLimit(e)}>
+                    <option value="1">1</option>
+                    <option value="3">3</option>
                     <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="15">15</option>
+                    <option value="15">20</option>
+                    <option value="15">25</option>
                 </select>
             </div>
         </div>
