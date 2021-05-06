@@ -90,8 +90,8 @@ export default function BookItem({
                 ) : (
                     <>
                         {hasRequest ? (
-                            <div className="form-group">
-                                <label className="form-check-label">
+                            <>
+                                <label className="form-check-label py-2 px-3">
                                     <input
                                         className="form-check-input"
                                         type="checkbox"
@@ -101,7 +101,8 @@ export default function BookItem({
                                     />
                                     Request
                                 </label>
-                            </div>
+                                <span> | </span>
+                            </>
                         ) : (
                             <></>
                         )}

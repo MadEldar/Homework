@@ -71,7 +71,7 @@ export default function CategoryList() {
                 <table className="table table-striped mt-5">
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
+                            <th scope="col" className="text-center">#</th>
                             <th scope="col">Name</th>
                             <th scope="col">Books</th>
                         </tr>

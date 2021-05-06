@@ -4,9 +4,13 @@ export const getAuthToken = () => {
     const token = localStorage.getItem(StringResource.token);
 
     if (token) {
-        const tokenObject = JSON.parse(token);
+        const tokenObject: {
+            value: string;
+            expiration: number;
+        } = JSON.parse(token);
 
         if (tokenObject.expiration > new Date().getTime()) {
+            setAuthToken(tokenObject.value);
             return tokenObject.value;
         }
     }
@@ -50,6 +54,7 @@ export const removeSavedBookIds = (id: string) => {
 export const logout = () => {
     localStorage.removeItem(StringResource.token);
     localStorage.removeItem(StringResource.admin);
+    localStorage.removeItem(StringResource.requestedBookIds);
 
     window.location.href = StringResource.linkLogin;
 };

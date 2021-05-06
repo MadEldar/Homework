@@ -1,5 +1,6 @@
 const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
+// Urls
 const APIUrlBuiler = {
     currentUser: `${baseUrl}user/`,
     currentUserRequests: `${baseUrl}user/requests/`,

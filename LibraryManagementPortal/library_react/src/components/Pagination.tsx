@@ -24,6 +24,7 @@ export default function Pagination({
     function selectLimit(e: any) {
         const newLimit = e.target.value || 10;
         params.set("limit", newLimit);
+        params.set("page", "1");
 
         history.push({
             pathname: link,
@@ -79,8 +80,8 @@ export default function Pagination({
                     <option value="5">5</option>
                     <option value="10">10</option>
                     <option value="15">15</option>
-                    <option value="15">20</option>
-                    <option value="15">25</option>
+                    <option value="20">20</option>
+                    <option value="25">25</option>
                 </select>
             </div>
         </div>

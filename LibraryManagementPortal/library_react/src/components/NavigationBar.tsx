@@ -5,10 +5,6 @@ export default function NavigationBar({ isAdmin }: { isAdmin: boolean }) {
     const history = useHistory();
     const navLinks: { link: string; name: string }[] = [
         {
-            link: StringResource.linkUserProfile,
-            name: "User profile",
-        },
-        {
             link: StringResource.linkBook,
             name: "Book list",
         },
@@ -21,6 +17,10 @@ export default function NavigationBar({ isAdmin }: { isAdmin: boolean }) {
             name: "Saved",
         },
         {
+            link: StringResource.linkUserProfile,
+            name: "User profile",
+        },
+        {
             link: StringResource.linkLogout,
             name: "Logout",
         },
@@ -28,6 +28,9 @@ export default function NavigationBar({ isAdmin }: { isAdmin: boolean }) {
 
     return (
         <nav className="col-12 navbar navbar-expand-lg navbar-light">
+        <div className="col-1 my-2 my-lg-0">
+            <button className="btn" onClick={() => history.goBack()}>Back</button>
+        </div>
             <Link className="navbar-brand" to={StringResource.linkHome}>
                 L<span>ibrary</span> M<span>anagement</span>P<span>ortal</span>
             </Link>

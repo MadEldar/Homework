@@ -7,7 +7,6 @@ using System.Net.Http;
 using System.Net;
 using LibraryAPI.Filters;
 using LibraryAPI.Enums;
-using System.Linq;
 
 namespace LibraryAPI.Controllers
 {

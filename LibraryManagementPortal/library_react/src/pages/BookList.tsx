@@ -69,6 +69,7 @@ export default function BookList({initBooks}: {initBooks?: Book[]}) {
 
     let indexIncrement = 0;
     
+    // Move table to component
     return (
         <div className="container mt-4">
             <div className="row">
@@ -77,9 +78,9 @@ export default function BookList({initBooks}: {initBooks?: Book[]}) {
                     <thead>
                         <tr>
                             <th scope="col" className=" text-center">#</th>
-                            <th scope="col" className=" text-center">Title</th>
-                            <th scope="col" className=" text-center">Author</th>
-                            <th scope="col" className=" text-center">Category</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Author</th>
+                            <th scope="col">Category</th>
                             <th scope="col" className=" text-center">Action</th>
                         </tr>
                     </thead>

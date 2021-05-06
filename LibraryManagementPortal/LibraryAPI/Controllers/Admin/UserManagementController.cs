@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using LibraryAPI.Services;
 using System.Net.Http;
 using System.Net;
-using System.Text.Json;
 using System.Linq;
 using LibraryAPI.Enums;
 using LibraryAPI.Filters;

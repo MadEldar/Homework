@@ -9,7 +9,7 @@ import PaginationInfo from "../models/PaginationInfo";
 import StringResource from "../resources/StringResource";
 import APICaller from "../services/APICaller.service";
 
-export default function NewRequest() {
+export default function SavedBooks() {
     const history = useHistory();
     const pathname = history.location.pathname;
     const [requestBooks, setRequestBooks] = useState<Book[]>([]);
@@ -93,13 +93,13 @@ export default function NewRequest() {
                                 <th scope="col" className="text-center">
                                     #
                                 </th>
-                                <th scope="col" className="text-center">
+                                <th scope="col">
                                     Title
                                 </th>
-                                <th scope="col" className="text-center">
+                                <th scope="col">
                                     Author
                                 </th>
-                                <th scope="col" className="text-center">
+                                <th scope="col">
                                     Category
                                 </th>
                                 <th scope="col" className="text-center">

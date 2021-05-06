@@ -27,6 +27,7 @@ namespace LibraryAPI.Services
                 }
                 else
                 {
+                    // Add check expired token
                     user.Token.RefreshToken();
                 }
             }

@@ -12,7 +12,7 @@ import CategoryList from "./pages/CategoryList";
 import AdminBookList from "./pages/Admin/BookList";
 import AdminBookCreate from "./pages/Admin/BookCreate";
 import AdminBookEdit from "./pages/Admin/BookEdit";
-import NewRequest from "./pages/NewRequest";
+import SavedBooks from "./pages/SavedBooks";
 import AdminCategoryList from "./pages/Admin/CategoryList";
 import AdminCategoryCreate from "./pages/Admin/CategoryCreate";
 import CategoryDetails from "./pages/CategoryDetails";
@@ -71,7 +71,7 @@ function App() {
         },
         {
             link: StringResource.linkNewRequest,
-            page: <NewRequest />,
+            page: <SavedBooks />,
         },
         {
             link: StringResource.linkAdminBookDetails + ":id",

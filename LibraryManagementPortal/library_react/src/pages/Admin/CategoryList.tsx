@@ -95,10 +95,10 @@ export default function AdminCategoryList() {
                     <table className="table table-striped mt-5">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
+                                <th scope="col" className="text-center">#</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Books</th>
-                                <th scope="col">Action</th>
+                                <th scope="col" className="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -123,7 +123,6 @@ export default function AdminCategoryList() {
                 confirmMessage="Are you sure you want to delete this category?"
                 title="Delete category"
                 handleConfirm={deleteCategory}
-                targetId={deleteTargetId}
             />
         </>
     );

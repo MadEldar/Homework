@@ -89,7 +89,7 @@ export default function AdminRequestList({
                                 <th scope="col" className="text-center">
                                     #
                                 </th>
-                                <th scope="col" className="text-center">
+                                <th scope="col">
                                     Username
                                 </th>
                                 {/* <th scope="col" className="text-center">Books</th> */}
@@ -128,7 +128,6 @@ export default function AdminRequestList({
                 confirmMessage="Are you sure you want to delete this request?"
                 title="Delete request"
                 handleConfirm={deleteRequest}
-                targetId={deleteTargetId}
             />
         </>
     );

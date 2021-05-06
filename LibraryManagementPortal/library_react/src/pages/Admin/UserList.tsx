@@ -90,6 +90,7 @@ export default function AdminUserList() {
                                 <th scope="col">#</th>
                                 <th scope="col">Username</th>
                                 <th scope="col">Role</th>
+                                <th scope="col" className="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -114,7 +115,6 @@ export default function AdminUserList() {
                 confirmMessage="Are you sure you want to delete this user?"
                 title="Delete user"
                 handleConfirm={deleteUser}
-                targetId={deleteTargetId}
             />
         </>
     );

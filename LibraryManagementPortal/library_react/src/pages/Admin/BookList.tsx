@@ -93,11 +93,11 @@ export default function AdminBookList({ initBooks }: { initBooks?: Book[] }) {
                     <table className="table table-striped mt-5">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
+                                <th scope="col" className="text-center">#</th>
                                 <th scope="col">Title</th>
                                 <th scope="col">Author</th>
                                 <th scope="col">Category</th>
-                                <th scope="col">Action</th>
+                                <th scope="col" className="text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -105,9 +105,6 @@ export default function AdminBookList({ initBooks }: { initBooks?: Book[] }) {
                                 <BookItem
                                     book={b}
                                     index={
-                                        // isNaN(firstIndex)
-                                        //     ? 0
-                                        //     : firstIndex +
                                         ++indexIncrement
                                     }
                                     key={b.id}
@@ -128,7 +125,6 @@ export default function AdminBookList({ initBooks }: { initBooks?: Book[] }) {
                 confirmMessage="Are you sure you want to delete this book?"
                 title="Delete book"
                 handleConfirm={deleteBook}
-                targetId={deleteTargetId}
             />
         </>
     );

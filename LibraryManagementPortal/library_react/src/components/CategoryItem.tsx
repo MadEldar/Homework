@@ -17,7 +17,9 @@ export default function CategoryItem({
 }) {
     return (
         <tr key={category.id}>
-            <th scope="row">{isNaN(index) ? 1 : index}</th>
+            <th scope="row" className="text-center">
+                {isNaN(index) ? 1 : index}
+            </th>
             <td>
                 <Link
                     to={
@@ -46,8 +48,8 @@ export default function CategoryItem({
                     ))
                 )}
             </td>
-            <td>
-                {isAdmin ? (
+            {isAdmin ? (
+                <td className="text-center">
                     <>
                         <Link
                             className="btn"
@@ -69,10 +71,10 @@ export default function CategoryItem({
                             Delete
                         </button>
                     </>
-                ) : (
-                    <></>
-                )}
-            </td>
+                </td>
+            ) : (
+                <></>
+            )}
         </tr>
     );
 }

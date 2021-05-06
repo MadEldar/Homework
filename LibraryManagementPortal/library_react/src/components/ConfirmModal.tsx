@@ -6,14 +6,12 @@ export default function ConfirmModal({
     action,
     id,
     handleConfirm,
-    targetId,
 }: {
     title: string;
     confirmMessage: string;
     action: string;
     id: string;
     handleConfirm: Function;
-    targetId: string;
 }) {
     function onConfirm() {
         handleConfirm();

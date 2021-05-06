@@ -30,6 +30,7 @@ export function BookForm({ book, handler }: { book?: Book; handler: any }) {
         }
     }, [book, reset]);
 
+    // error display move to component
     return (
         <form className="col-6" onSubmit={handleSubmit(handler)}>
             <div className="col-12 form-group">
