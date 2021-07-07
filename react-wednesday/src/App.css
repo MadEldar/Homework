@@ -1,0 +1,72 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#root .ant-menu-item-selected,
+#root .ant-layout-header a {
+  color: #fff;
+  border-bottom: 0;
+}
+
+#root .ant-layout-header,
+#root .background-primary {
+  background: #cf2338;
+}
+
+#root .ant-menu a {
+  font-weight: 600;
+}
+
+#root .ant-menu-inline .ant-menu-item {
+  background: #efefef;
+}
+
+#root .ant-menu-item.menu-item-active,
+#root .ant-menu-item.menu-item-active a {
+  background: #cf2338;
+  color: #fff;
+}
+
+#root .ant-menu-item-selected a,
+.ant-menu-item-selected a:hover {
+  color: inherit;
+}
+.ant-row-rtl .logo {
+  float: right;
+  margin: 16px 0 16px 24px;
+}
