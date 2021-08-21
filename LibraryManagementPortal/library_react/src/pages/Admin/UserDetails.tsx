@@ -16,9 +16,11 @@ export default function AdminUserDetails() {
 
     useEffect(() => {
         (async () => {
-            const userDetails: User = await APICaller.getUserById(id);
+            const response = await APICaller.getUserById(id).then();
 
-            setUser(userDetails);
+            if (response.status === 200) {
+                setUser(response.data);
+            }
         })();
     }, [id, stateChange]);
 

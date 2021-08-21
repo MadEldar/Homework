@@ -1,39 +1,20 @@
 import { useHistory } from "react-router";
 import { BookForm } from "../../components/BookForm";
+import Book from "../../models/Book";
 import StringResource from "../../resources/StringResource";
 import APICaller from "../../services/APICaller.service";
 
 export default function AdminBookCreate() {
     const history = useHistory();
 
-    console.log("")
-
-    function submitCreate(data: {
-        id?: string;
-        title: string;
-        author: string;
-        category: string;
-    }) {
-        let formData = new FormData();
-        
-        formData.append("title", data.title);
-        formData.append("author", data.author);
-        formData.append("categoryId", data.category);
-
+    function submitCreate(data: Book) {
         (async () => {
-            const response = await APICaller.postBook(formData).then();
+            const response = await APICaller.postBook(data).then();
 
-            if (response.statusCode === 201) {
-                // TODO: fix api header to send book id
-                // const bookId = response.headers.find(
-                //     (h: { key: string; value: string[] }) => h.key === "BookId"
-                // ).value[0];
+            if (response.status === 201) {
+                const book: Book = response.data;
 
-                const reasonPhrase: string = response.reasonPhrase;
-
-                history.push(
-                    StringResource.linkBookDetails + `${reasonPhrase.slice(reasonPhrase.indexOf(": ") + 2)}`
-                );
+                history.push(StringResource.linkAdminBookDetails + book.id);
             }
         })();
     }

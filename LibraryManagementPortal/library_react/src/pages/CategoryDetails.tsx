@@ -14,9 +14,11 @@ export default function CategoryDetails() {
 
     useEffect(() => {
         (async () => {
-            const categoryDetails: Category = await APICaller.getCategoryById(id);
+            const response = await APICaller.getCategoryById(id).then();
 
-            setCategory(categoryDetails);
+            if (response.status === 200) {
+                setCategory(response.data);
+            }
         })();
     }, [id]);
 

@@ -40,25 +40,29 @@ export default function CategoryList() {
         (async () => {
             setCategories([]);
             
-            const categoriesData: {
-                categories: Category[];
-                totalCategories: number;
-                page: number;
-                limit: number;
-            } = await APICaller.getCategoryList(page, limit);
+            const response = await APICaller.getCategoryList(page, limit).then();
+            
+            if (response.status === 200) {
+                const categoriesData: {
+                    categories: Category[];
+                    totalCategories: number;
+                    page: number;
+                    limit: number;
+                } = response.data;
 
-            setCategories(categoriesData.categories);
-
-            var totalPage = Math.ceil(categoriesData.totalCategories / categoriesData.limit);
-
-            setPagination({
-                link: pathname,
-                page: categoriesData.page,
-                limit: categoriesData.limit,
-                totalPage: totalPage,
-            });
-
-            setFirstIndex((categoriesData.page - 1) * limit);
+                setCategories(categoriesData.categories);
+    
+                var totalPage = Math.ceil(categoriesData.totalCategories / categoriesData.limit);
+    
+                setPagination({
+                    link: pathname,
+                    page: categoriesData.page,
+                    limit: categoriesData.limit,
+                    totalPage: totalPage,
+                });
+    
+                setFirstIndex((categoriesData.page - 1) * limit);
+            }
         })();
     }, [page, limit, pathname]);
 

@@ -1,5 +1,3 @@
-using System.Net;
-using System.Net.Http;
 using LibraryAPI.Enums;
 using LibraryAPI.Models.Requests;
 using LibraryAPI.Services;
@@ -18,32 +16,23 @@ namespace LibraryAPI.Controllers
         }
 
         [HttpPost("login")]
-        public HttpResponseMessage Login([FromForm] LoginRequest info)
+        public IActionResult Login([FromForm] LoginRequest info)
         {
             var user = _service.Login(info.Username, info.Password);
 
-            if (user == null) {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "Incorrect username or password"
-                };
+            if (user == null)
+            {
+                return BadRequest("Incorrect username or password");
             }
 
-            var response = new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                ReasonPhrase = "Login successfully"
-            };
-
-            response.Headers.Add("AuthToken", user.Token.Token);
+            Response.Headers.Add("AuthToken", user.Token.Token);
 
             if (user.Role == UserRole.Admin)
             {
-                response.Headers.Add("Admin", "");
+                Response.Headers.Add("Admin", "");
             }
 
-            return response;
+            return Ok("Login successfully");
         }
     }
 }

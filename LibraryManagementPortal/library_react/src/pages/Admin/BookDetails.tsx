@@ -16,9 +16,10 @@ export default function AdminBookDetails() {
 
     useEffect(() => {
         (async () => {
-            const bookDetails: Book = await APICaller.getBookById(id);
-
-            setBook(bookDetails);
+            const response = await APICaller.getBookById(id).then();
+            if (response.status === 200) {
+                setBook(response.data);
+            }
         })();
     }, [id]);
 

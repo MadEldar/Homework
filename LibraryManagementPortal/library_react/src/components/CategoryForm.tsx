@@ -12,16 +12,8 @@ export function CategoryForm({
     const {
         register,
         handleSubmit,
-        reset,
         formState: { errors },
     } = useForm();
-
-    if (category) {
-        reset({
-            id: category.id,
-            name: category.name,
-        });
-    }
 
     return (
         <form className="col-6" onSubmit={handleSubmit(handler)}>

@@ -26,7 +26,7 @@ export default function AdminUserList() {
         (async () => {
             const result = await APICaller.deleteUser(deleteTargetId).then();
 
-            if (result.statusCode === 200) {
+            if (result.status === 200) {
                 setUsers(users.filter((b) => b.id !== deleteTargetId));
             }
         })();
@@ -51,23 +51,27 @@ export default function AdminUserList() {
         (async () => {
             setUsers([]);
 
-            const usersData: {
-                users: User[];
-                totalUsers: number;
-                page: number;
-                limit: number;
-            } = await APICaller.getUserList(page, limit);
+            const response = await APICaller.getUserList(page, limit).then();
 
-            setUsers(usersData.users);
+            if (response.status === 200) {
+                const usersData: {
+                    users: User[];
+                    totalUsers: number;
+                    page: number;
+                    limit: number;
+                } = response.data;
 
-            var totalPage = Math.ceil(usersData.totalUsers / usersData.limit);
-
-            setPagination({
-                link: pathname,
-                page: usersData.page,
-                limit: usersData.limit,
-                totalPage: totalPage,
-            });
+                setUsers(usersData.users);
+    
+                var totalPage = Math.ceil(usersData.totalUsers / usersData.limit);
+    
+                setPagination({
+                    link: pathname,
+                    page: usersData.page,
+                    limit: usersData.limit,
+                    totalPage: totalPage,
+                });
+            }
         })();
     }, [page, limit, pathname]);
 

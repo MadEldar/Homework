@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { Link, useLocation } from "react-router-dom";
@@ -28,7 +29,7 @@ export default function AdminCategoryList() {
                 deleteTargetId
             ).then();
 
-            if (result.statusCode === 200) {
+            if (result.status === 200) {
                 setCategories(
                     categories.filter((b) => b.id !== deleteTargetId)
                 );
@@ -55,25 +56,30 @@ export default function AdminCategoryList() {
         (async () => {
             setCategories([]);
 
-            const categoriesData: {
-                categories: Category[];
-                totalCategories: number;
-                page: number;
-                limit: number;
-            } = await APICaller.getCategoryList(page, limit);
+            const response = await APICaller.getCategoryList(page, limit).then();
 
-            setCategories(categoriesData.categories);
+            if (response.status === 200) {
+                const categoriesData: {
+                    categories: Category[];
+                    totalCategories: number;
+                    page: number;
+                    limit: number;
+                } = response.data;
+    
 
-            var totalPage = Math.ceil(
-                categoriesData.totalCategories / categoriesData.limit
-            );
-
-            setPagination({
-                link: pathname,
-                page: categoriesData.page,
-                limit: categoriesData.limit,
-                totalPage: totalPage,
-            });
+                setCategories(categoriesData.categories);
+    
+                var totalPage = Math.ceil(
+                    categoriesData.totalCategories / categoriesData.limit
+                );
+    
+                setPagination({
+                    link: pathname,
+                    page: categoriesData.page,
+                    limit: categoriesData.limit,
+                    totalPage: totalPage,
+                });
+            }
         })();
     }, [page, limit, pathname]);
 

@@ -1,14 +1,11 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
+using LibraryAPI.Enums;
+using LibraryAPI.Filters;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
-using LibraryAPI.Filters;
-using LibraryAPI.Enums;
-using System.Collections.Generic;
-using System;
-using LibraryAPI.Models.Results;
-using System.Net;
 
 namespace LibraryAPI.Controllers
 {
@@ -25,24 +22,20 @@ namespace LibraryAPI.Controllers
             _resultService = resultService;
         }
 
-        [HttpGet("")]
-        public UserResult GetCurrentUser()
+        [HttpGet]
+        public IActionResult GetCurrentUser()
         {
             var user = _service.GetCurrentUser(Request.Headers["AuthToken"]);
 
-            return _resultService.GetUserResult(user, true, false);
+            return Ok(_resultService.GetUserResult(user, true, false));
         }
 
         [HttpPost("request-books")]
-        public async Task<HttpResponseMessage> CreateNewRequestAsync(List<Guid> bookIds)
+        public async Task<IActionResult> CreateNewRequestAsync(List<Guid> bookIds)
         {
             if (bookIds.Count == 0)
             {
-                return new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "Select at least 1 book to request"
-                };
+                return BadRequest("Select at least 1 book to request");
             }
 
             var operationResult = await _service
@@ -51,31 +44,11 @@ namespace LibraryAPI.Controllers
 
             return operationResult switch
             {
-                OperatingStatus.Created => new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.Created,
-                    ReasonPhrase = $"Successfully requested {bookIds.Count} books"
-                },
-                OperatingStatus.ExceedMonthlyRequestLimit => new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "You have already reached this month's request limit"
-                },
-                OperatingStatus.ExceedMonthlyBookLimit => new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.ExpectationFailed,
-                    ReasonPhrase = "You have already reached this month's book limit"
-                },
-                OperatingStatus.ExceedRemainingMonthlyRequestLimit => new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.ExpectationFailed,
-                    ReasonPhrase = "Total books requested exeeds this month's book limit"
-                },
-                _ => new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "Request was not properly processed"
-                },
+                OperatingStatus.Created => Created(Request.Path, bookIds),
+                OperatingStatus.ExceedMonthlyRequestLimit => BadRequest("You have already reached this month's request limit"),
+                OperatingStatus.ExceedMonthlyBookLimit => BadRequest("You have already reached this month's book limit"),
+                OperatingStatus.ExceedRemainingMonthlyRequestLimit => BadRequest("Total books requested exeeds this month's book limit"),
+                _ => BadRequest("Request was not properly processed"),
             };
         }
 

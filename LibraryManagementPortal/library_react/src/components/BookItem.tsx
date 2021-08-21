@@ -30,7 +30,7 @@ export default function BookItem({
         setSavedBookIds(getSavedBookIds());
     }
 
-    const isSaved = savedBooksIds.includes(book.id);
+    const isSaved = savedBooksIds.includes(book.id!);
 
     return (
         <tr key={index}>
@@ -80,7 +80,7 @@ export default function BookItem({
                         <button
                             type="button"
                             className="btn"
-                            onClick={() => setTargetId!(book.id)}
+                            onClick={() => setTargetId!(book.id!)}
                             data-toggle="modal"
                             data-target="#modalDelete"
                         >
@@ -111,7 +111,7 @@ export default function BookItem({
                                 className="btn"
                                 type="button"
                                 onClick={() => {
-                                    saveBookIds(book.id);
+                                    saveBookIds(book.id!);
                                     reloadStorage();
                                 }}
                             >
@@ -122,7 +122,7 @@ export default function BookItem({
                                 className="btn"
                                 type="button"
                                 onClick={() => {
-                                    removeSavedBookIds(book.id);
+                                    removeSavedBookIds(book.id!);
                                     reloadStorage();
                                 }}
                             >

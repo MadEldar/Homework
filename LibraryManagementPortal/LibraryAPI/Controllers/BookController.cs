@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Threading.Tasks;
-using LibraryAPI.Services;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using LibraryAPI.Enums;
 using LibraryAPI.Filters;
-using System.Collections.Generic;
+using LibraryAPI.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LibraryAPI.Controllers
 {
@@ -37,7 +37,8 @@ namespace LibraryAPI.Controllers
                 .GetManyByIdAsync(ids, page, limit).ConfigureAwait(false))
                 .Select(b => _resultService.GetBookResult(b, false));
 
-            return Ok(new {
+            return Ok(new
+            {
                 books,
                 totalBooks = ids.Count,
                 page,
@@ -54,7 +55,8 @@ namespace LibraryAPI.Controllers
 
             var totalBooks = await _service.GetCount().ConfigureAwait(false);
 
-            return Ok(new {
+            return Ok(new
+            {
                 books,
                 totalBooks,
                 page,

@@ -10,7 +10,7 @@ export function AdminCategoryEdit() {
 
     useEffect(() => {
         (async () => {
-            const category = await APICaller.getCategoryById(id).then();
+            const category: Category = await APICaller.getCategoryById(id).then();
 
             setCategory(category);
         })();
@@ -23,8 +23,6 @@ export function AdminCategoryEdit() {
         category: string;
     }) {
         let formData = new FormData();
-
-        console.log(data);
 
         formData.append("id", data.id);
         formData.append("title", data.title);

@@ -37,7 +37,7 @@ export default function AdminRequestList({
         (async () => {
             const result = await APICaller.deleteRequest(deleteTargetId).then();
 
-            if (result.statusCode === 200) {
+            if (result.status === 200) {
                 setRequests(requests.filter((r) => r.id !== deleteTargetId));
             }
         })();
@@ -58,20 +58,29 @@ export default function AdminRequestList({
             if (!hasRequests) {
                 setRequests([]);
 
-                const requestData = await APICaller.getRequestList().then();
+                const response = await APICaller.getRequestList().then();
 
-                setRequests(requestData.requests);
+                if (response.status === 200) {
+                    const requestData: {
+                        requests: RequestInterface[]
+                        totalCategories: number;
+                        page: number;
+                        limit: number;
+                    } = response.data;
 
-                var totalPage = Math.ceil(
-                    requestData.totalCategories / requestData.limit
-                );
-
-                setPagination({
-                    link: pathname,
-                    page: requestData.page,
-                    limit: requestData.limit,
-                    totalPage: totalPage,
-                });
+                    setRequests(requestData.requests);
+    
+                    var totalPage = Math.ceil(
+                        requestData.totalCategories / requestData.limit
+                    );
+    
+                    setPagination({
+                        link: pathname,
+                        page: requestData.page,
+                        limit: requestData.limit,
+                        totalPage: totalPage,
+                    });
+                }
             }
         })();
     }, [page, limit, pathname, stateChange, hasRequests]);

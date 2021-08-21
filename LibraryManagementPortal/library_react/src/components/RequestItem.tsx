@@ -26,7 +26,7 @@ export default function RequestItem({
             toStatus
         ).then();
 
-        if (response.statusCode === 200) {
+        if (response.status === 200) {
             setStateChange(!stateChange);
         }
     }

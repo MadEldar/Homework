@@ -16,11 +16,11 @@ export default function UserProfile() {
 
     useEffect(() => {
         (async () => {
-            const currentUser: User = await APICaller.getCurrentUser();
-            const currentUserRequests: RequestInterface[] = await APICaller.getCurrentUserRequests();
+            const currentUser = await APICaller.getCurrentUser().then();
+            const currentUserRequests = await APICaller.getCurrentUserRequests().then();
 
-            setUser(currentUser);
-            setRequests(currentUserRequests);
+            setUser(currentUser.data);
+            setRequests(currentUserRequests.data);
         })();
     }, [stateChange]);
 

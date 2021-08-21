@@ -10,9 +10,11 @@ export default function AdminBookEdit() {
 
     useEffect(() => {
         (async () => {
-            const book = await APICaller.getBookById(id).then();
+            const response = await APICaller.getBookById(id).then();
 
-            setBook(book);
+            if (response.status === 200) {
+                setBook(book);
+            }
         })();
     }, [id]);
 

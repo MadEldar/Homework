@@ -24,7 +24,7 @@ export function Login({
 
         const response = await APICaller.postLogin(formData);
 
-        if (response.statusCode === 200) {
+        if (response.status === 200) {
             const token = response.headers.find(
                 (h: { key: string; value: string[] }) =>
                     h.key === "AuthToken"
@@ -42,12 +42,6 @@ export function Login({
             }
 
             window.location.href = StringResource.linkHome;
-        } else {
-            setAlertMessage({
-                message: response.reasonPhrase ?? "",
-                type: "danger",
-                statusCode: response.statusCode,
-            });
         }
     };
 

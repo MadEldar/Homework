@@ -2,7 +2,7 @@ import Category from "./Category";
 import RequestInterface from "./RequestInterface";
 
 export default interface Book {
-    id: string,
+    id?: string,
     title: string,
     author: string,
     categoryId: string,

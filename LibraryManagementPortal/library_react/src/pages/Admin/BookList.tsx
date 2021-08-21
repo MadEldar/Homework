@@ -32,7 +32,7 @@ export default function AdminBookList({ initBooks }: { initBooks?: Book[] }) {
         (async () => {
             const result = await APICaller.deleteBook(deleteTargetId).then();
 
-            if (result.statusCode === 200) {
+            if (result.status === 200) {
                 setBooks(books.filter((b) => b.id !== deleteTargetId));
             }
         })();
@@ -54,25 +54,29 @@ export default function AdminBookList({ initBooks }: { initBooks?: Book[] }) {
             (async () => {
                 setBooks([]);
 
-                const booksData: {
-                    books: Book[];
-                    totalBooks: number;
-                    page: number;
-                    limit: number;
-                } = await APICaller.getBookList(page, limit);
+                const response = await APICaller.getBookList(page, limit).then();
 
-                setBooks(booksData.books);
+                if (response.status === 200) {
+                    const booksData: {
+                        books: Book[];
+                        totalBooks: number;
+                        page: number;
+                        limit: number;
+                    } = response.data;
 
-                var totalPage = Math.ceil(
-                    booksData.totalBooks / booksData.limit
-                );
-
-                setPagination({
-                    link: pathname,
-                    page: booksData.page,
-                    limit: booksData.limit,
-                    totalPage: totalPage,
-                });
+                    setBooks(booksData.books);
+    
+                    var totalPage = Math.ceil(
+                        booksData.totalBooks / booksData.limit
+                    );
+    
+                    setPagination({
+                        link: pathname,
+                        page: booksData.page,
+                        limit: booksData.limit,
+                        totalPage: totalPage,
+                    });
+                }
             })();
         }
     }, [page, limit, pathname, hasBooks]);

@@ -15,9 +15,11 @@ export default function BookDetails() {
 
     useEffect(() => {
         (async () => {
-            const bookDetails: Book = await APICaller.getBookById(id);
+            const response = await APICaller.getBookById(id).then();
 
-            setBook(bookDetails);
+            if (response.status === 200) {
+                setBook(response.data);
+            }
         })();
     }, [id]);
 

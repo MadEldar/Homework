@@ -1,12 +1,11 @@
-using System.Net.Http;
 using System;
 using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using LibraryAPI.Enums;
+using LibraryAPI.Filters;
 using LibraryAPI.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
-using LibraryAPI.Enums;
-using System.Threading.Tasks;
-using LibraryAPI.Filters;
 
 namespace LibraryAPI.Controllers
 {
@@ -34,7 +33,8 @@ namespace LibraryAPI.Controllers
                 .GetCountAsync()
                 .ConfigureAwait(false);
 
-            return Ok(new {
+            return Ok(new
+            {
                 requests,
                 totalRequests,
                 page,
@@ -43,62 +43,31 @@ namespace LibraryAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<HttpResponseMessage> ChangeRequestStatusAsync(Guid id, RequestStatus status)
+        public async Task<IActionResult> ChangeRequestStatusAsync(Guid id, RequestStatus status)
         {
             var operationResult = await _service
                 .ChangeRequestStatus(id, status)
                 .ConfigureAwait(false);
 
-            return operationResult switch {
-                OperatingStatus.Modified => new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    ReasonPhrase = $"Request with the followinng id was changed: {id}"
-                },
-                OperatingStatus.KeyNotFound => new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "Request id does not exists"
-                },
-                OperatingStatus.InternalError => new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.InternalServerError,
-                    ReasonPhrase = "Something went wrong while changing request status"
-                },
-                _ => new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "Category cannot be deleted"
-                },
+            return operationResult switch
+            {
+                OperatingStatus.Modified => Ok($"Edited request with id: {id}"),
+                OperatingStatus.KeyNotFound => BadRequest("Request id does not exists"),
+                _ => StatusCode((int)HttpStatusCode.InternalServerError)
+
             };
         }
 
         [HttpDelete("{id}")]
-        public async Task<HttpResponseMessage> DeleteRequestAsync(Guid id)
+        public async Task<IActionResult> DeleteRequestAsync(Guid id)
         {
             var operationResult = await _service.DeleteRequestAsync(id).ConfigureAwait(false);
 
-            return operationResult switch {
-                OperatingStatus.Deleted => new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    ReasonPhrase = $"Request with the followinng id was deleted: {id}"
-                },
-                OperatingStatus.KeyNotFound => new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "Request id does not exists"
-                },
-                OperatingStatus.InternalError => new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.InternalServerError,
-                    ReasonPhrase = "Something went wrong while deleting request"
-                },
-                _ => new HttpResponseMessage
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                    ReasonPhrase = "Request cannot be deleted"
-                },
+            return operationResult switch
+            {
+                OperatingStatus.Deleted => Ok($"Request with the followinng id was deleted: {id}"),
+                OperatingStatus.KeyNotFound => BadRequest("Request id does not exists"),
+                _ => StatusCode((int)HttpStatusCode.InternalServerError)
             };
         }
     }

@@ -48,16 +48,25 @@ export default function SavedBooks() {
                     limit
                 ).then();
 
-                setRequestBooks(response.books);
+                if (response.status === 200) {
+                    const booksData: {
+                        books: Book[];
+                        totalBooks: number;
+                        page: number;
+                        limit: number;
+                    } = response.data;
 
-                var totalPage = Math.ceil(response.totalBooks / response.limit);
-
-                setPagination({
-                    link: pathname,
-                    page: response.page,
-                    limit: response.limit,
-                    totalPage: totalPage,
-                });
+                    setRequestBooks(booksData.books);
+    
+                    var totalPage = Math.ceil(booksData.totalBooks / booksData.limit);
+    
+                    setPagination({
+                        link: pathname,
+                        page: booksData.page,
+                        limit: booksData.limit,
+                        totalPage: totalPage,
+                    });
+                }
             }
         })();
     }, [page, limit, pathname]);
@@ -73,7 +82,7 @@ export default function SavedBooks() {
 
         const response = await APICaller.postRequest(ids).then();
 
-        if (response.statusCode === 201) {
+        if (response.status === 201) {
             history.push(StringResource.linkUserProfile);
         }
     }

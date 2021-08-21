@@ -16,9 +16,11 @@ export function BookForm({ book, handler }: { book?: Book; handler: any }) {
 
     useEffect(() => {
         (async () => {
-            const allCategories = await APICaller.getAllCategories().then();
+            const response = await APICaller.getAllCategories().then();
 
-            setCategories(allCategories);
+            if (response.status === 200) {
+                setCategories(response.data);
+            }
         })();
 
         if (book) {
@@ -96,14 +98,15 @@ export function BookForm({ book, handler }: { book?: Book; handler: any }) {
                 <select
                     id="category"
                     className="form-control"
-                    {...register("category")}
+                    defaultValue={book ? book.categoryId : categories[0]?.id}
+                    {...register("categoryId", {
+                        required: StringFormatter.validationForRequired(
+                            "book author's name"
+                        ),
+                    })}
                 >
                     {categories.map((c) => (
-                        <option
-                            key={c.id}
-                            value={c.id}
-                            selected={c.id === book?.categoryId}
-                        >
+                        <option key={c.id} value={c.id}>
                             {c.name}
                         </option>
                     ))}

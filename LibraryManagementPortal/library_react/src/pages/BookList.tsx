@@ -44,25 +44,29 @@ export default function BookList({initBooks}: {initBooks?: Book[]}) {
             (async () => {
                 setBooks([]);
                 
-                const booksData: {
-                    books: Book[];
-                    totalBooks: number;
-                    page: number;
-                    limit: number;
-                } = await APICaller.getBookList(page, limit);
+                const response = await APICaller.getBookList(page, limit).then();
+
+                if (response.status === 200) {
+                    const booksData: {
+                        books: Book[];
+                        totalBooks: number;
+                        page: number;
+                        limit: number;
+                    } = response.data;
     
-                setBooks(booksData.books);
-    
-                var totalPage = Math.ceil(booksData.totalBooks / booksData.limit);
-    
-                setPagination({
-                    link: pathname,
-                    page: booksData.page,
-                    limit: booksData.limit,
-                    totalPage: totalPage,
-                });
-    
-                setFirstIndex((booksData.page - 1) * booksData.limit);
+                    setBooks(booksData.books);
+        
+                    var totalPage = Math.ceil(booksData.totalBooks / booksData.limit);
+        
+                    setPagination({
+                        link: pathname,
+                        page: booksData.page,
+                        limit: booksData.limit,
+                        totalPage: totalPage,
+                    });
+        
+                    setFirstIndex((booksData.page - 1) * booksData.limit);
+                }
             })();
         }
     }, [page, limit, hasBooks, pathname]);
